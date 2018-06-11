@@ -3,9 +3,7 @@ var renderer = null,
     camera = null,
     mesh = null;
 var loader;
-var porta
-    ;
-
+var porta;
 
 window.onload = function init() {
     // Create the Three.js renderer
@@ -32,7 +30,6 @@ window.onload = function init() {
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(50, 70, 200);
     scene.add(camera);
-
 
     controls = new THREE.OrbitControls(camera);
     controls.addEventListener('change', function () { renderer.render(scene, camera); });
@@ -144,10 +141,44 @@ window.onload = function init() {
     scene.add(paredeDireita);
     paredeDireita.position.set(100, 25, 100)
 
+    loader = new THREE.OBJLoader();
 
-    // instantiate a loader
-    //PORTAAAAAAAAAAAAAAAAA
-    var mtlLoader = new THREE.MTLLoader();
+/*
+
+    RESUMIDAMENTE: 
+    1. A PROF ACHA QUE TAO CORRUMPIDOS OS FICHEIROS .PNG E POR CAUSA DISSO DA LOAD MAL
+    2. DIZ PARA NAO USARMOS UMA PORTA TAO COMPLICADA... NORMALMENTE OS OBJETOS NAO DAO LOAD DIREITO NO 3JS. O FIUZA TAVA A TENTAR IMPORTAR O CARRO E FALTAMLHE IMENSAS "SIDES" DO CARRO TMB
+    3. PELOS VISTOS E O REAL NO-GO TERMOS POR EXEMPLO NA CASA DE BANHO AS TEXTURAS DAS PAREDES OUT OF SYNC... ELA NAO GOSTOU NADA
+    4. TAL COMO TMB NAO GOSTOU COM AS TEXTURA DAS PAREDES DA SALA E GOZOU COM ISSO AHAH :(
+    OU SEJA, PROCURAR MODELOS MAIS BASICOS AUMENTA AS PROBABILIDADES DE O 3JS FUNCIONAR BEM. ESTE PROJETO VAI TER QUE TER COISAS SIMPLES.
+
+*/
+
+    // tentativa 1
+    /*loader.load("models/porta.obj", function (porta) {
+        // Add the loaded object to the scene
+        porta.rotation.x = Math.PI / 2
+        porta.scale.set(1.7, 1.7, 1.7)
+        porta.position.set(78.5, 18, 44)
+
+        // upload image for texture
+        var textObj = new THREE.TextureLoader().load('models/porta.png');
+        // Go through all children of the loaded object and search for a Mesh
+        porta.traverse(function (child) {
+            // This allow us to check if the children is an instance of the Mesh constructor
+            if (child instanceof THREE.Mesh) {
+                child.material.map = textObj;
+            }
+        });
+
+        scene.add(porta);
+        renderer.render(scene, camera);
+    });*/
+
+    
+    // tentativa 2
+    // PORTAAAAAAAAAAAAAAAAA
+    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
     mtlLoader.load('models/porta.mtl', function (materials) {
         materials.preload(); // load a material’s resource
         var objLoader = new THREE.OBJLoader();
@@ -157,13 +188,26 @@ window.onload = function init() {
             porta = object;
             porta.rotation.x = Math.PI / 2
             porta.scale.set(1.7, 1.7, 1.7)
-            porta.position.set(78.5, 18, 44)
+            porta.position.set(78.5, 18, 44);
+
+
+             // upload image for texture
+            var textPorta = new THREE.TextureLoader().load('models/porta.png');
+            porta.children[0].material.map = textPorta;
+            porta.children[1].material.map = textPorta;
+            var textVidro = new THREE.TextureLoader().load('models/v.jpg');
+            porta.children[2].material.map = textVidro;
+
             scene.add(porta);
         });
-    });
+    });*/
+
+
+
+
 
     //ARMARIOOOOOOOOOOOOOO
-    var mtlLoader = new THREE.MTLLoader();
+    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
     mtlLoader.load('models/armario.mtl', function (materials) {
         materials.preload(); // load a material’s resource
         var objLoader = new THREE.OBJLoader();
@@ -176,10 +220,10 @@ window.onload = function init() {
             armario.position.set(95, 0, 105)
             scene.add(armario);
         });
-    });
+    });*/
 
     //SANITAAAAAAAA
-    var objLoader = new THREE.OBJLoader();
+    /*var objLoader = new THREE.OBJLoader(); // instantiate a loader
     //objLoader.setPath("http://threejs.org/examples/obj/walt/");
     objLoader.load('models/Toilet.obj', function (object) {// load a geometry resource
         sanita = object;
@@ -188,10 +232,10 @@ window.onload = function init() {
         scene.add(sanita);
 
         //animate()
-    });
+    });*/
 
     //BANHEIRAAAAAA
-    var objLoader = new THREE.OBJLoader();
+    /*var objLoader = new THREE.OBJLoader(); // instantiate a loader
     //objLoader.setPath("http://threejs.org/examples/obj/walt/");
     objLoader.load('models/bathtube.obj', function (object) {// load a geometry resource
         banheira = object;
@@ -200,10 +244,10 @@ window.onload = function init() {
         banheira.position.set(42, 9.5, 25)
         banheira.scale.set(0.17, 0.17, 0.17)
         scene.add(banheira);
-    });
+    });*/
 
     //LAVATORIOOOOOOO
-    var objLoader = new THREE.OBJLoader();
+    /*var objLoader = new THREE.OBJLoader(); // instantiate a loader
     //objLoader.setPath("http://threejs.org/examples/obj/walt/");
     objLoader.load('models/Sink.obj', function (object) {// load a geometry resource
         sink = object;
@@ -211,10 +255,10 @@ window.onload = function init() {
         sink.position.set(55, 9.5, 5)
         scene.add(sink);
         //animate()
-    });
+    });*/
 
     //MESAAAAAAAAAAAAA
-    var mtlLoader = new THREE.MTLLoader();
+    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
     mtlLoader.load('models/mesa.mtl', function (materials) {
         materials.preload(); // load a material’s resource
         var objLoader = new THREE.OBJLoader();
@@ -226,10 +270,10 @@ window.onload = function init() {
             mesa.position.set(35, 0, 55)
             scene.add(mesa);
         });
-    });
+    });*/
 
     //CADEIRAAAAAAAAA
-    var mtlLoader = new THREE.MTLLoader();
+    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
     mtlLoader.load('models/cadeira.mtl', function (materials) {
         materials.preload(); // load a material’s resource
         var objLoader = new THREE.OBJLoader();
@@ -242,7 +286,7 @@ window.onload = function init() {
             cadeira.rotation.y = Math.PI / 2
             scene.add(cadeira);
         });
-    });
+    });*/
 }
 /*
 document.onkeypress = function handleKeyPress(event) {
