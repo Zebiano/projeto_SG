@@ -41,7 +41,7 @@ window.onload = function init() {
     scene.add(light);
 
     //Chao
-    var geometry = new THREE.BoxGeometry(100, 1, 150);
+    var wcchao = new THREE.BoxGeometry(100, 1, 50);
     var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     var chao = new THREE.Mesh(geometry, material);
     scene.add(chao);
