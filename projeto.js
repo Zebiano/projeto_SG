@@ -162,6 +162,21 @@ window.onload = function init() {
         scene.add(sink);
         //animate()
     });
+
+  //MESAAAAAAAAAAAAA
+  var mtlLoader = new THREE.MTLLoader();
+  mtlLoader.load('models/mesa.mtl', function (materials) {
+      materials.preload(); // load a material’s resource
+      var objLoader = new THREE.OBJLoader();
+      objLoader.setMaterials(materials);
+      //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+      objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
+          mesa = object;
+          mesa.scale.set(0.15, 0.15, 0.15)
+          mesa.position.set(35,0,55)
+          scene.add(mesa);
+      });
+  });
 }
 /*
 document.onkeypress = function handleKeyPress(event) {
