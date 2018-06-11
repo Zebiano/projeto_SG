@@ -23,10 +23,10 @@ window.onload = function init() {
     scene.add(ambientLight);
 
     var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(50,50,50)
+    directionalLight.position.set(50, 50, 50)
     scene.add(directionalLight);
-    var helper = new THREE.DirectionalLightHelper( directionalLight, 5 );
-    scene.add( helper );
+    var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+    scene.add(helper);
 
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -74,27 +74,27 @@ window.onload = function init() {
     var paredeFundo = new THREE.Mesh(geometry, material);
     scene.add(paredeFundo);
     paredeFundo.position.set(50, 25, 150)
-    
+
     //Parede meio
-     var geometry = new THREE.BoxGeometry(70, 50, 1);
-     var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff});
-     var paredeMeioD = new THREE.Mesh(geometry, material);
-     scene.add(paredeMeioD);
-     paredeMeioD.position.set(35, 25, 50)
+    var geometry = new THREE.BoxGeometry(70, 50, 1);
+    var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff });
+    var paredeMeioD = new THREE.Mesh(geometry, material);
+    scene.add(paredeMeioD);
+    paredeMeioD.position.set(35, 25, 50)
 
-     var geometry = new THREE.BoxGeometry(12.5, 50, 1);
-     var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff});
-     var paredeMeioE = new THREE.Mesh(geometry, material);
-     scene.add(paredeMeioE);
-     paredeMeioE.position.set(94, 25, 50)
+    var geometry = new THREE.BoxGeometry(12.5, 50, 1);
+    var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff });
+    var paredeMeioE = new THREE.Mesh(geometry, material);
+    scene.add(paredeMeioE);
+    paredeMeioE.position.set(94, 25, 50)
 
-     var geometry = new THREE.BoxGeometry(18, 20, 1);
-     var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff});
-     var paredeMeioP = new THREE.Mesh(geometry, material);
-     scene.add(paredeMeioP);
-     paredeMeioP.position.set(79, 40, 50)
+    var geometry = new THREE.BoxGeometry(18, 20, 1);
+    var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff });
+    var paredeMeioP = new THREE.Mesh(geometry, material);
+    scene.add(paredeMeioP);
+    paredeMeioP.position.set(79, 40, 50)
 
-    
+
     // instantiate a loader
     //PORTAAAAAAAAAAAAAAAAA
     var mtlLoader = new THREE.MTLLoader();
@@ -105,8 +105,8 @@ window.onload = function init() {
         //objLoader.setPath("http://threejs.org/examples/obj/walt/");
         objLoader.load('models/porta.obj', function (object) {// load a geometry resource
             porta = object;
-            porta.rotation.x = Math.PI/2
-            porta.scale.set(1.7,1.7,1.7)
+            porta.rotation.x = Math.PI / 2
+            porta.scale.set(1.7, 1.7, 1.7)
             porta.position.set(78.5, 18, 44)
             scene.add(porta);
         });
@@ -121,16 +121,48 @@ window.onload = function init() {
         //objLoader.setPath("http://threejs.org/examples/obj/walt/");
         objLoader.load('models/armario.obj', function (object) {// load a geometry resource
             armario = object;
-            armario.scale.set(0.1,0.1,0.1)
+            armario.rotation.y = -Math.PI / 2
+            armario.scale.set(0.021, 0.021, 0.021)
+            armario.position.set(95, 0, 105)
             scene.add(armario);
         });
     });
 
-    //animate()
+    //SANITAAAAAAAA
+    var objLoader = new THREE.OBJLoader();
+    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+    objLoader.load('models/Toilet.obj', function (object) {// load a geometry resource
+        sanita = object;
+        sanita.scale.set(0.15, 0.15, 0.15)
+        sanita.position.set(80, 9, 7)
+        scene.add(sanita);
 
+        //animate()
+    });
 
+    //BANHEIRAAAAAA
+    var objLoader = new THREE.OBJLoader();
+    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+    objLoader.load('models/bathtube.obj', function (object) {// load a geometry resource
+        banheira = object;
+        banheira.rotation.x = -Math.PI / 2
+        banheira.rotation.z = -Math.PI / 2
+        banheira.position.set(42, 9.5, 25)
+        banheira.scale.set(0.17, 0.17, 0.17)
+        scene.add(banheira);
+    });
+
+    //LAVATORIOOOOOOO
+    var objLoader = new THREE.OBJLoader();
+    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+    objLoader.load('models/Sink.obj', function (object) {// load a geometry resource
+        sink = object;
+        sink.scale.set(0.5, 0.5, 0.5)
+        sink.position.set(55, 9.5, 5)
+        scene.add(sink);
+        //animate()
+    });
 }
-
 /*
 document.onkeypress = function handleKeyPress(event) {
     //Get unshifted key character
