@@ -40,59 +40,109 @@ window.onload = function init() {
     var light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
+    //CASA DE BANHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     //Chao
-    var wcchao = new THREE.BoxGeometry(100, 1, 50);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    var chao = new THREE.Mesh(geometry, material);
-    scene.add(chao);
-    chao.position.set(50, 0, 75)
-
-    //Parede direita
-    var geometry = new THREE.BoxGeometry(1, 50, 150);
-    var material = new THREE.MeshBasicMaterial({ color: 0x4271f4 });
-    var paredeDireita = new THREE.Mesh(geometry, material);
-    scene.add(paredeDireita);
-    paredeDireita.position.set(100, 25, 75)
+    var wcchaoGEO = new THREE.BoxGeometry(100, 1, 50);
+    var texture = new THREE.TextureLoader().load('img/wcfloor.jpg');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var wcchao = new THREE.Mesh(wcchaoGEO, material);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(7, 4);
+    wcchao.position.set(50, 0, 25)
+    scene.add(wcchao);
 
     //Parede esquerda
-    var geometry = new THREE.BoxGeometry(1, 50, 150);
-    var material = new THREE.MeshBasicMaterial({ color: 0x4271f4 });
+    var geometry = new THREE.BoxGeometry(1, 50, 50);
+    var texture = new THREE.TextureLoader().load('img/wc.jpg');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 2);
     scene.add(paredeEsquerda);
-    paredeEsquerda.position.set(0, 25, 75)
+    paredeEsquerda.position.set(0, 25, 25)
+
+    //Parede direita
+    var geometry = new THREE.BoxGeometry(1, 50, 50);
+    var texture = new THREE.TextureLoader().load('img/wc2.jpg');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var paredeDireita = new THREE.Mesh(geometry, material);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 1);
+    scene.add(paredeDireita);
+    paredeDireita.position.set(100, 25, 25)
 
     //Parede fundo
     var geometry = new THREE.BoxGeometry(100, 50, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x4271f4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     scene.add(paredeFundo);
     paredeFundo.position.set(50, 25, 0)
 
-    //Parede perto
-    var geometry = new THREE.BoxGeometry(100, 50, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x4271f4 });
-    var paredeFundo = new THREE.Mesh(geometry, material);
-    scene.add(paredeFundo);
-    paredeFundo.position.set(50, 25, 150)
-
     //Parede meio
     var geometry = new THREE.BoxGeometry(70, 50, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff });
     var paredeMeioD = new THREE.Mesh(geometry, material);
     scene.add(paredeMeioD);
     paredeMeioD.position.set(35, 25, 50)
 
     var geometry = new THREE.BoxGeometry(12.5, 50, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff });
     var paredeMeioE = new THREE.Mesh(geometry, material);
     scene.add(paredeMeioE);
     paredeMeioE.position.set(94, 25, 50)
 
     var geometry = new THREE.BoxGeometry(18, 20, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x93b2ff });
     var paredeMeioP = new THREE.Mesh(geometry, material);
     scene.add(paredeMeioP);
     paredeMeioP.position.set(79, 40, 50)
+
+    //SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    //Chao
+    var salachaoGeo = new THREE.BoxGeometry(100, 1, 100);
+    var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var salachao = new THREE.Mesh(salachaoGeo, material);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(1, 7);
+    salachao.position.set(50, 0, 100)
+    scene.add(salachao);
+
+    //Parede meio
+    var geometry = new THREE.BoxGeometry(70, 50, 1);
+    var texture = new THREE.TextureLoader().load('img/sala.jpg');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var paredeMeioD = new THREE.Mesh(geometry, material);
+    scene.add(paredeMeioD);
+    paredeMeioD.position.set(35, 25, 50.5)
+
+    var geometry = new THREE.BoxGeometry(12.5, 50, 1);
+    var paredeMeioE = new THREE.Mesh(geometry, material);
+    scene.add(paredeMeioE);
+    paredeMeioE.position.set(94, 25, 50.5)
+
+    var geometry = new THREE.BoxGeometry(18, 20, 1);
+    var paredeMeioP = new THREE.Mesh(geometry, material);
+    scene.add(paredeMeioP);
+    paredeMeioP.position.set(79, 40, 50.5)
+
+    //Parede perto
+    var geometry = new THREE.BoxGeometry(100, 50, 1);
+    var paredeFundo = new THREE.Mesh(geometry, material);
+    scene.add(paredeFundo);
+    paredeFundo.position.set(50, 25, 150)
+
+    //Parede esquerda
+    var geometry = new THREE.BoxGeometry(1, 50, 100);
+    var paredeEsquerda = new THREE.Mesh(geometry, material);
+    scene.add(paredeEsquerda);
+    paredeEsquerda.position.set(0, 25, 100)
+
+    //Parede direita
+    var geometry = new THREE.BoxGeometry(1, 50, 100);
+    var paredeDireita = new THREE.Mesh(geometry, material);
+    scene.add(paredeDireita);
+    paredeDireita.position.set(100, 25, 100)
 
 
     // instantiate a loader
@@ -163,20 +213,36 @@ window.onload = function init() {
         //animate()
     });
 
-  //MESAAAAAAAAAAAAA
-  var mtlLoader = new THREE.MTLLoader();
-  mtlLoader.load('models/mesa.mtl', function (materials) {
-      materials.preload(); // load a material’s resource
-      var objLoader = new THREE.OBJLoader();
-      objLoader.setMaterials(materials);
-      //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-      objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
-          mesa = object;
-          mesa.scale.set(0.15, 0.15, 0.15)
-          mesa.position.set(35,0,55)
-          scene.add(mesa);
-      });
-  });
+    //MESAAAAAAAAAAAAA
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.load('models/mesa.mtl', function (materials) {
+        materials.preload(); // load a material’s resource
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+        objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
+            mesa = object;
+            mesa.scale.set(0.15, 0.15, 0.15)
+            mesa.position.set(35, 0, 55)
+            scene.add(mesa);
+        });
+    });
+
+    //CADEIRAAAAAAAAA
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.load('models/cadeira.mtl', function (materials) {
+        materials.preload(); // load a material’s resource
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+        objLoader.load('models/cadeira.obj', function (object) {// load a geometry resource
+            cadeira = object;
+            cadeira.scale.set(0.02, 0.02, 0.02)
+            cadeira.position.set(50, 0, 87)
+            cadeira.rotation.y = Math.PI / 2
+            scene.add(cadeira);
+        });
+    });
 }
 /*
 document.onkeypress = function handleKeyPress(event) {
