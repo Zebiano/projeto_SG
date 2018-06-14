@@ -4,6 +4,10 @@ var renderer = null,
     mesh = null;
 var loader;
 var porta;
+var cadeira;
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+var offset = new THREE.Vector3();
 
 window.onload = function init() {
     // Create the Three.js renderer
@@ -39,37 +43,28 @@ window.onload = function init() {
 
     //CASA DE BANHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     //Chao
-    var wcchaoGEO = new THREE.BoxGeometry(100, 1, 50);
-    var texture = new THREE.TextureLoader().load('img/wcfloor.jpg');
+    var wcchaoGEO = new THREE.BoxGeometry(100, 1, 150);
+    var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
     var material = new THREE.MeshBasicMaterial({ map: texture });
     var wcchao = new THREE.Mesh(wcchaoGEO, material);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(7, 4);
-    wcchao.position.set(50, 0, 25)
+    texture.repeat.set(10, 10);
+    wcchao.position.set(50, 0, 75)
     scene.add(wcchao);
 
     //Parede esquerda
-    var geometry = new THREE.BoxGeometry(1, 50, 50);
-    var texture = new THREE.TextureLoader().load('img/wc.jpg');
-    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var geometry = new THREE.BoxGeometry(1, 50, 150);
+    var material = new THREE.MeshBasicMaterial({ color: 0xefe5bd });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(2, 2);
     scene.add(paredeEsquerda);
-    paredeEsquerda.position.set(0, 25, 25)
+    paredeEsquerda.position.set(0, 25, 75)
 
     //Parede direita
-    var geometry = new THREE.BoxGeometry(1, 50, 50);
-    var texture = new THREE.TextureLoader().load('img/wc2.jpg');
-    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var geometry = new THREE.BoxGeometry(1, 50, 150);
     var paredeDireita = new THREE.Mesh(geometry, material);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(2, 1);
     scene.add(paredeDireita);
-    paredeDireita.position.set(100, 25, 25)
+    paredeDireita.position.set(100, 25, 75)
 
     //Parede fundo
     var geometry = new THREE.BoxGeometry(100, 50, 1);
@@ -77,51 +72,6 @@ window.onload = function init() {
     scene.add(paredeFundo);
     paredeFundo.position.set(50, 25, 0)
 
-    //Parede meio
-    var geometry = new THREE.BoxGeometry(70, 50, 1);
-    var paredeMeioD = new THREE.Mesh(geometry, material);
-    scene.add(paredeMeioD);
-    paredeMeioD.position.set(35, 25, 50)
-
-    var geometry = new THREE.BoxGeometry(12.5, 50, 1);
-    var paredeMeioE = new THREE.Mesh(geometry, material);
-    scene.add(paredeMeioE);
-    paredeMeioE.position.set(94, 25, 50)
-
-    var geometry = new THREE.BoxGeometry(18, 20, 1);
-    var paredeMeioP = new THREE.Mesh(geometry, material);
-    scene.add(paredeMeioP);
-    paredeMeioP.position.set(79, 40, 50)
-
-    //SALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    //Chao
-    var salachaoGeo = new THREE.BoxGeometry(100, 1, 100);
-    var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
-    var material = new THREE.MeshBasicMaterial({ map: texture });
-    var salachao = new THREE.Mesh(salachaoGeo, material);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, 7);
-    salachao.position.set(50, 0, 100)
-    scene.add(salachao);
-
-    //Parede meio
-    var geometry = new THREE.BoxGeometry(70, 50, 1);
-    var texture = new THREE.TextureLoader().load('img/sala.jpg');
-    var material = new THREE.MeshBasicMaterial({ map: texture });
-    var paredeMeioD = new THREE.Mesh(geometry, material);
-    scene.add(paredeMeioD);
-    paredeMeioD.position.set(35, 25, 50.5)
-
-    var geometry = new THREE.BoxGeometry(12.5, 50, 1);
-    var paredeMeioE = new THREE.Mesh(geometry, material);
-    scene.add(paredeMeioE);
-    paredeMeioE.position.set(94, 25, 50.5)
-
-    var geometry = new THREE.BoxGeometry(18, 20, 1);
-    var paredeMeioP = new THREE.Mesh(geometry, material);
-    scene.add(paredeMeioP);
-    paredeMeioP.position.set(79, 40, 50.5)
 
     //Parede perto
     var geometry = new THREE.BoxGeometry(100, 50, 1);
@@ -129,82 +79,18 @@ window.onload = function init() {
     scene.add(paredeFundo);
     paredeFundo.position.set(50, 25, 150)
 
-    //Parede esquerda
-    var geometry = new THREE.BoxGeometry(1, 50, 100);
-    var paredeEsquerda = new THREE.Mesh(geometry, material);
-    scene.add(paredeEsquerda);
-    paredeEsquerda.position.set(0, 25, 100)
-
-    //Parede direita
-    var geometry = new THREE.BoxGeometry(1, 50, 100);
-    var paredeDireita = new THREE.Mesh(geometry, material);
-    scene.add(paredeDireita);
-    paredeDireita.position.set(100, 25, 100)
-
     loader = new THREE.OBJLoader();
 
-/*
-
-    RESUMIDAMENTE: 
-    1. A PROF ACHA QUE TAO CORRUMPIDOS OS FICHEIROS .PNG E POR CAUSA DISSO DA LOAD MAL
-    2. DIZ PARA NAO USARMOS UMA PORTA TAO COMPLICADA... NORMALMENTE OS OBJETOS NAO DAO LOAD DIREITO NO 3JS. O FIUZA TAVA A TENTAR IMPORTAR O CARRO E FALTAMLHE IMENSAS "SIDES" DO CARRO TMB
-    3. PELOS VISTOS E O REAL NO-GO TERMOS POR EXEMPLO NA CASA DE BANHO AS TEXTURAS DAS PAREDES OUT OF SYNC... ELA NAO GOSTOU NADA
-    4. TAL COMO TMB NAO GOSTOU COM AS TEXTURA DAS PAREDES DA SALA E GOZOU COM ISSO AHAH :(
-    OU SEJA, PROCURAR MODELOS MAIS BASICOS AUMENTA AS PROBABILIDADES DE O 3JS FUNCIONAR BEM. ESTE PROJETO VAI TER QUE TER COISAS SIMPLES.
-
-*/
-
-    // tentativa 1
-    /*loader.load("models/porta.obj", function (porta) {
-        // Add the loaded object to the scene
-        porta.rotation.x = Math.PI / 2
-        porta.scale.set(1.7, 1.7, 1.7)
-        porta.position.set(78.5, 18, 44)
-
-        // upload image for texture
-        var textObj = new THREE.TextureLoader().load('models/porta.png');
-        // Go through all children of the loaded object and search for a Mesh
-        porta.traverse(function (child) {
-            // This allow us to check if the children is an instance of the Mesh constructor
-            if (child instanceof THREE.Mesh) {
-                child.material.map = textObj;
-            }
-        });
-
-        scene.add(porta);
-        renderer.render(scene, camera);
-    });*/
-
+    /*
     
-    // tentativa 2
-    // PORTAAAAAAAAAAAAAAAAA
-    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
-    mtlLoader.load('models/porta.mtl', function (materials) {
-        materials.preload(); // load a material’s resource
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-        objLoader.load('models/porta.obj', function (object) {// load a geometry resource
-            porta = object;
-            porta.rotation.x = Math.PI / 2
-            porta.scale.set(1.7, 1.7, 1.7)
-            porta.position.set(78.5, 18, 44);
-
-
-             // upload image for texture
-            var textPorta = new THREE.TextureLoader().load('models/porta.png');
-            porta.children[0].material.map = textPorta;
-            porta.children[1].material.map = textPorta;
-            var textVidro = new THREE.TextureLoader().load('models/v.jpg');
-            porta.children[2].material.map = textVidro;
-
-            scene.add(porta);
-        });
-    });*/
-
-
-
-
+        RESUMIDAMENTE: 
+        1. A PROF ACHA QUE TAO CORRUMPIDOS OS FICHEIROS .PNG E POR CAUSA DISSO DA LOAD MAL
+        2. DIZ PARA NAO USARMOS UMA PORTA TAO COMPLICADA... NORMALMENTE OS OBJETOS NAO DAO LOAD DIREITO NO 3JS. O FIUZA TAVA A TENTAR IMPORTAR O CARRO E FALTAMLHE IMENSAS "SIDES" DO CARRO TMB
+        3. PELOS VISTOS E O REAL NO-GO TERMOS POR EXEMPLO NA CASA DE BANHO AS TEXTURAS DAS PAREDES OUT OF SYNC... ELA NAO GOSTOU NADA
+        4. TAL COMO TMB NAO GOSTOU COM AS TEXTURA DAS PAREDES DA SALA E GOZOU COM ISSO AHAH :(
+        OU SEJA, PROCURAR MODELOS MAIS BASICOS AUMENTA AS PROBABILIDADES DE O 3JS FUNCIONAR BEM. ESTE PROJETO VAI TER QUE TER COISAS SIMPLES.
+    
+    */
 
     //ARMARIOOOOOOOOOOOOOO
     /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
@@ -222,72 +108,119 @@ window.onload = function init() {
         });
     });*/
 
-    //SANITAAAAAAAA
-    /*var objLoader = new THREE.OBJLoader(); // instantiate a loader
-    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-    objLoader.load('models/Toilet.obj', function (object) {// load a geometry resource
-        sanita = object;
-        sanita.scale.set(0.15, 0.15, 0.15)
-        sanita.position.set(80, 9, 7)
-        scene.add(sanita);
-
-        //animate()
-    });*/
-
-    //BANHEIRAAAAAA
-    /*var objLoader = new THREE.OBJLoader(); // instantiate a loader
-    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-    objLoader.load('models/bathtube.obj', function (object) {// load a geometry resource
-        banheira = object;
-        banheira.rotation.x = -Math.PI / 2
-        banheira.rotation.z = -Math.PI / 2
-        banheira.position.set(42, 9.5, 25)
-        banheira.scale.set(0.17, 0.17, 0.17)
-        scene.add(banheira);
-    });*/
-
-    //LAVATORIOOOOOOO
-    /*var objLoader = new THREE.OBJLoader(); // instantiate a loader
-    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-    objLoader.load('models/Sink.obj', function (object) {// load a geometry resource
-        sink = object;
-        sink.scale.set(0.5, 0.5, 0.5)
-        sink.position.set(55, 9.5, 5)
-        scene.add(sink);
-        //animate()
-    });*/
-
     //MESAAAAAAAAAAAAA
-    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
-    mtlLoader.load('models/mesa.mtl', function (materials) {
-        materials.preload(); // load a material’s resource
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-        objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
-            mesa = object;
-            mesa.scale.set(0.15, 0.15, 0.15)
-            mesa.position.set(35, 0, 55)
-            scene.add(mesa);
-        });
-    });*/
+    var texture = new THREE.TextureLoader().load('img/mesa.png');
+    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var objLoader = new THREE.OBJLoader();
+    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+    objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
+        mesa = object;
+        for (var i = 0; i < mesa.children.length; i++) {
+            mesa.children[i].material = material
+        }
+        mesa.scale.set(0.15, 0.15, 0.15)
+        mesa.position.set(35, 0, 55)
+        scene.add(mesa);
+        renderer.render(scene, camera);
+    });
 
     //CADEIRAAAAAAAAA
-    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
-    mtlLoader.load('models/cadeira.mtl', function (materials) {
-        materials.preload(); // load a material’s resource
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-        objLoader.load('models/cadeira.obj', function (object) {// load a geometry resource
-            cadeira = object;
-            cadeira.scale.set(0.02, 0.02, 0.02)
-            cadeira.position.set(50, 0, 87)
-            cadeira.rotation.y = Math.PI / 2
-            scene.add(cadeira);
-        });
-    });*/
+    var texture2 = new THREE.TextureLoader().load('img/cadeira.jpg');
+    var material2 = new THREE.MeshBasicMaterial({ map: texture2 });
+    objLoader.load('models/cadeira.obj', function (object) {// load a geometry resource
+        cadeira = object;
+        cadeira.scale.set(0.02, 0.02, 0.02)
+        cadeira.position.set(50, 0, 87)
+        cadeira.rotation.y = Math.PI / 2
+        for (var i = 0; i < cadeira.children.length; i++) {
+            cadeira.children[i].material = material2
+        }
+        scene.add(cadeira);
+
+        var cadeira2 = cadeira.clone()
+        cadeira2.position.set(50, 0, 102)
+        scene.add(cadeira2)
+
+        var cadeira3 = cadeira.clone()
+        cadeira3.position.set(40, 0, 95)
+        cadeira3.rotation.y = 3 * Math.PI / 2
+        scene.add(cadeira3)
+
+        var cadeira4 = cadeira3.clone()
+        cadeira4.position.set(40, 0, 110)
+        scene.add(cadeira4)
+        renderer.render(scene, camera);
+
+    });
+
+
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
+        new THREE.MeshBasicMaterial({
+            opacity: 0.0,
+            transparent: true,
+            visible: false
+        }));
+    scene.add(plane);
+
+    renderer.render(scene, camera);
 }
+window.addEventListener("mousedown", onMouseDown)
+function onMouseDown(event) {
+
+    var mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1, //x
+        - (event.clientY / window.innerHeight) * 2 + 1); //y
+
+    var raycaster = new THREE.Raycaster();
+    // update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // search for intersections
+    var intersects = raycaster.intersectObjects(cadeira.children);
+    if (intersects.length > 0) {
+        console.log(intersects)
+
+        controls.enabled = false;
+        // gets intersect object (global variable)
+        selectedObject = cadeira;
+        // gets intersection with the helper plane
+        var intersectsPlane = raycaster.intersectObject(plane);
+        // calculates the offset (global variable)
+        offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
+        console.log(offset)
+    }
+}
+
+window.addEventListener("mousemove", onMouseMove)
+function onMouseMove(event) {
+    var mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1, //x
+        - (event.clientY / window.innerHeight) * 2 + 1); //y
+
+    var raycaster = new THREE.Raycaster();
+    // update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera); 
+
+    if (selectedObject) {
+        //drag an object around if we've already clicked on one
+        var intersects = raycaster.intersectObject(plane);
+        selectedObject.position.copy(intersects[0].point.sub(offset));
+    
+        console.log(selectedObject.position)
+    }
+    // else {//reposition the plane ?
+    //     var intersects = raycaster.intersectObjects(objects);
+    //     if (intersects.length > 0)
+    //         plane.position.copy(intersects[0].object.position);
+    // }
+}
+
+window.addEventListener("mouseup", onMouseUp)
+function onMouseUp(event) {
+    selectedObject = null;
+    controls.enabled = true;
+}
+
 /*
 document.onkeypress = function handleKeyPress(event) {
     //Get unshifted key character
