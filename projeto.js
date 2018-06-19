@@ -4,10 +4,11 @@ var renderer = null,
     mesh = null;
 var loader;
 var porta;
-var cadeira;
+var cadeira, cadeira2, cadeira3, cadeira4;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var offset = new THREE.Vector3();
+var selectedObject;
 
 window.onload = function init() {
     // Create the Three.js renderer
@@ -32,11 +33,12 @@ window.onload = function init() {
 
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(50, 70, 200);
+    // camera.position.set(50, 70, 200);
+    camera.position.set(40, 40, 75);
     scene.add(camera);
 
-    controls = new THREE.OrbitControls(camera);
-    controls.addEventListener('change', function () { renderer.render(scene, camera); });
+    // controls = new THREE.OrbitControls(camera);
+    // controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
     var light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
@@ -50,7 +52,7 @@ window.onload = function init() {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(10, 10);
-    wcchao.position.set(50, 0, 75)
+    //wcchao.position.set(50, 0, 75)
     scene.add(wcchao);
 
     //Parede esquerda
@@ -58,26 +60,30 @@ window.onload = function init() {
     var material = new THREE.MeshBasicMaterial({ color: 0xefe5bd });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     scene.add(paredeEsquerda);
-    paredeEsquerda.position.set(0, 25, 75)
+    //paredeEsquerda.position.set(0, 25, 75)
+    paredeEsquerda.position.set(-50, 25, 0)
 
     //Parede direita
     var geometry = new THREE.BoxGeometry(1, 50, 150);
     var paredeDireita = new THREE.Mesh(geometry, material);
     scene.add(paredeDireita);
-    paredeDireita.position.set(100, 25, 75)
+    //paredeDireita.position.set(100, 25, 75)
+    paredeDireita.position.set(50, 25, 0)
 
     //Parede fundo
     var geometry = new THREE.BoxGeometry(100, 50, 1);
     var paredeFundo = new THREE.Mesh(geometry, material);
     scene.add(paredeFundo);
-    paredeFundo.position.set(50, 25, 0)
+    // paredeFundo.position.set(50, 25, 0)
+    paredeFundo.position.set(0, 25, -75)
 
 
     //Parede perto
     var geometry = new THREE.BoxGeometry(100, 50, 1);
     var paredeFundo = new THREE.Mesh(geometry, material);
     scene.add(paredeFundo);
-    paredeFundo.position.set(50, 25, 150)
+    // paredeFundo.position.set(50, 25, 150)
+    paredeFundo.position.set(0, 25, 75)
 
     loader = new THREE.OBJLoader();
 
@@ -119,8 +125,24 @@ window.onload = function init() {
             mesa.children[i].material = material
         }
         mesa.scale.set(0.15, 0.15, 0.15)
-        mesa.position.set(35, 0, 55)
+        // mesa.position.set(35, 0, 55)
+        mesa.position.set(35-50, 0, 55-75)
         scene.add(mesa);
+        renderer.render(scene, camera);
+    });
+
+    var textureSofa = new THREE.TextureLoader().load('img/sofa.jpg');
+    var materialSofa = new THREE.MeshBasicMaterial({ map: textureSofa });
+    var objLoader2 = new THREE.OBJLoader();
+    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+    objLoader2.load('models/sofa.obj', function (object) {// load a geometry resource
+        sofa = object;
+        sofa.scale.set(20, 20, 20)
+        for (var i = 0; i < sofa.children.length; i++) {
+            sofa.children[i].material = materialSofa
+        }
+        scene.add(sofa);
+        sofa.position.set(-50,0,-75)
         renderer.render(scene, camera);
     });
 
@@ -130,24 +152,28 @@ window.onload = function init() {
     objLoader.load('models/cadeira.obj', function (object) {// load a geometry resource
         cadeira = object;
         cadeira.scale.set(0.02, 0.02, 0.02)
-        cadeira.position.set(50, 0, 87)
+        // cadeira.position.set(50, 0, 87)
+        cadeira.position.set(0, 0, 87-75)
         cadeira.rotation.y = Math.PI / 2
         for (var i = 0; i < cadeira.children.length; i++) {
             cadeira.children[i].material = material2
         }
         scene.add(cadeira);
 
-        var cadeira2 = cadeira.clone()
-        cadeira2.position.set(50, 0, 102)
+        cadeira2 = cadeira.clone()
+        // cadeira2.position.set(50, 0, 102)
+        cadeira2.position.set(0, 0, 102-75)
         scene.add(cadeira2)
 
-        var cadeira3 = cadeira.clone()
-        cadeira3.position.set(40, 0, 95)
+        cadeira3 = cadeira.clone()
+        // cadeira3.position.set(40, 0, 95)
+        cadeira3.position.set(-10, 0, 25)
         cadeira3.rotation.y = 3 * Math.PI / 2
         scene.add(cadeira3)
 
-        var cadeira4 = cadeira3.clone()
-        cadeira4.position.set(40, 0, 110)
+        cadeira4 = cadeira3.clone()
+        // cadeira4.position.set(40, 0, 110)
+        cadeira4.position.set(-10, 0, 110-75)
         scene.add(cadeira4)
         renderer.render(scene, camera);
 
@@ -160,10 +186,15 @@ window.onload = function init() {
             transparent: true,
             visible: false
         }));
+        plane.rotation.x = -Math.PI / 2
     scene.add(plane);
 
     renderer.render(scene, camera);
 }
+
+
+
+
 window.addEventListener("mousedown", onMouseDown)
 function onMouseDown(event) {
 
@@ -179,8 +210,8 @@ function onMouseDown(event) {
     var intersects = raycaster.intersectObjects(cadeira.children);
     if (intersects.length > 0) {
         console.log(intersects)
-
-        controls.enabled = false;
+        // controls.enabled = false;
+        
         // gets intersect object (global variable)
         selectedObject = cadeira;
         // gets intersection with the helper plane
@@ -188,6 +219,44 @@ function onMouseDown(event) {
         // calculates the offset (global variable)
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
         console.log(offset)
+    }
+    var intersects2 = raycaster.intersectObjects(cadeira2.children);
+    if (intersects2.length > 0) {
+        console.log(intersects2)
+
+        // controls.enabled = false;
+        // gets intersect object (global variable)
+        selectedObject = cadeira2;
+        // gets intersection with the helper plane
+        var intersectsPlane = raycaster.intersectObject(plane);
+        // calculates the offset (global variable)
+        offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
+    }
+
+    var intersects3 = raycaster.intersectObjects(cadeira3.children);
+    if (intersects3.length > 0) {
+        console.log(intersects3)
+
+        // controls.enabled = false;
+        // gets intersect object (global variable)
+        selectedObject = cadeira3;
+        // gets intersection with the helper plane
+        var intersectsPlane = raycaster.intersectObject(plane);
+        // calculates the offset (global variable)
+        offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
+    }
+
+    var intersects4 = raycaster.intersectObjects(cadeira4.children);
+    if (intersects4.length > 0) {
+        console.log(intersects3)
+
+        // controls.enabled = false;
+        // gets intersect object (global variable)
+        selectedObject = cadeira4;
+        // gets intersection with the helper plane
+        var intersectsPlane = raycaster.intersectObject(plane);
+        // calculates the offset (global variable)
+        offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
     }
 }
 
@@ -199,14 +268,18 @@ function onMouseMove(event) {
 
     var raycaster = new THREE.Raycaster();
     // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera); 
+    raycaster.setFromCamera(mouse, camera);
 
     if (selectedObject) {
         //drag an object around if we've already clicked on one
         var intersects = raycaster.intersectObject(plane);
-        selectedObject.position.copy(intersects[0].point.sub(offset));
-    
+        // selectedObject.position.copy(intersects[0].point.sub(offset));
+        selectedObject.position.x = intersects[0].point.sub(offset).x;
+
         console.log(selectedObject.position)
+
+        renderer.render(scene, camera);
+        
     }
     // else {//reposition the plane ?
     //     var intersects = raycaster.intersectObjects(objects);
@@ -218,7 +291,7 @@ function onMouseMove(event) {
 window.addEventListener("mouseup", onMouseUp)
 function onMouseUp(event) {
     selectedObject = null;
-    controls.enabled = true;
+    // controls.enabled = true;
 }
 
 /*
