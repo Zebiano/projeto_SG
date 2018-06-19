@@ -37,8 +37,8 @@ window.onload = function init() {
     camera.position.set(40, 40, 75);
     scene.add(camera);
 
-    // controls = new THREE.OrbitControls(camera);
-    // controls.addEventListener('change', function () { renderer.render(scene, camera); });
+    controls = new THREE.OrbitControls(camera);
+    controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
     var light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
@@ -52,29 +52,25 @@ window.onload = function init() {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(10, 10);
-    //wcchao.position.set(50, 0, 75)
     scene.add(wcchao);
 
     //Parede esquerda
     var geometry = new THREE.BoxGeometry(1, 50, 150);
-    var material = new THREE.MeshBasicMaterial({ color: 0xefe5bd });
+    var material = new THREE.MeshBasicMaterial({ color: 0xede8e1 });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     scene.add(paredeEsquerda);
-    //paredeEsquerda.position.set(0, 25, 75)
     paredeEsquerda.position.set(-50, 25, 0)
 
     //Parede direita
     var geometry = new THREE.BoxGeometry(1, 50, 150);
     var paredeDireita = new THREE.Mesh(geometry, material);
     scene.add(paredeDireita);
-    //paredeDireita.position.set(100, 25, 75)
     paredeDireita.position.set(50, 25, 0)
 
     //Parede fundo
     var geometry = new THREE.BoxGeometry(100, 50, 1);
     var paredeFundo = new THREE.Mesh(geometry, material);
     scene.add(paredeFundo);
-    // paredeFundo.position.set(50, 25, 0)
     paredeFundo.position.set(0, 25, -75)
 
 
@@ -82,43 +78,13 @@ window.onload = function init() {
     var geometry = new THREE.BoxGeometry(100, 50, 1);
     var paredeFundo = new THREE.Mesh(geometry, material);
     scene.add(paredeFundo);
-    // paredeFundo.position.set(50, 25, 150)
     paredeFundo.position.set(0, 25, 75)
 
-    loader = new THREE.OBJLoader();
-
-    /*
-    
-        RESUMIDAMENTE: 
-        1. A PROF ACHA QUE TAO CORRUMPIDOS OS FICHEIROS .PNG E POR CAUSA DISSO DA LOAD MAL
-        2. DIZ PARA NAO USARMOS UMA PORTA TAO COMPLICADA... NORMALMENTE OS OBJETOS NAO DAO LOAD DIREITO NO 3JS. O FIUZA TAVA A TENTAR IMPORTAR O CARRO E FALTAMLHE IMENSAS "SIDES" DO CARRO TMB
-        3. PELOS VISTOS E O REAL NO-GO TERMOS POR EXEMPLO NA CASA DE BANHO AS TEXTURAS DAS PAREDES OUT OF SYNC... ELA NAO GOSTOU NADA
-        4. TAL COMO TMB NAO GOSTOU COM AS TEXTURA DAS PAREDES DA SALA E GOZOU COM ISSO AHAH :(
-        OU SEJA, PROCURAR MODELOS MAIS BASICOS AUMENTA AS PROBABILIDADES DE O 3JS FUNCIONAR BEM. ESTE PROJETO VAI TER QUE TER COISAS SIMPLES.
-    
-    */
-
-    //ARMARIOOOOOOOOOOOOOO
-    /*var mtlLoader = new THREE.MTLLoader(); // instantiate a loader
-    mtlLoader.load('models/armario.mtl', function (materials) {
-        materials.preload(); // load a material’s resource
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-        objLoader.load('models/armario.obj', function (object) {// load a geometry resource
-            armario = object;
-            armario.rotation.y = -Math.PI / 2
-            armario.scale.set(0.021, 0.021, 0.021)
-            armario.position.set(95, 0, 105)
-            scene.add(armario);
-        });
-    });*/
 
     //MESAAAAAAAAAAAAA
     var texture = new THREE.TextureLoader().load('img/mesa.png');
     var material = new THREE.MeshBasicMaterial({ map: texture });
     var objLoader = new THREE.OBJLoader();
-    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
     objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
         mesa = object;
         for (var i = 0; i < mesa.children.length; i++) {
@@ -126,15 +92,30 @@ window.onload = function init() {
         }
         mesa.scale.set(0.15, 0.15, 0.15)
         // mesa.position.set(35, 0, 55)
-        mesa.position.set(35-50, 0, 55-75)
+        mesa.position.set(35 - 50, 0, 55 - 75)
         scene.add(mesa);
         renderer.render(scene, camera);
     });
 
+    //TVVVVVVVVVVVVVVVVVV
+    var tvMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    var objLoader = new THREE.OBJLoader();
+    objLoader.load('models/televisao.obj', function (object) {// load a geometry resource
+        tv = object;
+        for (var i = 0; i < tv.children.length; i++) {
+            tv.children[i].material = tvMaterial
+        }
+        tv.rotation.y = - Math.PI / 2
+        tv.scale.set(0.4, 0.4, 0.4)
+        tv.position.set(48, 20, -55)
+        scene.add(tv);
+        renderer.render(scene, camera);
+    });
+
+    //SOFAAAAAAAAAAAAAAA
     var textureSofa = new THREE.TextureLoader().load('img/sofa.jpg');
     var materialSofa = new THREE.MeshBasicMaterial({ map: textureSofa });
     var objLoader2 = new THREE.OBJLoader();
-    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
     objLoader2.load('models/sofa.obj', function (object) {// load a geometry resource
         sofa = object;
         sofa.scale.set(20, 20, 20)
@@ -142,7 +123,25 @@ window.onload = function init() {
             sofa.children[i].material = materialSofa
         }
         scene.add(sofa);
-        sofa.position.set(-50,0,-75)
+        sofa.position.set(-15, 0, -40)
+        sofa.rotation.y = Math.PI / 2
+        renderer.render(scene, camera);
+    });
+
+    //MOVEEEEEEEEEL
+    var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
+    var materialMovel = new THREE.MeshBasicMaterial({ map: textureMovel });
+    var objLoader3 = new THREE.OBJLoader();
+    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
+    objLoader3.load('models/armario.obj', function (object) {// load a geometry resource
+        movel = object;
+        movel.scale.set(0.02, 0.02, 0.02)
+        for (var i = 0; i < movel.children.length; i++) {
+            movel.children[i].material = materialMovel
+        }
+        movel.position.set(45, 0, -40)
+        movel.rotation.y = - Math.PI / 2
+        scene.add(movel);
         renderer.render(scene, camera);
     });
 
@@ -153,7 +152,7 @@ window.onload = function init() {
         cadeira = object;
         cadeira.scale.set(0.02, 0.02, 0.02)
         // cadeira.position.set(50, 0, 87)
-        cadeira.position.set(0, 0, 87-75)
+        cadeira.position.set(0, 0, 87 - 75)
         cadeira.rotation.y = Math.PI / 2
         for (var i = 0; i < cadeira.children.length; i++) {
             cadeira.children[i].material = material2
@@ -162,23 +161,75 @@ window.onload = function init() {
 
         cadeira2 = cadeira.clone()
         // cadeira2.position.set(50, 0, 102)
-        cadeira2.position.set(0, 0, 102-75)
+        cadeira2.position.set(0, 0, 102 - 75)
         scene.add(cadeira2)
 
         cadeira3 = cadeira.clone()
         // cadeira3.position.set(40, 0, 95)
-        cadeira3.position.set(-10, 0, 25)
+        cadeira3.position.set(-10, 0, 20)
         cadeira3.rotation.y = 3 * Math.PI / 2
         scene.add(cadeira3)
 
         cadeira4 = cadeira3.clone()
         // cadeira4.position.set(40, 0, 110)
-        cadeira4.position.set(-10, 0, 110-75)
+        cadeira4.position.set(-10, 0, 110 - 75)
         scene.add(cadeira4)
         renderer.render(scene, camera);
 
     });
 
+    //Quadro de luz
+    var geometry = new THREE.BoxGeometry(0.5, 12, 21);
+    var quadroMaterial = new THREE.MeshBasicMaterial({ color: 0xa0a0a0 });
+    var quadro = new THREE.Mesh(geometry, quadroMaterial);
+
+    quadro.position.set(49.5, 25, 30)
+
+    //botoes
+    var geometry = new THREE.BoxGeometry(1, 3, 3);
+    var botao1Material = new THREE.MeshBasicMaterial({ color: 0x9400D3 });
+    var botao1 = new THREE.Mesh(geometry, botao1Material);
+    botao1.position.set(0, -2.5, -7.5)
+    quadro.add(botao1);
+
+    var botao2Material = new THREE.MeshBasicMaterial({ color: 0x4B0082 });
+    var botao2 = new THREE.Mesh(geometry, botao2Material);
+    botao2.position.set(0, -2.5, -2.5)
+    quadro.add(botao2);
+
+    var botao3Material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
+    var botao3 = new THREE.Mesh(geometry, botao3Material);
+    botao3.position.set(0, -2.5, 2.5)
+    quadro.add(botao3);
+
+    var botao4Material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+    var botao4 = new THREE.Mesh(geometry, botao4Material);
+    botao4.position.set(0, -2.5, 7.5)
+    quadro.add(botao4);
+
+    var botaoLuz = new THREE.TextureLoader().load('img/lighton.jpg');
+    var luzinha = new THREE.MeshBasicMaterial({ map: botaoLuz});
+    var botao5 = new THREE.Mesh(geometry, luzinha);
+    botao5.position.set(0, 2.5, -7.5)
+    quadro.add(botao5);
+
+    var botao6Material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
+    var botao6 = new THREE.Mesh(geometry, botao6Material);
+    botao6.position.set(0, 2.5, -2.5)
+    quadro.add(botao6);
+
+    var botao7Material = new THREE.MeshBasicMaterial({ color: 0xFF7F00 });
+    var botao7 = new THREE.Mesh(geometry, botao7Material);
+    botao7.position.set(0, 2.5, 2.5)
+    quadro.add(botao7);
+
+    var botao8Material = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
+    var botao8 = new THREE.Mesh(geometry, botao8Material);
+    botao8.position.set(0, 2.5, 7.5)
+    quadro.add(botao8);
+
+
+    scene.add(quadro);
 
     plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
         new THREE.MeshBasicMaterial({
@@ -186,7 +237,7 @@ window.onload = function init() {
             transparent: true,
             visible: false
         }));
-        plane.rotation.x = -Math.PI / 2
+    plane.rotation.x = -Math.PI / 2
     scene.add(plane);
 
     renderer.render(scene, camera);
@@ -211,7 +262,7 @@ function onMouseDown(event) {
     if (intersects.length > 0) {
         console.log(intersects)
         // controls.enabled = false;
-        
+
         // gets intersect object (global variable)
         selectedObject = cadeira;
         // gets intersection with the helper plane
@@ -279,7 +330,7 @@ function onMouseMove(event) {
         console.log(selectedObject.position)
 
         renderer.render(scene, camera);
-        
+
     }
     // else {//reposition the plane ?
     //     var intersects = raycaster.intersectObjects(objects);
