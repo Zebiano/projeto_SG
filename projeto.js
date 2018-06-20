@@ -4,11 +4,12 @@ var renderer = null,
     mesh = null;
 var loader;
 var porta;
-var cadeira, cadeira2, cadeira3, cadeira4;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var offset = new THREE.Vector3();
 var selectedObject;
+var ambientLight;
 
 window.onload = function init() {
     // Create the Three.js renderer
@@ -22,7 +23,7 @@ window.onload = function init() {
     scene = new THREE.Scene();
 
     //Luzes
-    var ambientLight = new THREE.AmbientLight(0xffffff); // soft white light
+    ambientLight = new THREE.AmbientLight(0xffffff); // soft white light
     scene.add(ambientLight);
 
     var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -188,44 +189,52 @@ window.onload = function init() {
     //botoes
     var geometry = new THREE.BoxGeometry(1, 3, 3);
     var botao1Material = new THREE.MeshBasicMaterial({ color: 0x9400D3 });
-    var botao1 = new THREE.Mesh(geometry, botao1Material);
+    botao1 = new THREE.Mesh(geometry, botao1Material);
     botao1.position.set(0, -2.5, -7.5)
+    botao1.name = "botao1"
     quadro.add(botao1);
 
     var botao2Material = new THREE.MeshBasicMaterial({ color: 0x4B0082 });
-    var botao2 = new THREE.Mesh(geometry, botao2Material);
+    botao2 = new THREE.Mesh(geometry, botao2Material);
     botao2.position.set(0, -2.5, -2.5)
+    botao2.name = "botao2"
     quadro.add(botao2);
 
     var botao3Material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
-    var botao3 = new THREE.Mesh(geometry, botao3Material);
+    botao3 = new THREE.Mesh(geometry, botao3Material);
     botao3.position.set(0, -2.5, 2.5)
+    botao3.name = "botao3"
     quadro.add(botao3);
 
     var botao4Material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
-    var botao4 = new THREE.Mesh(geometry, botao4Material);
+    botao4 = new THREE.Mesh(geometry, botao4Material);
     botao4.position.set(0, -2.5, 7.5)
+    botao4.name = "botao4"
     quadro.add(botao4);
 
     var botaoLuz = new THREE.TextureLoader().load('img/lighton.jpg');
-    var luzinha = new THREE.MeshBasicMaterial({ map: botaoLuz});
-    var botao5 = new THREE.Mesh(geometry, luzinha);
+    var luzinha = new THREE.MeshBasicMaterial({ map: botaoLuz });
+    botao5 = new THREE.Mesh(geometry, luzinha);
     botao5.position.set(0, 2.5, -7.5)
+    botao5.name = "botao5"
     quadro.add(botao5);
 
     var botao6Material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
-    var botao6 = new THREE.Mesh(geometry, botao6Material);
+    botao6 = new THREE.Mesh(geometry, botao6Material);
     botao6.position.set(0, 2.5, -2.5)
+    botao6.name = "botao6"
     quadro.add(botao6);
 
     var botao7Material = new THREE.MeshBasicMaterial({ color: 0xFF7F00 });
-    var botao7 = new THREE.Mesh(geometry, botao7Material);
+    botao7 = new THREE.Mesh(geometry, botao7Material);
     botao7.position.set(0, 2.5, 2.5)
+    botao7.name = "botao7"
     quadro.add(botao7);
 
     var botao8Material = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
-    var botao8 = new THREE.Mesh(geometry, botao8Material);
+    botao8 = new THREE.Mesh(geometry, botao8Material);
     botao8.position.set(0, 2.5, 7.5)
+    botao8.name = "botao8"
     quadro.add(botao8);
 
 
@@ -257,6 +266,8 @@ function onMouseDown(event) {
     // update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
 
+
+    //Intersects das cadeira
     // search for intersections
     var intersects = raycaster.intersectObjects(cadeira.children);
     if (intersects.length > 0) {
@@ -271,6 +282,8 @@ function onMouseDown(event) {
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
         console.log(offset)
     }
+
+    // search for intersections
     var intersects2 = raycaster.intersectObjects(cadeira2.children);
     if (intersects2.length > 0) {
         console.log(intersects2)
@@ -284,6 +297,7 @@ function onMouseDown(event) {
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
     }
 
+    // search for intersections
     var intersects3 = raycaster.intersectObjects(cadeira3.children);
     if (intersects3.length > 0) {
         console.log(intersects3)
@@ -297,9 +311,10 @@ function onMouseDown(event) {
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
     }
 
+    // search for intersections
     var intersects4 = raycaster.intersectObjects(cadeira4.children);
     if (intersects4.length > 0) {
-        console.log(intersects3)
+        console.log(intersects4)
 
         // controls.enabled = false;
         // gets intersect object (global variable)
@@ -308,6 +323,55 @@ function onMouseDown(event) {
         var intersectsPlane = raycaster.intersectObject(plane);
         // calculates the offset (global variable)
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
+    }
+
+
+    //Intersects dos botoes
+    // search for intersections
+    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
+    if (intersectsBtn.length > 0) {
+        console.log(intersectsBtn)
+
+        for (var i = 0; i < intersectsBtn.length; i++) {
+            if (intersectsBtn[i].object.name == "botao1") {
+                ambientLight.color.set(0x9400D3)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao2") {
+                ambientLight.color.set(0x4B0082)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao3") {
+                ambientLight.color.set(0x0000FF)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao3") {
+                ambientLight.color.set(0x4B0082)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao4") {
+                ambientLight.color.set(0x00FF00)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao5") {
+
+                
+            }
+            else if (intersectsBtn[i].object.name == "botao6") {
+                ambientLight.color.set(0xFF0000)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao7") {
+                ambientLight.color.set(0xFF7F00)
+                console.log(ambientLight.color)
+            }
+            else if (intersectsBtn[i].object.name == "botao8") {
+                ambientLight.color.set(0xFFFF00)
+                console.log(ambientLight.color)
+            }
+        }
+
+
     }
 }
 
