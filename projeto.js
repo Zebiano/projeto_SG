@@ -37,8 +37,8 @@ window.onload = function init() {
     camera.position.set(40, 40, 75);
     scene.add(camera);
 
-    controls = new THREE.OrbitControls(camera);
-    controls.addEventListener('change', function () { renderer.render(scene, camera); });
+    //controls = new THREE.OrbitControls(camera);
+    //controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
     var light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
