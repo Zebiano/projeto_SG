@@ -4,12 +4,14 @@ var renderer = null,
     mesh = null;
 var loader;
 var porta;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var offset = new THREE.Vector3();
 var selectedObject;
 var ambientLight;
+var porta2Mexer = false
+var soma = 0.01
 
 window.onload = function init() {
     // Create the Three.js renderer
@@ -38,8 +40,8 @@ window.onload = function init() {
     camera.position.set(40, 40, 75);
     scene.add(camera);
 
-    //controls = new THREE.OrbitControls(camera);
-    //controls.addEventListener('change', function () { renderer.render(scene, camera); });
+    controls = new THREE.OrbitControls(camera);
+    controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
     var light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
@@ -134,13 +136,13 @@ window.onload = function init() {
     var materialMovel = new THREE.MeshBasicMaterial({ map: textureMovel });
     var objLoader3 = new THREE.OBJLoader();
     //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-    objLoader3.load('models/armario.obj', function (object) {// load a geometry resource
+    objLoader3.load('models/movel.obj', function (object) {// load a geometry resource
         movel = object;
         movel.scale.set(0.02, 0.02, 0.02)
         for (var i = 0; i < movel.children.length; i++) {
             movel.children[i].material = materialMovel
         }
-        movel.position.set(45, 0, -40)
+        movel.position.set(45, 7, -40)
         movel.rotation.y = - Math.PI / 2
         scene.add(movel);
         renderer.render(scene, camera);
@@ -249,13 +251,15 @@ window.onload = function init() {
     plane.rotation.x = -Math.PI / 2
     scene.add(plane);
 
+    window.addEventListener("mouseup", onMouseUp)
+    window.addEventListener("mousedown", onMouseDown)
+    window.addEventListener("mousemove", onMouseMove)
+    window.addEventListener("click", onClick)
+
+
     renderer.render(scene, camera);
 }
 
-
-
-
-window.addEventListener("mousedown", onMouseDown)
 function onMouseDown(event) {
 
     var mouse = new THREE.Vector2(
@@ -325,6 +329,43 @@ function onMouseDown(event) {
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
     }
 
+}
+
+function onMouseMove(event) {
+    var mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1, //x
+        - (event.clientY / window.innerHeight) * 2 + 1); //y
+
+    var raycaster = new THREE.Raycaster();
+    // update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    if (selectedObject) {
+        //drag an object around if we've already clicked on one
+        var intersects = raycaster.intersectObject(plane);
+        // selectedObject.position.copy(intersects[0].point.sub(offset));
+        selectedObject.position.x = intersects[0].point.sub(offset).x;
+
+        console.log(selectedObject.position)
+
+        renderer.render(scene, camera);
+
+    }
+}
+
+function onMouseUp(event) {
+    selectedObject = null;
+
+}
+
+function onClick(event) {
+    var mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1, //x
+        - (event.clientY / window.innerHeight) * 2 + 1); //y
+
+    var raycaster = new THREE.Raycaster();
+    // update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
 
     //Intersects dos botoes
     // search for intersections
@@ -355,7 +396,7 @@ function onMouseDown(event) {
             }
             else if (intersectsBtn[i].object.name == "botao5") {
 
-                
+
             }
             else if (intersectsBtn[i].object.name == "botao6") {
                 ambientLight.color.set(0xFF0000)
@@ -371,42 +412,36 @@ function onMouseDown(event) {
             }
         }
 
+    }
 
+    // search for intersections
+    var intersectsMovel = raycaster.intersectObjects(movel.children);
+    if (intersectsMovel.length > 0) {
+        console.log(movel)
+
+        if (intersectsMovel[0].object.name == "porta2") {
+            porta2Mexer = true
+            animate();
+            console.log("asoiudg")
+
+        }
     }
 }
 
-window.addEventListener("mousemove", onMouseMove)
-function onMouseMove(event) {
-    var mouse = new THREE.Vector2(
-        (event.clientX / window.innerWidth) * 2 - 1, //x
-        - (event.clientY / window.innerHeight) * 2 + 1); //y
+function animate() {
 
-    var raycaster = new THREE.Raycaster();
-    // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
-
-    if (selectedObject) {
-        //drag an object around if we've already clicked on one
-        var intersects = raycaster.intersectObject(plane);
-        // selectedObject.position.copy(intersects[0].point.sub(offset));
-        selectedObject.position.x = intersects[0].point.sub(offset).x;
-
-        console.log(selectedObject.position)
-
-        renderer.render(scene, camera);
-
+    console.log("animate")
+    if (porta2Mexer) {
+        movel.children[3].rotation.y -= soma
+        if (movel.children[3].rotation.y = - Math.PI / 2) {
+            window.cancelAnimationFrame(animate);
+        }
     }
-    // else {//reposition the plane ?
-    //     var intersects = raycaster.intersectObjects(objects);
-    //     if (intersects.length > 0)
-    //         plane.position.copy(intersects[0].object.position);
-    // }
-}
 
-window.addEventListener("mouseup", onMouseUp)
-function onMouseUp(event) {
-    selectedObject = null;
-    // controls.enabled = true;
+
+
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(animate)
 }
 
 /*
