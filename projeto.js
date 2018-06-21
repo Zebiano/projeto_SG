@@ -1,265 +1,443 @@
 // Variables
-var renderer, scene, camera, mesh, loader, raycaster, mouse, offset;
-var porta, cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel;
+var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset;
+var porta, cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
+var mesh;
 var selectedObject, ambientLight;
 var porta2Mexer = false
 var soma = 0.01
 
+// PointerLock Variables
+var objects = [];
+var controlsEnabled = false;
+var moveForward = false;
+var moveBackward = false;
+var moveLeft = false;
+var moveRight = false;
+var canJump = false;
+var prevTime = performance.now();
+var velocity = new THREE.Vector3();
+var direction = new THREE.Vector3();
+var vertex = new THREE.Vector3();
+var color = new THREE.Color();
+
+// Onload
 window.onload = function init() {
-    // Create the Three.js renderer
-    renderer = new THREE.WebGLRenderer();
-    // Set the viewport 
+    // Renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("#AAAAAA");
+    renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
 
-    // Create a new Three.js scene
+    // Scene
     scene = new THREE.Scene();
 
-    //Luzes
-    ambientLight = new THREE.AmbientLight(0xffffff, 0.7); // soft white light
-    scene.add(ambientLight);
-    ambientLight.castShadow = true
+    // Raycaster
+    //raycaster = new THREE.Raycaster();
+    raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(15.7, 124.9, 64.7)
-    directionalLight.castShadow = true
-    scene.add(directionalLight);
-    var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-    scene.add(helper);
+    // ObjectLoader
+    objLoader = new THREE.OBJLoader();
 
-    // Add  a camera so we can view the scene
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // Camera
+    //camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
     // camera.position.set(50, 70, 200);
-    camera.position.set(40, 40, 75);
+    //camera.position.set(40, 40, 75);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     scene.add(camera);
 
+    // Orbit Controls
     // controls = new THREE.OrbitControls(camera);
     // controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
-    
+    // PointerLockControls
+    addPointerLockControls();
+    controls = new THREE.PointerLockControls(camera);
+    scene.add(controls.getObject());
 
-    //CASA DE BANHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-    //Chao
+    // Lights
+    createLights();
+
+    // Floor/Walls/Ceiling
+    createChao();
+    createParedeEsquerda();
+    createParedeDireita();
+    createParedeFundo();
+    createParedePerto();
+
+    // Objects
+    createMesa();
+    createTv();
+    createSofa();
+    createMovel();
+    createCadeiras();
+    createQuadroLuz();
+
+    // Planes to move things around
+    createPathCadeiras();
+
+    // Event Listeners
+    window.addEventListener("click", onClick);
+    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+
+    window.addEventListener('keydown', onKeyDown, false);
+    window.addEventListener('keyup', onKeyUp, false);
+
+    // Animate
+    animate()
+}
+
+// Animate
+function animate() {
+    //console.log("animate")
+    if (porta2Mexer) {
+        movel.children[3].rotation.y -= soma
+        if (movel.children[3].rotation.y = - Math.PI / 2) {
+            window.cancelAnimationFrame(animate);
+        }
+    }
+
+    if (controlsEnabled === true) {
+        raycaster.ray.origin.copy(controls.getObject().position);
+        raycaster.ray.origin.y -= 10;
+
+        var intersections = raycaster.intersectObjects(objects);
+
+        var onObject = intersections.length > 0;
+
+        var time = performance.now();
+        var delta = (time - prevTime) / 1000;
+
+        velocity.x -= velocity.x * 10.0 * delta;
+        velocity.z -= velocity.z * 10.0 * delta;
+
+        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveLeft) - Number(moveRight);
+        direction.normalize(); // this ensures consistent movements in all directions
+
+        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+
+        if (onObject === true) {
+            velocity.y = Math.max(0, velocity.y);
+            canJump = true;
+        }
+
+        controls.getObject().translateX(velocity.x * delta);
+        controls.getObject().translateY(velocity.y * delta);
+        controls.getObject().translateZ(velocity.z * delta);
+
+        if (controls.getObject().position.y < 10) {
+            velocity.y = 0;
+            controls.getObject().position.y = 10;
+
+            canJump = true;
+        }
+
+        prevTime = time;
+    }
+
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(animate)
+}
+
+// Add PointerLock Controls
+function addPointerLockControls() {
+    var blocker = document.getElementById('blocker');
+    var instructions = document.getElementById('instructions');
+
+    // PointerLock Things to do
+    var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+    if (havePointerLock) {
+        var element = document.body;
+
+        var pointerlockchange = function (event) {
+            if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+                controlsEnabled = true;
+                controls.enabled = true;
+                blocker.style.display = 'none';
+            } else {
+                controls.enabled = false;
+                blocker.style.display = 'block';
+                instructions.style.display = '';
+            }
+        };
+
+        var pointerlockerror = function (event) {
+            instructions.style.display = '';
+        };
+
+        // Hook pointer lock state change events
+        document.addEventListener('pointerlockchange', pointerlockchange, false);
+        document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+        document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
+
+        document.addEventListener('pointerlockerror', pointerlockerror, false);
+        document.addEventListener('mozpointerlockerror', pointerlockerror, false);
+        document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
+
+        instructions.addEventListener('click', function (event) {
+            instructions.style.display = 'none';
+
+            // Ask the browser to lock the pointer
+            element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+            element.requestPointerLock();
+        }, false);
+    } else {
+        instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+    }
+}
+
+// Create Lights
+function createLights() {
+    // AmbientLight
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    ambientLight.castShadow = true;
+    scene.add(ambientLight);
+
+    // DirectionalLight
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(15.7, 124.9, 64.7);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
+    var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+    scene.add(helper);
+}
+
+// Create Chao
+function createChao() {
     var chaoGEO = new THREE.BoxGeometry(100, 1, 150);
     var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
     var material = new THREE.MeshPhongMaterial({ map: texture });
     var chao = new THREE.Mesh(chaoGEO, material);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    chao.receiveShadow = true
+    chao.receiveShadow = true;
     texture.repeat.set(10, 10);
     scene.add(chao);
-    
+}
 
-    //Parede esquerda
+// Create Parede Esquerda
+function createParedeEsquerda() {
     var geometry = new THREE.BoxGeometry(1, 50, 150);
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
+    paredeEsquerda.position.set(-50, 25, 0);
     scene.add(paredeEsquerda);
-    paredeEsquerda.position.set(-50, 25, 0)
+}
 
-    //Parede direita
+// Create Parede Direita
+function createParedeDireita() {
     var geometry = new THREE.BoxGeometry(1, 50, 150);
+    var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeDireita = new THREE.Mesh(geometry, material);
+    paredeDireita.position.set(50, 25, 0);
     scene.add(paredeDireita);
-    paredeDireita.position.set(50, 25, 0)
+}
 
-    //Parede fundo
+// Create Parede Fundo
+function createParedeFundo() {
     var geometry = new THREE.BoxGeometry(100, 50, 1);
+    var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
+    paredeFundo.position.set(0, 25, -75);
     scene.add(paredeFundo);
-    paredeFundo.position.set(0, 25, -75)
+}
 
-
-    //Parede perto
+// Create Parede Perto
+function createParedePerto() {
     var geometry = new THREE.BoxGeometry(100, 50, 1);
+    var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
+    paredeFundo.position.set(0, 25, 75);
     scene.add(paredeFundo);
-    paredeFundo.position.set(0, 25, 75)
+}
 
-
-    //MESAAAAAAAAAAAAA
+// Create Mesa
+function createMesa() {
     var texture = new THREE.TextureLoader().load('img/mesa.png');
     var material = new THREE.MeshPhongMaterial({ map: texture });
-    var objLoader = new THREE.OBJLoader();
-    objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
+    objLoader.load('models/mesa.obj', function (object) {
         mesa = object;
         for (var i = 0; i < mesa.children.length; i++) {
-            mesa.children[i].material = material
+            mesa.children[i].material = material;
         }
-        mesa.scale.set(0.15, 0.15, 0.15)
-        // mesa.position.set(35, 0, 55)
-        mesa.position.set(35 - 50, 0, 55 - 75)
-        mesa.receiveShadow = true    
-        mesa.castShadow = true        
+        mesa.scale.set(0.15, 0.15, 0.15);
+        // mesa.position.set(35, 0, 55);
+        mesa.position.set(35 - 50, 0, 55 - 75);
+        mesa.receiveShadow = true;
+        mesa.castShadow = true;
         scene.add(mesa);
-        renderer.render(scene, camera);
     });
+}
 
-    //TVVVVVVVVVVVVVVVVVV
+// Create Tv
+function createTv() {
     var tvMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
-    var objLoader = new THREE.OBJLoader();
-    objLoader.load('models/televisao.obj', function (object) {// load a geometry resource
-        tv = object;
+    objLoader.load('models/televisao.obj', function (tv) {
         for (var i = 0; i < tv.children.length; i++) {
-            tv.children[i].material = tvMaterial
+            tv.children[i].material = tvMaterial;
         }
-        tv.rotation.y = - Math.PI / 2
-        tv.scale.set(0.4, 0.4, 0.4)
-        tv.position.set(48, 20, -55)
+        tv.rotation.y = - Math.PI / 2;
+        tv.scale.set(0.4, 0.4, 0.4);
+        tv.position.set(48, 20, -55);
         scene.add(tv);
-        renderer.render(scene, camera);
     });
+}
 
-    //SOFAAAAAAAAAAAAAAA
+// Create Sofa
+function createSofa() {
     var textureSofa = new THREE.TextureLoader().load('img/sofa.jpg');
     var materialSofa = new THREE.MeshPhongMaterial({ map: textureSofa });
-    var objLoader2 = new THREE.OBJLoader();
-    objLoader2.load('models/sofa.obj', function (object) {// load a geometry resource
-        sofa = object;
+    objLoader.load('models/sofa.obj', function (sofa) {
         sofa.scale.set(20, 20, 20)
         for (var i = 0; i < sofa.children.length; i++) {
-            sofa.children[i].material = materialSofa
+            sofa.children[i].material = materialSofa;
         }
         scene.add(sofa);
-        sofa.position.set(-15, 0, -40)
-        sofa.rotation.y = Math.PI / 2
-        renderer.render(scene, camera);
+        sofa.position.set(-15, 0, -40);
+        sofa.rotation.y = Math.PI / 2;
     });
+}
 
-    //MOVEEEEEEEEEL
+// Create Movel
+function createMovel() {
     var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
     var materialMovel = new THREE.MeshPhongMaterial({ map: textureMovel });
-    var objLoader3 = new THREE.OBJLoader();
-    //objLoader.setPath("http://threejs.org/examples/obj/walt/");
-    objLoader3.load('models/movel.obj', function (object) {// load a geometry resource
-        movel = object;
+    objLoader.load('models/movel.obj', function (movel) {
         movel.scale.set(0.02, 0.02, 0.02)
         for (var i = 0; i < movel.children.length; i++) {
-            movel.children[i].material = materialMovel
+            movel.children[i].material = materialMovel;
         }
-        movel.position.set(45, 7, -40)
-        movel.rotation.y = - Math.PI / 2
+        movel.position.set(45, 7, -40);
+        movel.rotation.y = - Math.PI / 2;
         scene.add(movel);
-        renderer.render(scene, camera);
     });
+}
 
-    //CADEIRAAAAAAAAA
+// Create Cadeiras
+function createCadeiras() {
     var texture2 = new THREE.TextureLoader().load('img/cadeira.jpg');
     var material2 = new THREE.MeshPhongMaterial({ map: texture2 });
-    objLoader.load('models/cadeira.obj', function (object) {// load a geometry resource
-        cadeira = object;
-        cadeira.scale.set(0.02, 0.02, 0.02)
-        // cadeira.position.set(50, 0, 87)
-        cadeira.position.set(0, 0, 87 - 75)
-        cadeira.rotation.y = Math.PI / 2
+    objLoader.load('models/cadeira.obj', function (cadeira) {
+        // Cadeira 1
+        cadeira.scale.set(0.02, 0.02, 0.02);
+        // cadeira.position.set(50, 0, 87);
+        cadeira.position.set(0, 0, 87 - 75);
+        cadeira.rotation.y = Math.PI / 2;
         for (var i = 0; i < cadeira.children.length; i++) {
-            cadeira.children[i].material = material2
+            cadeira.children[i].material = material2;
         }
         scene.add(cadeira);
 
-        cadeira2 = cadeira.clone()
-        // cadeira2.position.set(50, 0, 102)
-        cadeira2.position.set(0, 0, 102 - 75)
-        scene.add(cadeira2)
+        // Cadeira 2
+        cadeira2 = cadeira.clone();
+        // cadeira2.position.set(50, 0, 102);
+        cadeira2.position.set(0, 0, 102 - 75);
+        scene.add(cadeira2);
 
-        cadeira3 = cadeira.clone()
-        // cadeira3.position.set(40, 0, 95)
-        cadeira3.position.set(-10, 0, 20)
-        cadeira3.rotation.y = 3 * Math.PI / 2
-        scene.add(cadeira3)
+        // Cadeira 3
+        cadeira3 = cadeira.clone();
+        // cadeira3.position.set(40, 0, 95);
+        cadeira3.position.set(-10, 0, 20);
+        cadeira3.rotation.y = 3 * Math.PI / 2;
+        scene.add(cadeira3);
 
-        cadeira4 = cadeira3.clone()
-        // cadeira4.position.set(40, 0, 110)
-        cadeira4.position.set(-10, 0, 110 - 75)
-        scene.add(cadeira4)
-        renderer.render(scene, camera);
-
+        // Cadeira 4
+        cadeira4 = cadeira3.clone();
+        // cadeira4.position.set(40, 0, 110);
+        cadeira4.position.set(-10, 0, 110 - 75);
+        scene.add(cadeira4);
     });
+}
 
-    //Quadro de luz
+// Create Quadro da Luz
+function createQuadroLuz() {
     var geometry = new THREE.BoxGeometry(0.5, 12, 21);
     var quadroMaterial = new THREE.MeshBasicMaterial({ color: 0xa0a0a0 });
-    var quadro = new THREE.Mesh(geometry, quadroMaterial);
+    quadroLuz = new THREE.Mesh(geometry, quadroMaterial);
+    quadroLuz.position.set(49.5, 25, 30);
 
-    quadro.position.set(49.5, 25, 30)
-
-    //botoes
+    // Botao 1
     var geometry = new THREE.BoxGeometry(1, 3, 3);
     var botao1Material = new THREE.MeshBasicMaterial({ color: 0x9400D3 });
     botao1 = new THREE.Mesh(geometry, botao1Material);
     botao1.position.set(0, -2.5, -7.5)
     botao1.name = "botao1"
-    quadro.add(botao1);
+    quadroLuz.add(botao1);
 
+    // Botao 1
     var botao2Material = new THREE.MeshBasicMaterial({ color: 0x4B0082 });
     botao2 = new THREE.Mesh(geometry, botao2Material);
     botao2.position.set(0, -2.5, -2.5)
     botao2.name = "botao2"
-    quadro.add(botao2);
+    quadroLuz.add(botao2);
 
+    // Botao 1
     var botao3Material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
     botao3 = new THREE.Mesh(geometry, botao3Material);
     botao3.position.set(0, -2.5, 2.5)
     botao3.name = "botao3"
-    quadro.add(botao3);
+    quadroLuz.add(botao3);
 
+    // Botao 1
     var botao4Material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
     botao4 = new THREE.Mesh(geometry, botao4Material);
     botao4.position.set(0, -2.5, 7.5)
     botao4.name = "botao4"
-    quadro.add(botao4);
+    quadroLuz.add(botao4);
 
+    // Botao 1
     var botaoLuz = new THREE.TextureLoader().load('img/lighton.jpg');
     var luzinha = new THREE.MeshBasicMaterial({ map: botaoLuz });
     botao5 = new THREE.Mesh(geometry, luzinha);
     botao5.position.set(0, 2.5, -7.5)
     botao5.name = "botao5"
-    quadro.add(botao5);
+    quadroLuz.add(botao5);
 
+    // Botao 1
     var botao6Material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
     botao6 = new THREE.Mesh(geometry, botao6Material);
     botao6.position.set(0, 2.5, -2.5)
     botao6.name = "botao6"
-    quadro.add(botao6);
+    quadroLuz.add(botao6);
 
+    // Botao 1
     var botao7Material = new THREE.MeshBasicMaterial({ color: 0xFF7F00 });
     botao7 = new THREE.Mesh(geometry, botao7Material);
     botao7.position.set(0, 2.5, 2.5)
     botao7.name = "botao7"
-    quadro.add(botao7);
+    quadroLuz.add(botao7);
 
+    // Botao 1
     var botao8Material = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
     botao8 = new THREE.Mesh(geometry, botao8Material);
     botao8.position.set(0, 2.5, 7.5)
     botao8.name = "botao8"
-    quadro.add(botao8);
+    quadroLuz.add(botao8);
 
+    // Adicionar quadroLuz a scene
+    scene.add(quadroLuz);
+}
 
-    scene.add(quadro);
-
+function createPathCadeiras() {
     plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
         new THREE.MeshBasicMaterial({
             opacity: 0.0,
             transparent: true,
             visible: false
         }));
-    plane.rotation.x = -Math.PI / 2
+    plane.rotation.x = -Math.PI / 2;
+    plane.name = "PathCadeiras";
     scene.add(plane);
-
-    window.addEventListener("mouseup", onMouseUp)
-    window.addEventListener("mousedown", onMouseDown)
-    window.addEventListener("mousemove", onMouseMove)
-    window.addEventListener("click", onClick)
-
-
-    renderer.render(scene, camera);
-    animate()
 }
 
+// Event: OnMouseDown
 function onMouseDown(event) {
-
     var mouse = new THREE.Vector2(
         (event.clientX / window.innerWidth) * 2 - 1, //x
         - (event.clientY / window.innerHeight) * 2 + 1); //y
@@ -329,6 +507,7 @@ function onMouseDown(event) {
 
 }
 
+// Event: OnMouseMove
 function onMouseMove(event) {
     var mouse = new THREE.Vector2(
         (event.clientX / window.innerWidth) * 2 - 1, //x
@@ -351,11 +530,13 @@ function onMouseMove(event) {
     }
 }
 
+// Event: OnMouseUp
 function onMouseUp(event) {
     selectedObject = null;
 
 }
 
+// Event: OnClick
 function onClick(event) {
     var mouse = new THREE.Vector2(
         (event.clientX / window.innerWidth) * 2 - 1, //x
@@ -426,20 +607,55 @@ function onClick(event) {
     }
 }
 
-function animate() {
-
-    //console.log("animate")
-    if (porta2Mexer) {
-        movel.children[3].rotation.y -= soma
-        if (movel.children[3].rotation.y = - Math.PI / 2) {
-            window.cancelAnimationFrame(animate);
-        }
+// Event: onKeyDown
+function onKeyDown(event) {
+    console.log(event.key);
+    switch (event.keyCode) {
+        case 38: // up
+        case 87: // w
+            moveForward = true;
+            break;
+        case 37: // left
+        case 65: // a
+            moveLeft = true; break;
+        case 40: // down
+        case 83: // s
+            moveBackward = true;
+            break;
+        case 39: // right
+        case 68: // d
+            moveRight = true;
+            break;
+        case 32: // space
+            if (canJump === true) velocity.y += 350;
+            canJump = false;
+            break;
     }
+}
 
+// Event: onKeyUp
+function onKeyUp(event) {
+    console.log(event.key);
+    switch (event.keyCode) {
+        case 38: // up
+        case 87: // w
+            moveForward = false;
+            break;
+        case 37: // left
+        case 65: // a
+            moveLeft = false;
+            break;
 
+        case 40: // down
+        case 83: // s
+            moveBackward = false;
+            break;
 
-    renderer.render(scene, camera);
-    window.requestAnimationFrame(animate)
+        case 39: // right
+        case 68: // d
+            moveRight = false;
+            break;
+    }
 }
 
 /*
