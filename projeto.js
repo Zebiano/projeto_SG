@@ -1,6 +1,6 @@
 // Variables
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset;
-var porta, cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
 var mesh;
 var selectedObject, ambientLight;
 var porta2Mexer = false
@@ -18,7 +18,6 @@ var prevTime = performance.now();
 var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
-var color = new THREE.Color();
 
 // Onload
 window.onload = function init() {
@@ -99,6 +98,7 @@ function animate() {
         }
     }
 
+    // PointerLockControls
     if (controlsEnabled === true) {
         raycaster.ray.origin.copy(controls.getObject().position);
         raycaster.ray.origin.y -= 10;
@@ -278,7 +278,8 @@ function createMesa() {
 // Create Tv
 function createTv() {
     var tvMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
-    objLoader.load('models/televisao.obj', function (tv) {
+    objLoader.load('models/televisao.obj', function (object) {
+        tv = object;
         for (var i = 0; i < tv.children.length; i++) {
             tv.children[i].material = tvMaterial;
         }
@@ -293,7 +294,8 @@ function createTv() {
 function createSofa() {
     var textureSofa = new THREE.TextureLoader().load('img/sofa.jpg');
     var materialSofa = new THREE.MeshPhongMaterial({ map: textureSofa });
-    objLoader.load('models/sofa.obj', function (sofa) {
+    objLoader.load('models/sofa.obj', function (object) {
+        sofa = object;
         sofa.scale.set(20, 20, 20)
         for (var i = 0; i < sofa.children.length; i++) {
             sofa.children[i].material = materialSofa;
@@ -308,7 +310,8 @@ function createSofa() {
 function createMovel() {
     var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
     var materialMovel = new THREE.MeshPhongMaterial({ map: textureMovel });
-    objLoader.load('models/movel.obj', function (movel) {
+    objLoader.load('models/movel.obj', function (object) {
+        movel = object;
         movel.scale.set(0.02, 0.02, 0.02)
         for (var i = 0; i < movel.children.length; i++) {
             movel.children[i].material = materialMovel;
@@ -323,7 +326,8 @@ function createMovel() {
 function createCadeiras() {
     var texture2 = new THREE.TextureLoader().load('img/cadeira.jpg');
     var material2 = new THREE.MeshPhongMaterial({ map: texture2 });
-    objLoader.load('models/cadeira.obj', function (cadeira) {
+    objLoader.load('models/cadeira.obj', function (object) {
+        cadeira = object;
         // Cadeira 1
         cadeira.scale.set(0.02, 0.02, 0.02);
         // cadeira.position.set(50, 0, 87);
@@ -450,6 +454,7 @@ function onMouseDown(event) {
     //Intersects das cadeira
     // search for intersections
     var intersects = raycaster.intersectObjects(cadeira.children);
+    console.log(intersects);
     if (intersects.length > 0) {
         console.log(intersects)
         // controls.enabled = false;
@@ -609,7 +614,6 @@ function onClick(event) {
 
 // Event: onKeyDown
 function onKeyDown(event) {
-    console.log(event.key);
     switch (event.keyCode) {
         case 38: // up
         case 87: // w
@@ -635,7 +639,6 @@ function onKeyDown(event) {
 
 // Event: onKeyUp
 function onKeyUp(event) {
-    console.log(event.key);
     switch (event.keyCode) {
         case 38: // up
         case 87: // w
