@@ -1,15 +1,7 @@
-var renderer = null,
-    scene = null,
-    camera = null,
-    mesh = null;
-var loader;
-var porta;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel;
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
-var offset = new THREE.Vector3();
-var selectedObject;
-var ambientLight;
+// Variables
+var renderer, scene, camera, mesh, loader, raycaster, mouse, offset;
+var porta, cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel;
+var selectedObject, ambientLight;
 var porta2Mexer = false
 var soma = 0.01
 
@@ -436,7 +428,7 @@ function onClick(event) {
 
 function animate() {
 
-    console.log("animate")
+    //console.log("animate")
     if (porta2Mexer) {
         movel.children[3].rotation.y -= soma
         if (movel.children[3].rotation.y = - Math.PI / 2) {
