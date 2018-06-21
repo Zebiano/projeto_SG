@@ -21,22 +21,19 @@ var vertex = new THREE.Vector3();
 
 // Onload
 window.onload = function init() {
-    // Renderer
+    // New
     renderer = new THREE.WebGLRenderer({ antialias: true });
+    scene = new THREE.Scene();
+    raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
+    objLoader = new THREE.OBJLoader();
+    mouse = new THREE.Vector2();
+    offset = new THREE.Vector3();
+
+    // Renderer
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("#AAAAAA");
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
-
-    // Scene
-    scene = new THREE.Scene();
-
-    // Raycaster
-    //raycaster = new THREE.Raycaster();
-    raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
-
-    // ObjectLoader
-    objLoader = new THREE.OBJLoader();
 
     // Camera
     //camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
