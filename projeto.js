@@ -25,11 +25,13 @@ window.onload = function init() {
     scene = new THREE.Scene();
 
     //Luzes
-    ambientLight = new THREE.AmbientLight(0xffffff); // soft white light
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.7); // soft white light
     scene.add(ambientLight);
+    ambientLight.castShadow = true
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(50, 50, 50)
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(15.7, 124.9, 64.7)
+    directionalLight.castShadow = true
     scene.add(directionalLight);
     var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
     scene.add(helper);
@@ -40,26 +42,27 @@ window.onload = function init() {
     camera.position.set(40, 40, 75);
     scene.add(camera);
 
-    controls = new THREE.OrbitControls(camera);
-    controls.addEventListener('change', function () { renderer.render(scene, camera); });
+    // controls = new THREE.OrbitControls(camera);
+    // controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
-    var light = new THREE.AmbientLight(0xffffff);
-    scene.add(light);
+    
 
     //CASA DE BANHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     //Chao
-    var wcchaoGEO = new THREE.BoxGeometry(100, 1, 150);
+    var chaoGEO = new THREE.BoxGeometry(100, 1, 150);
     var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
-    var material = new THREE.MeshBasicMaterial({ map: texture });
-    var wcchao = new THREE.Mesh(wcchaoGEO, material);
+    var material = new THREE.MeshPhongMaterial({ map: texture });
+    var chao = new THREE.Mesh(chaoGEO, material);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
+    chao.receiveShadow = true
     texture.repeat.set(10, 10);
-    scene.add(wcchao);
+    scene.add(chao);
+    
 
     //Parede esquerda
     var geometry = new THREE.BoxGeometry(1, 50, 150);
-    var material = new THREE.MeshBasicMaterial({ color: 0xede8e1 });
+    var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     scene.add(paredeEsquerda);
     paredeEsquerda.position.set(-50, 25, 0)
@@ -86,7 +89,7 @@ window.onload = function init() {
 
     //MESAAAAAAAAAAAAA
     var texture = new THREE.TextureLoader().load('img/mesa.png');
-    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var material = new THREE.MeshPhongMaterial({ map: texture });
     var objLoader = new THREE.OBJLoader();
     objLoader.load('models/mesa.obj', function (object) {// load a geometry resource
         mesa = object;
@@ -96,12 +99,14 @@ window.onload = function init() {
         mesa.scale.set(0.15, 0.15, 0.15)
         // mesa.position.set(35, 0, 55)
         mesa.position.set(35 - 50, 0, 55 - 75)
+        mesa.receiveShadow = true    
+        mesa.castShadow = true        
         scene.add(mesa);
         renderer.render(scene, camera);
     });
 
     //TVVVVVVVVVVVVVVVVVV
-    var tvMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    var tvMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
     var objLoader = new THREE.OBJLoader();
     objLoader.load('models/televisao.obj', function (object) {// load a geometry resource
         tv = object;
@@ -117,7 +122,7 @@ window.onload = function init() {
 
     //SOFAAAAAAAAAAAAAAA
     var textureSofa = new THREE.TextureLoader().load('img/sofa.jpg');
-    var materialSofa = new THREE.MeshBasicMaterial({ map: textureSofa });
+    var materialSofa = new THREE.MeshPhongMaterial({ map: textureSofa });
     var objLoader2 = new THREE.OBJLoader();
     objLoader2.load('models/sofa.obj', function (object) {// load a geometry resource
         sofa = object;
@@ -133,7 +138,7 @@ window.onload = function init() {
 
     //MOVEEEEEEEEEL
     var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
-    var materialMovel = new THREE.MeshBasicMaterial({ map: textureMovel });
+    var materialMovel = new THREE.MeshPhongMaterial({ map: textureMovel });
     var objLoader3 = new THREE.OBJLoader();
     //objLoader.setPath("http://threejs.org/examples/obj/walt/");
     objLoader3.load('models/movel.obj', function (object) {// load a geometry resource
@@ -150,7 +155,7 @@ window.onload = function init() {
 
     //CADEIRAAAAAAAAA
     var texture2 = new THREE.TextureLoader().load('img/cadeira.jpg');
-    var material2 = new THREE.MeshBasicMaterial({ map: texture2 });
+    var material2 = new THREE.MeshPhongMaterial({ map: texture2 });
     objLoader.load('models/cadeira.obj', function (object) {// load a geometry resource
         cadeira = object;
         cadeira.scale.set(0.02, 0.02, 0.02)
@@ -258,6 +263,7 @@ window.onload = function init() {
 
 
     renderer.render(scene, camera);
+    animate()
 }
 
 function onMouseDown(event) {
