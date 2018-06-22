@@ -3,7 +3,7 @@ var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset;
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
 var mesh;
 var selectedObject, ambientLight;
-var porta2Mexer = false
+// var porta2Mexer = false
 var soma = 0.01
 
 // PointerLock Variables
@@ -19,6 +19,7 @@ var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 
+
 // Onload
 window.onload = function init() {
     // New
@@ -33,6 +34,7 @@ window.onload = function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("#AAAAAA");
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true
     document.body.appendChild(renderer.domElement);
 
     // Camera
@@ -40,9 +42,10 @@ window.onload = function init() {
     // camera.position.set(50, 70, 200);
     //camera.position.set(40, 40, 75);
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = 10;
+    camera.position.y = 20;
     scene.add(camera);
 
+    
     // Orbit Controls
     // controls = new THREE.OrbitControls(camera);
     // controls.addEventListener('change', function () { renderer.render(scene, camera); });
@@ -89,12 +92,17 @@ window.onload = function init() {
 // Animate
 function animate() {
     //console.log("animate")
-    if (porta2Mexer) {
-        movel.children[3].rotation.y -= soma
-        if (movel.children[3].rotation.y = - Math.PI / 2) {
-            window.cancelAnimationFrame(animate);
+    if (movel)
+    {
+        console.log(movel.portaParada)
+        if (!movel.portaParada) {
+            movel.children[3].rotation.y -= soma
+            if (movel.children[3].rotation.y <= - Math.PI / 2) {
+                movel.portaParada = true; ///??????????????????????????????????????
+            }
         }
     }
+    
 
     // PointerLockControls
     if (controlsEnabled === true) {
@@ -196,13 +204,21 @@ function addPointerLockControls() {
 function createLights() {
     // AmbientLight
     ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    ambientLight.castShadow = true;
     scene.add(ambientLight);
 
     // DirectionalLight
     var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(15.7, 124.9, 64.7);
     directionalLight.castShadow = true;
+    directionalLight.shadow.camera.far = 1000;
+    directionalLight.shadow.camera.left = -100;
+    directionalLight.shadow.camera.right = 100;
+    directionalLight.shadow.camera.bottom = -100;
+    directionalLight.shadow.camera.top = 100;
+
+    var helper2 = new THREE.CameraHelper(directionalLight.shadow.camera);
+    scene.add(helper2);
+
     scene.add(directionalLight);
     var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
     scene.add(helper);
@@ -265,12 +281,13 @@ function createMesa() {
         mesa = object;
         for (var i = 0; i < mesa.children.length; i++) {
             mesa.children[i].material = material;
+            mesa.children[i].receiveShadow = true;
+            mesa.children[i].castShadow = true;
         }
         mesa.scale.set(0.15, 0.15, 0.15);
         // mesa.position.set(35, 0, 55);
         mesa.position.set(35 - 50, 0, 55 - 75);
-        mesa.receiveShadow = true;
-        mesa.castShadow = true;
+        
         scene.add(mesa);
     });
 }
@@ -318,6 +335,7 @@ function createMovel() {
         }
         movel.position.set(45, 7, -40);
         movel.rotation.y = - Math.PI / 2;
+        movel.portaParada = true;
         scene.add(movel);
     });
 }
@@ -604,8 +622,9 @@ function onClick(event) {
         console.log(movel)
 
         if (intersectsMovel[0].object.name == "porta2") {
-            porta2Mexer = true
-            animate();
+            // porta2Mexer = true
+            movel.portaParada = false;
+            //animate();
             console.log("asoiudg")
 
         }
