@@ -427,7 +427,7 @@ function createQuadroLuz() {
 
     // Botao 1
     var geometry = new THREE.BoxGeometry(1, 3, 3);
-    var botao1Material = new THREE.MeshBasicMaterial({ color: 0x9400D3 });
+    var botao1Material = new THREE.MeshBasicMaterial({ color: 0xffffff });
     botao1 = new THREE.Mesh(geometry, botao1Material);
     botao1.position.set(0, -2.5, -7.5)
     botao1.name = "botao1"
@@ -613,13 +613,13 @@ function onClick(event) {
 
     //Intersects dos botoes
     // search for intersections
-    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
+    var intersectsBtn = raycaster.intersectObjects([quadroLuz, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
     if (intersectsBtn.length > 0) {
         console.log(intersectsBtn)
 
         for (var i = 0; i < intersectsBtn.length; i++) {
             if (intersectsBtn[i].object.name == "botao1") {
-                ambientLight.color.set(0x9400D3)
+                ambientLight.color.set(0xffffff)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao2") {
@@ -639,8 +639,12 @@ function onClick(event) {
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao5") {
-
-
+                if (ambientLight.intensity == 0.7) {
+                    ambientLight.intensity = 0
+                }
+                else if(ambientLight.intensity == 0){
+                    ambientLight.intensity = 0.7
+                }
             }
             else if (intersectsBtn[i].object.name == "botao6") {
                 ambientLight.color.set(0xFF0000)
