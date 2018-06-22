@@ -61,19 +61,19 @@ window.onload = function init() {
     createLights();
 
     // Floor/Walls/Ceiling
-    createChao();
-    createParedeEsquerda();
-    createParedeDireita();
-    createParedeFundo();
-    createParedePerto();
+    createChao(true);
+    createParedeEsquerda(true);
+    createParedeDireita(true);
+    createParedeFundo(true);
+    createParedePerto(true);
 
     // Objects
-    createMesa();
-    createTv();
-    createSofa();
-    createMovel();
-    createCadeiras();
-    createQuadroLuz();
+    createMesa(true);
+    createTv(true);
+    createSofa(true);
+    createMovel(true);
+    createCadeiras(true);
+    createQuadroLuz(true);
 
     createTest();
 
@@ -267,7 +267,7 @@ function createLights() {
 }
 
 // Create Chao
-function createChao() {
+function createChao(helper) {
     var chaoGEO = new THREE.BoxGeometry(100, 1, 150);
     var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
     var material = new THREE.MeshPhongMaterial({ map: texture });
@@ -277,46 +277,76 @@ function createChao() {
     chao.receiveShadow = true;
     texture.repeat.set(10, 10);
     scene.add(chao);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
 // Create Parede Esquerda
-function createParedeEsquerda() {
+function createParedeEsquerda(helper) {
     var geometry = new THREE.BoxGeometry(1, 50, 150);
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     paredeEsquerda.position.set(-50, 25, 0);
     scene.add(paredeEsquerda);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
 // Create Parede Direita
-function createParedeDireita() {
+function createParedeDireita(helper) {
     var geometry = new THREE.BoxGeometry(1, 50, 150);
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeDireita = new THREE.Mesh(geometry, material);
     paredeDireita.position.set(50, 25, 0);
     scene.add(paredeDireita);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
 // Create Parede Fundo
-function createParedeFundo() {
+function createParedeFundo(helper) {
     var geometry = new THREE.BoxGeometry(100, 50, 1);
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, -75);
     scene.add(paredeFundo);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
 // Create Parede Perto
-function createParedePerto() {
+function createParedePerto(helper) {
     var geometry = new THREE.BoxGeometry(100, 50, 1);
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, 75);
     scene.add(paredeFundo);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
 // Create Mesa
-function createMesa() {
+function createMesa(helper) {
     var texture = new THREE.TextureLoader().load('img/mesa.png');
     materialMesa = new THREE.MeshPhongMaterial({ map: texture });
     objLoader.load('models/mesa.obj', function (object) {
@@ -331,11 +361,17 @@ function createMesa() {
         mesa.position.set(35 - 50, 0, 55 - 75);
 
         scene.add(mesa);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(object, 0xffff00);
+            scene.add(boxHelper);
+        }
     });
 }
 
 // Create Tv
-function createTv() {
+function createTv(helper) {
     var tvMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
     objLoader.load('models/televisao.obj', function (object) {
         tv = object;
@@ -348,11 +384,17 @@ function createTv() {
         tv.scale.set(0.4, 0.4, 0.4);
         tv.position.set(48, 20, -55);
         scene.add(tv);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(object, 0xffff00);
+            scene.add(boxHelper);
+        }
     });
 }
 
 // Create Sofa
-function createSofa() {
+function createSofa(helper) {
     var textureSofa = new THREE.TextureLoader().load('img/sofa.jpg');
     var materialSofa = new THREE.MeshPhongMaterial({ map: textureSofa });
     objLoader.load('models/sofa.obj', function (object) {
@@ -366,11 +408,17 @@ function createSofa() {
         scene.add(sofa);
         sofa.position.set(-15, 0, -40);
         sofa.rotation.y = Math.PI / 2;
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(object, 0xffff00);
+            scene.add(boxHelper);
+        }
     });
 }
 
 // Create Movel
-function createMovel() {
+function createMovel(helper) {
     var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
     var materialMovel = new THREE.MeshPhongMaterial({ map: textureMovel });
     objLoader.load('models/movel.obj', function (object) {
@@ -385,11 +433,17 @@ function createMovel() {
         movel.rotation.y = - Math.PI / 2;
         movel.portaParada = true;
         scene.add(movel);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(object, 0xffff00);
+            scene.add(boxHelper);
+        }
     });
 }
 
 // Create Cadeiras
-function createCadeiras() {
+function createCadeiras(helper) {
     var texture2 = new THREE.TextureLoader().load('img/cadeira.jpg');
     var material2 = new THREE.MeshPhongMaterial({ map: texture2 });
     objLoader.load('models/cadeira.obj', function (object) {
@@ -424,11 +478,24 @@ function createCadeiras() {
         // cadeira4.position.set(40, 0, 110);
         cadeira4.position.set(-10, 0, 110 - 75);
         scene.add(cadeira4);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(object, 0xffff00);
+            var boxHelper2 = new THREE.BoxHelper(cadeira2, 0xffff00);
+            var boxHelper3 = new THREE.BoxHelper(cadeira3, 0xffff00);
+            var boxHelper4 = new THREE.BoxHelper(cadeira4, 0xffff00);
+
+            scene.add(boxHelper);
+            scene.add(boxHelper2);
+            scene.add(boxHelper3);
+            scene.add(boxHelper4);
+        }
     });
 }
 
 // Create Quadro da Luz
-function createQuadroLuz() {
+function createQuadroLuz(helper) {
     var geometry = new THREE.BoxGeometry(0.5, 12, 21);
     var quadroMaterial = new THREE.MeshBasicMaterial({ color: 0xa0a0a0 });
     quadroLuz = new THREE.Mesh(geometry, quadroMaterial);
@@ -495,9 +562,15 @@ function createQuadroLuz() {
     // Adicionar quadroLuz a scene
     //quadroLuz.position.y = 30;
     scene.add(quadroLuz);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(quadroLuz, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
-function createPathCadeiras() {
+function createPathCadeiras(helper) {
     plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
         new THREE.MeshBasicMaterial({
             opacity: 0.0,
@@ -507,6 +580,12 @@ function createPathCadeiras() {
     plane.rotation.x = -Math.PI / 2;
     plane.name = "PathCadeiras";
     scene.add(plane);
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(plane, 0xffff00);
+        scene.add(boxHelper);
+    }
 }
 
 // Event: OnMouseDown
@@ -523,9 +602,8 @@ function onMouseDown(event) {
     //Intersects das cadeira
     // search for intersections
     var intersects = raycaster.intersectObjects(cadeira.children);
-    console.log(intersects);
     if (intersects.length > 0) {
-        console.log(intersects)
+        //console.log(intersects)
         // controls.enabled = false;
 
         // gets intersect object (global variable)
@@ -540,7 +618,7 @@ function onMouseDown(event) {
     // search for intersections
     var intersects2 = raycaster.intersectObjects(cadeira2.children);
     if (intersects2.length > 0) {
-        console.log(intersects2)
+        //console.log(intersects2)
 
         // controls.enabled = false;
         // gets intersect object (global variable)
@@ -554,7 +632,7 @@ function onMouseDown(event) {
     // search for intersections
     var intersects3 = raycaster.intersectObjects(cadeira3.children);
     if (intersects3.length > 0) {
-        console.log(intersects3)
+        //console.log(intersects3)
 
         // controls.enabled = false;
         // gets intersect object (global variable)
@@ -568,7 +646,7 @@ function onMouseDown(event) {
     // search for intersections
     var intersects4 = raycaster.intersectObjects(cadeira4.children);
     if (intersects4.length > 0) {
-        console.log(intersects4)
+        //console.log(intersects4)
 
         // controls.enabled = false;
         // gets intersect object (global variable)
@@ -624,7 +702,7 @@ function onClick(event) {
     // search for intersections
     var intersectsBtn = raycaster.intersectObjects([quadroLuz, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
     if (intersectsBtn.length > 0) {
-        console.log(intersectsBtn)
+        //console.log(intersectsBtn)
 
         for (var i = 0; i < intersectsBtn.length; i++) {
             if (intersectsBtn[i].object.name == "botao1") {
