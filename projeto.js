@@ -40,6 +40,7 @@ window.onload = function init() {
     // camera.position.set(50, 70, 200);
     //camera.position.set(40, 40, 75);
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.y = 10;
     scene.add(camera);
 
     // Orbit Controls
@@ -107,9 +108,11 @@ function animate() {
         var time = performance.now();
         var delta = (time - prevTime) / 1000;
 
-        velocity.x -= velocity.x * 10.0 * delta;
-        velocity.z -= velocity.z * 10.0 * delta;
+        // Move in X and Z axis
+        velocity.x -= velocity.x * 15.0 * delta;
+        velocity.z -= velocity.z * 15.0 * delta;
 
+        // Move in Y Axis (Jump)
         velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
         direction.z = Number(moveForward) - Number(moveBackward);
