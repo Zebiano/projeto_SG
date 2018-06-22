@@ -6,6 +6,9 @@ var selectedObject, ambientLight;
 // var porta2Mexer = false
 var soma = 0.01
 
+// Arrays
+var arrayParedes = [];
+
 // PointerLock Variables
 var objects = [];
 var controlsEnabled = false;
@@ -75,8 +78,6 @@ window.onload = function init() {
     createCadeiras(true);
     createQuadroLuz(true);
 
-    createTest();
-
     // Planes to move things around
     createPathCadeiras();
 
@@ -89,20 +90,31 @@ window.onload = function init() {
     window.addEventListener('keydown', onKeyDown, false);
     window.addEventListener('keyup', onKeyUp, false);
 
+    console.log(arrayParedes);
+
     // Animate
     animate()
 }
 
-function createTest() {
-    var sphere = new THREE.SphereGeometry();
-    var object = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial(0xff0000));
-    var box = new THREE.BoxHelper(object, 0xffff00);
-    scene.add(box);
+function collisionDetection(position) {
+    // Collision detection
+    raycaster.ray.origin.copy(position);
+
+    var dir = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+    raycaster.ray.direction.copy(dir);
+
+    var intersections = raycaster.intersectObjects(arrayParedes);
+
+    // If we hit something (a wall) then stop moving in that direction
+    if (intersections.length > 0 && intersections[0].distance <= 215) {
+        console.log(intersections.length);
+        console.log("Holy moly! Temos colisoes! :D YEH BOOI");
+    }
 }
 
 // Animate
 function animate() {
-    //console.log("animate")
+    //console.log(controls.getObject().position);
     if (movel) {
         //console.log(movel.portaParada)
         if (!movel.portaParada) {
@@ -112,7 +124,6 @@ function animate() {
             }
         }
     }
-    //bbHelper.update(materialMesa); // updates helper object
 
     // PointerLockControls
     if (controlsEnabled === true) {
@@ -158,6 +169,9 @@ function animate() {
 
         prevTime = time;
     }
+
+    var position = controls.getObject().position;
+    collisionDetection(position);
 
     renderer.render(scene, camera);
     window.requestAnimationFrame(animate)
@@ -298,6 +312,8 @@ function createParedeEsquerda(helper) {
         var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
         scene.add(boxHelper);
     }
+
+    arrayParedes.push(paredeEsquerda);
 }
 
 // Create Parede Direita
@@ -313,6 +329,8 @@ function createParedeDireita(helper) {
         var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
         scene.add(boxHelper);
     }
+
+    arrayParedes.push(paredeDireita);
 }
 
 // Create Parede Fundo
@@ -328,6 +346,8 @@ function createParedeFundo(helper) {
         var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
         scene.add(boxHelper);
     }
+
+    arrayParedes.push(paredeFundo);
 }
 
 // Create Parede Perto
@@ -343,6 +363,8 @@ function createParedePerto(helper) {
         var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
         scene.add(boxHelper);
     }
+
+    arrayParedes.push(paredeFundo);
 }
 
 // Create Mesa
