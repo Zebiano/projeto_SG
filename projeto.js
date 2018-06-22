@@ -95,7 +95,7 @@ window.onload = function init() {
 function animate() {
     //console.log("animate")
     if (movel) {
-        console.log(movel.portaParada)
+        //console.log(movel.portaParada)
         if (!movel.portaParada) {
             movel.children[3].rotation.y -= soma
             if (movel.children[3].rotation.y <= - Math.PI / 2) {
@@ -103,7 +103,6 @@ function animate() {
             }
         }
     }
-
 
     // PointerLockControls
     if (controlsEnabled === true) {
@@ -118,8 +117,8 @@ function animate() {
         var delta = (time - prevTime) / 1000;
 
         // Move in X and Z axis
-        velocity.x -= velocity.x * 15.0 * delta;
-        velocity.z -= velocity.z * 15.0 * delta;
+        velocity.x -= velocity.x * 14.0 * delta;
+        velocity.z -= velocity.z * 14.0 * delta;
 
         // Move in Y Axis (Jump)
         velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
@@ -611,7 +610,7 @@ function onClick(event) {
     // update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
 
-    //Intersects dos botoes
+    // Intersects dos botoes
     // search for intersections
     var intersectsBtn = raycaster.intersectObjects([quadroLuz, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
     if (intersectsBtn.length > 0) {
@@ -642,7 +641,7 @@ function onClick(event) {
                 if (ambientLight.intensity == 0.7) {
                     ambientLight.intensity = 0
                 }
-                else if(ambientLight.intensity == 0){
+                else if (ambientLight.intensity == 0) {
                     ambientLight.intensity = 0.7
                 }
             }
