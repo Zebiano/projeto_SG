@@ -19,7 +19,6 @@ var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 
-
 // Onload
 window.onload = function init() {
     // New
@@ -34,7 +33,8 @@ window.onload = function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("#AAAAAA");
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
     // Camera
@@ -45,7 +45,9 @@ window.onload = function init() {
     camera.position.y = 20;
     scene.add(camera);
 
-    
+    // Create Crosshair
+    createCrosshair();
+
     // Orbit Controls
     // controls = new THREE.OrbitControls(camera);
     // controls.addEventListener('change', function () { renderer.render(scene, camera); });
@@ -92,8 +94,7 @@ window.onload = function init() {
 // Animate
 function animate() {
     //console.log("animate")
-    if (movel)
-    {
+    if (movel) {
         console.log(movel.portaParada)
         if (!movel.portaParada) {
             movel.children[3].rotation.y -= soma
@@ -102,7 +103,7 @@ function animate() {
             }
         }
     }
-    
+
 
     // PointerLockControls
     if (controlsEnabled === true) {
@@ -151,6 +152,38 @@ function animate() {
 
     renderer.render(scene, camera);
     window.requestAnimationFrame(animate)
+}
+
+// Create Crosshair
+function createCrosshair() {
+    var material = new THREE.LineBasicMaterial({ color: 0xAAFFAA });
+
+    // crosshair size
+    var x = 0.015, y = 0.015;
+
+    var geometry = new THREE.Geometry();
+
+    // crosshair
+    geometry.vertices.push(new THREE.Vector3(0, y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(x, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+
+    var crosshair = new THREE.Line(geometry, material);
+
+    // place it in the center
+    var crosshairPercentX = 50;
+    var crosshairPercentY = 50;
+    var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
+    var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+
+    crosshair.position.x = crosshairPositionX * camera.aspect;
+    crosshair.position.y = crosshairPositionY;
+
+    crosshair.position.z = -1;
+
+    camera.add(crosshair);
 }
 
 // Add PointerLock Controls
@@ -287,7 +320,7 @@ function createMesa() {
         mesa.scale.set(0.15, 0.15, 0.15);
         // mesa.position.set(35, 0, 55);
         mesa.position.set(35 - 50, 0, 55 - 75);
-        
+
         scene.add(mesa);
     });
 }
@@ -299,6 +332,8 @@ function createTv() {
         tv = object;
         for (var i = 0; i < tv.children.length; i++) {
             tv.children[i].material = tvMaterial;
+            tv.children[i].receiveShadow = true;
+            tv.children[i].castShadow = true;
         }
         tv.rotation.y = - Math.PI / 2;
         tv.scale.set(0.4, 0.4, 0.4);
@@ -316,6 +351,8 @@ function createSofa() {
         sofa.scale.set(20, 20, 20)
         for (var i = 0; i < sofa.children.length; i++) {
             sofa.children[i].material = materialSofa;
+            sofa.children[i].receiveShadow = true;
+            sofa.children[i].castShadow = true;
         }
         scene.add(sofa);
         sofa.position.set(-15, 0, -40);
@@ -332,6 +369,8 @@ function createMovel() {
         movel.scale.set(0.02, 0.02, 0.02)
         for (var i = 0; i < movel.children.length; i++) {
             movel.children[i].material = materialMovel;
+            movel.children[i].receiveShadow = true;
+            movel.children[i].castShadow = true;
         }
         movel.position.set(45, 7, -40);
         movel.rotation.y = - Math.PI / 2;
@@ -353,6 +392,8 @@ function createCadeiras() {
         cadeira.rotation.y = Math.PI / 2;
         for (var i = 0; i < cadeira.children.length; i++) {
             cadeira.children[i].material = material2;
+            cadeira.children[i].receiveShadow = true;
+            cadeira.children[i].castShadow = true;
         }
         scene.add(cadeira);
 
@@ -443,6 +484,7 @@ function createQuadroLuz() {
     quadroLuz.add(botao8);
 
     // Adicionar quadroLuz a scene
+    //quadroLuz.position.y = 30;
     scene.add(quadroLuz);
 }
 
