@@ -75,6 +75,8 @@ window.onload = function init() {
     createCadeiras();
     createQuadroLuz();
 
+    createTest();
+
     // Planes to move things around
     createPathCadeiras();
 
@@ -91,6 +93,13 @@ window.onload = function init() {
     animate()
 }
 
+function createTest() {
+    var sphere = new THREE.SphereGeometry();
+    var object = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial(0xff0000));
+    var box = new THREE.BoxHelper(object, 0xffff00);
+    scene.add(box);
+}
+
 // Animate
 function animate() {
     //console.log("animate")
@@ -103,6 +112,7 @@ function animate() {
             }
         }
     }
+    //bbHelper.update(materialMesa); // updates helper object
 
     // PointerLockControls
     if (controlsEnabled === true) {
@@ -308,11 +318,11 @@ function createParedePerto() {
 // Create Mesa
 function createMesa() {
     var texture = new THREE.TextureLoader().load('img/mesa.png');
-    var material = new THREE.MeshPhongMaterial({ map: texture });
+    materialMesa = new THREE.MeshPhongMaterial({ map: texture });
     objLoader.load('models/mesa.obj', function (object) {
         mesa = object;
         for (var i = 0; i < mesa.children.length; i++) {
-            mesa.children[i].material = material;
+            mesa.children[i].material = materialMesa;
             mesa.children[i].receiveShadow = true;
             mesa.children[i].castShadow = true;
         }
