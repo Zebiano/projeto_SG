@@ -1,5 +1,5 @@
 // Variables
-var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener;
+var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
 var mesh;
 var selectedObject, ambientLight;
@@ -11,6 +11,10 @@ var papi = new THREE.Object3D();
 
 // Arrays
 var arrayParedes = [];
+
+var sphereTest;
+var bolaDir;
+var moveBola = false;
 
 // PointerLock Variables
 var objects = [];
@@ -85,11 +89,14 @@ window.onload = function init() {
     createCadeiras(true);
     createQuadroLuz(true);
 
+    createSphere();
+
     // Planes to move things around
     createPathCadeiras();
 
     // Adicionar papi a cena
     papi.position.y = -20;
+    papi.name = "papi";
     scene.add(papi);
 
     // Event Listeners
@@ -107,20 +114,10 @@ window.onload = function init() {
     animate()
 }
 
-function collisionDetection(position) {
-    // Collision detection
-    raycaster.ray.origin.copy(position);
-
-    var dir = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
-    raycaster.ray.direction.copy(dir);
-
-    var intersections = raycaster.intersectObjects(arrayParedes);
-
-    // If we hit something (a wall) then stop moving in that direction
-    if (intersections.length > 0 && intersections[0].distance <= 215) {
-        console.log(intersections.length);
-        console.log("Holy moly! Temos colisoes! :D YEH BOOI");
-    }
+function createSphere() {
+    var geometry = new THREE.SphereGeometry(5, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    sphereTest = new THREE.Mesh(geometry, material);
 }
 
 // Animate
@@ -154,6 +151,7 @@ function animate() {
             // });
         }
     }
+
     // PointerLockControls
     if (controlsEnabled === true) {
         raycaster.ray.origin.copy(controls.getObject().position);
@@ -202,8 +200,33 @@ function animate() {
     var position = controls.getObject().position;
     collisionDetection(position);
 
+    // Send bola
+    if (moveBola == true) {
+        sphereTest.position.x += bolaDir.x;
+        sphereTest.position.y += bolaDir.y;
+        sphereTest.position.z += bolaDir.z;
+    }
+
+
     renderer.render(scene, camera);
     window.requestAnimationFrame(animate)
+}
+
+// Deteta colisoes
+function collisionDetection(position) {
+    // Collision detection
+    raycaster.ray.origin.copy(position);
+
+    var dir = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+    raycaster.ray.direction.copy(dir);
+
+    var intersections = raycaster.intersectObjects(arrayParedes);
+
+    // If we hit something (a wall) then stop moving in that direction
+    if (intersections.length > 0 && intersections[0].distance <= 215) {
+        console.log(intersections.length);
+        console.log("Holy moly! Temos colisoes! :D YEH BOOI");
+    }
 }
 
 // Create Crosshair
@@ -222,7 +245,7 @@ function createCrosshair() {
     geometry.vertices.push(new THREE.Vector3(x, 0, 0));
     geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
 
-    var crosshair = new THREE.Line(geometry, material);
+    crosshair = new THREE.Line(geometry, material);
 
     // place it in the center
     var crosshairPercentX = 50;
@@ -232,12 +255,13 @@ function createCrosshair() {
 
     crosshair.position.x = crosshairPositionX * camera.aspect;
     crosshair.position.y = crosshairPositionY;
-
     crosshair.position.z = -1;
+    crosshair.name = "Crosshair";
 
     camera.add(crosshair);
 }
 
+// Gets random color
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '0x';
@@ -673,6 +697,7 @@ function createQuadroLuz(helper) {
     }
 }
 
+// Creates Plano para mexer as cadeiras em cima dele
 function createPathCadeiras(helper) {
     plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
         new THREE.MeshBasicMaterial({
@@ -761,8 +786,6 @@ function onMouseDown(event) {
         // calculates the offset (global variable)
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
     }
-
-
 }
 
 // Event: OnMouseMove
@@ -784,14 +807,12 @@ function onMouseMove(event) {
         console.log(selectedObject.position)
 
         renderer.render(scene, camera);
-
     }
 }
 
 // Event: OnMouseUp
 function onMouseUp(event) {
     selectedObject = null;
-
 }
 
 // Event: OnClick
@@ -874,6 +895,15 @@ function onClick(event) {
 
         }
     }
+
+    // Crosshair
+    //console.log(controls.getObject().position);
+    sphereTest.position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
+    papi.add(sphereTest);
+    console.log("Created!");
+    bolaDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
+    console.log(bolaDir);
+    moveBola = true;
 }
 
 // Event: onKeyDown
