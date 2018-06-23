@@ -2,6 +2,7 @@
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv;
 var mesh;
+var teleportX, teleportY, teleportZ;
 var selectedObject, ambientLight;
 // var porta2Mexer = false
 var soma = 0.01
@@ -13,9 +14,12 @@ var papi = new THREE.Object3D();
 var arrayColisoes = [];
 var arrayProjeteis = [];
 
-var projetilDir;
+// Boolean Variables
 var moveProjetil = false;
 var hasCollided = false;
+var teleportPlayer = false;
+
+var projetilDir;
 
 // PointerLock Variables
 var objects = [];
@@ -33,6 +37,7 @@ var vertex = new THREE.Vector3();
 // CONFIG
 var playerSpeed = 14; // Mais alto = Mais devagar!
 var projetilSpeed = 5;
+//teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
 
 // Onload
 window.onload = function init() {
@@ -125,6 +130,10 @@ function animate() {
         raycaster.ray.origin.copy(controls.getObject().position);
         raycaster.ray.origin.y -= 10;
 
+        // Colisoes
+        var dir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)).clone();
+        raycaster.ray.direction.copy(dir);
+
         var intersections = raycaster.intersectObjects(arrayColisoes);
 
         var onObject = intersections.length > 0;
@@ -155,6 +164,14 @@ function animate() {
             controls.getObject().translateZ(velocity.z * delta);
         }
 
+        // Teleport player to desired location
+        if (teleportPlayer == true) {
+            controls.getObject().translateX(teleportX);
+            controls.getObject().translateY(teleportY);
+            controls.getObject().translateZ(teleportZ);
+            teleportPlayer = false;
+        }
+
         if (controls.getObject().position.y < 10) {
             velocity.y = 0;
             controls.getObject().position.y = 10;
@@ -167,7 +184,7 @@ function animate() {
 
     // Colisoes
     var position = controls.getObject().position;
-    collisionDetection(position);
+    //collisionDetection(position);
 
     // Animacao do Movel
     if (movel) {
@@ -231,26 +248,12 @@ function animate() {
     window.requestAnimationFrame(animate)
 }
 
-// Deteta colisoes
-function collisionDetection(position) {
-    // Collision detection
-    raycaster.ray.origin.copy(position);
-
-    //var dir = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
-    var dir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)).clone();
-    raycaster.ray.direction.copy(dir);
-
-    var intersections = raycaster.intersectObjects(arrayColisoes);
-
-    // If we hit something (a wall) then stop moving in that direction
-    if (intersections.length > 0 && intersections[0].distance <= 215) {
-        //console.log(intersections.length);
-        console.log("Holy moly! Temos colisoes! :D YEH BOOI");
-        console.log(intersections);
-        if (intersections[0].object.name == "paredeX50") {
-            console.log("Ganda parde");
-        }
-    }
+// Teleport function
+function teleport(x, y, z) {
+    teleportPlayer = true;
+    teleportX = x;
+    teleportY = y;
+    teleportZ = z;
 }
 
 // Create Crosshair
@@ -497,6 +500,7 @@ function createMesa(helper) {
         }
 
         papi.add(mesa);
+        arrayColisoes.push(mesa);
     });
 }
 
@@ -523,6 +527,7 @@ function createTv(helper) {
         }
 
         papi.add(tv);
+        arrayColisoes.push(tv);
     });
 }
 
@@ -550,6 +555,7 @@ function createSofa(helper) {
         }
 
         papi.add(sofa);
+        arrayColisoes.push(sofa);
     });
 }
 
@@ -580,6 +586,7 @@ function createMovel(helper) {
         }
 
         papi.add(movel);
+        arrayColisoes.push(movel);
     });
 }
 
@@ -766,8 +773,7 @@ function onMouseDown(event) {
     // update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
 
-
-    //Intersects das cadeira
+    //Intersects das cadeiras
     // search for intersections
     var intersects = raycaster.intersectObjects(cadeira.children);
     if (intersects.length > 0) {
@@ -865,7 +871,7 @@ function onClick(event) {
 
     // Intersects dos botoes
     // search for intersections
-    var intersectsBtn = raycaster.intersectObjects([quadroLuz, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
+    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
     if (intersectsBtn.length > 0) {
         //console.log(intersectsBtn)
 
@@ -917,13 +923,12 @@ function onClick(event) {
                 console.log(ambientLight.color)
             }
         }
-
     }
 
-    // search for intersections
+    // Intersects do movel
     var intersectsMovel = raycaster.intersectObjects(movel.children);
     if (intersectsMovel.length > 0) {
-        console.log(movel)
+        console.log(movel);
 
         if (intersectsMovel[0].object.name == "porta2") {
             // porta2Mexer = true
@@ -931,6 +936,14 @@ function onClick(event) {
             //animate();
             console.log("asoiudg");
         }
+    }
+
+    // Intersects da tv
+    var intersectsTv = raycaster.intersectObjects(tv.children);
+    if (intersectsTv.length > 0) {
+        console.log("Toquei na tv pa!");
+
+        teleport(20, 0, 20);
     }
 
     // Shooting Range
@@ -962,10 +975,6 @@ function onKeyDown(event) {
         case 68: // d
             moveRight = true;
             break;
-        case 32: // space
-            if (canJump === true) velocity.y += 350;
-            canJump = false;
-            break;
     }
 }
 
@@ -983,12 +992,10 @@ function onKeyUp(event) {
         case 65: // a
             moveLeft = false;
             break;
-
         case 40: // down
         case 83: // s
             moveBackward = false;
             break;
-
         case 39: // right
         case 68: // d
             moveRight = false;
