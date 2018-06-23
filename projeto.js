@@ -16,7 +16,6 @@ var arrayProjeteis = [];
 
 var projetilDir;
 var moveProjetil = false;
-var raySpeedoMeter = 5;
 var hasCollided = false;
 
 // PointerLock Variables
@@ -31,6 +30,10 @@ var prevTime = performance.now();
 var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
+
+// CONFIG
+var playerSpeed = 14; // Mais alto = Mais devagar!
+var projetilSpeed = 5;
 
 // Onload
 window.onload = function init() {
@@ -112,44 +115,12 @@ window.onload = function init() {
     window.addEventListener('keydown', onKeyDown, false);
     window.addEventListener('keyup', onKeyUp, false);
 
-    console.log(arrayParedes);
-
     // Animate
     animate()
 }
 
 // Animate
 function animate() {
-    //console.log(controls.getObject().position);
-    if (movel) {
-        //console.log(movel.portaParada)
-        if (!movel.portaParada) {
-            movel.children[3].rotation.y -= soma
-            if (movel.children[3].rotation.y <= - Math.PI / 2) {
-                movel.portaParada = true; ///??????????????????????????????????????
-            }
-        }
-    }
-
-    if (ambientLight) {
-        if (ambientLight.raveMode) {
-            var color = parseInt(getRandomColor())
-            console.log(color)
-            ambientLight.color.set(color)
-
-            // // create a global audio source
-            // var sound = new THREE.Audio(listener);
-
-            // // load a sound and set it as the Audio object's buffer
-            // var audioLoader = new THREE.AudioLoader();
-            // audioLoader.load('audio/darude.ogg', function (buffer) {
-            //     sound.setBuffer(buffer);
-            //     sound.setLoop(true);
-            //     sound.play();
-            // });
-        }
-    }
-
     // PointerLockControls
     if (controlsEnabled === true) {
         raycaster.ray.origin.copy(controls.getObject().position);
@@ -163,8 +134,8 @@ function animate() {
         var delta = (time - prevTime) / 1000;
 
         // Move in X and Z axis
-        velocity.x -= velocity.x * 14.0 * delta;
-        velocity.z -= velocity.z * 14.0 * delta;
+        velocity.x -= velocity.x * playerSpeed * delta;
+        velocity.z -= velocity.z * playerSpeed * delta;
 
         // Move in Y Axis (Jump)
         velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
@@ -195,14 +166,46 @@ function animate() {
         prevTime = time;
     }
 
+    // Colisoes
     var position = controls.getObject().position;
     collisionDetection(position);
 
+    // Animacao do Movel
+    if (movel) {
+        //console.log(movel.portaParada)
+        if (!movel.portaParada) {
+            movel.children[3].rotation.y -= soma
+            if (movel.children[3].rotation.y <= - Math.PI / 2) {
+                movel.portaParada = true; ///??????????????????????????????????????
+            }
+        }
+    }
+
+    // Animacoes de luzes
+    if (ambientLight) {
+        if (ambientLight.raveMode) {
+            var color = parseInt(getRandomColor())
+            console.log(color)
+            ambientLight.color.set(color)
+
+            // // create a global audio source
+            // var sound = new THREE.Audio(listener);
+
+            // // load a sound and set it as the Audio object's buffer
+            // var audioLoader = new THREE.AudioLoader();
+            // audioLoader.load('audio/darude.ogg', function (buffer) {
+            //     sound.setBuffer(buffer);
+            //     sound.setLoop(true);
+            //     sound.play();
+            // });
+        }
+    }
+
     // Send projetil
     if (moveProjetil == true) {
-        arrayProjeteis[0].position.x += projetilDir.x * raySpeedoMeter;
-        arrayProjeteis[0].position.y += projetilDir.y * raySpeedoMeter;
-        arrayProjeteis[0].position.z += projetilDir.z * raySpeedoMeter;
+        arrayProjeteis[0].position.x += projetilDir.x * projetilSpeed;
+        arrayProjeteis[0].position.y += projetilDir.y * projetilSpeed;
+        arrayProjeteis[0].position.z += projetilDir.z * projetilSpeed;
     }
 
     // Self made colisoes que nao acabamos... 
@@ -931,6 +934,10 @@ function onClick(event) {
 
 // Event: onKeyDown
 function onKeyDown(event) {
+    // When holding shift, player runs
+    if (event.keyCode == 16) {
+        playerSpeed = 5;
+    }
     switch (event.keyCode) {
         case 38: // up
         case 87: // w
@@ -956,6 +963,9 @@ function onKeyDown(event) {
 
 // Event: onKeyUp
 function onKeyUp(event) {
+    if (event.keyCode == 16) {
+        playerSpeed = 14;
+    }
     switch (event.keyCode) {
         case 38: // up
         case 87: // w
