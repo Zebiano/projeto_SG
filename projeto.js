@@ -10,9 +10,8 @@ var soma = 0.01
 var papi = new THREE.Object3D();
 
 // Arrays
-var arrayParedes = [];
+var arrayColisoes = [];
 var arrayProjeteis = [];
-//var arrayColisoes = [];
 
 var projetilDir;
 var moveProjetil = false;
@@ -126,7 +125,7 @@ function animate() {
         raycaster.ray.origin.copy(controls.getObject().position);
         raycaster.ray.origin.y -= 10;
 
-        var intersections = raycaster.intersectObjects(objects);
+        var intersections = raycaster.intersectObjects(arrayColisoes);
 
         var onObject = intersections.length > 0;
 
@@ -150,11 +149,11 @@ function animate() {
         if (onObject === true) {
             velocity.y = Math.max(0, velocity.y);
             canJump = true;
+        } else {
+            controls.getObject().translateX(velocity.x * delta);
+            controls.getObject().translateY(velocity.y * delta);
+            controls.getObject().translateZ(velocity.z * delta);
         }
-
-        controls.getObject().translateX(velocity.x * delta);
-        controls.getObject().translateY(velocity.y * delta);
-        controls.getObject().translateZ(velocity.z * delta);
 
         if (controls.getObject().position.y < 10) {
             velocity.y = 0;
@@ -237,15 +236,20 @@ function collisionDetection(position) {
     // Collision detection
     raycaster.ray.origin.copy(position);
 
-    var dir = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+    //var dir = controls.getDirection(new THREE.Vector3(0, 0, 0)).clone();
+    var dir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)).clone();
     raycaster.ray.direction.copy(dir);
 
-    var intersections = raycaster.intersectObjects(arrayParedes);
+    var intersections = raycaster.intersectObjects(arrayColisoes);
 
     // If we hit something (a wall) then stop moving in that direction
     if (intersections.length > 0 && intersections[0].distance <= 215) {
-        console.log(intersections.length);
+        //console.log(intersections.length);
         console.log("Holy moly! Temos colisoes! :D YEH BOOI");
+        console.log(intersections);
+        if (intersections[0].object.name == "paredeX50") {
+            console.log("Ganda parde");
+        }
     }
 }
 
@@ -394,6 +398,7 @@ function createParedeEsquerda(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     paredeEsquerda.position.set(-50, 25, 0);
+    paredeEsquerda.name = "paredeX-50";
     //scene.add(paredeEsquerda);
 
     // BoxHelper
@@ -404,7 +409,7 @@ function createParedeEsquerda(helper) {
     }
 
     papi.add(paredeEsquerda);
-    arrayParedes.push(paredeEsquerda);
+    arrayColisoes.push(paredeEsquerda);
 }
 
 // Create Parede Direita
@@ -413,6 +418,7 @@ function createParedeDireita(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeDireita = new THREE.Mesh(geometry, material);
     paredeDireita.position.set(50, 25, 0);
+    paredeDireita.name = "paredeX50";
     //scene.add(paredeDireita);
 
     // BoxHelper
@@ -423,7 +429,7 @@ function createParedeDireita(helper) {
     }
 
     papi.add(paredeDireita);
-    arrayParedes.push(paredeDireita);
+    arrayColisoes.push(paredeDireita);
 }
 
 // Create Parede Fundo
@@ -432,6 +438,7 @@ function createParedeFundo(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, -75);
+    paredeFundo.name = "paredeZ-75";
     //scene.add(paredeFundo);
 
     // BoxHelper
@@ -442,7 +449,7 @@ function createParedeFundo(helper) {
     }
 
     papi.add(paredeFundo);
-    arrayParedes.push(paredeFundo);
+    arrayColisoes.push(paredeFundo);
 }
 
 // Create Parede Perto
@@ -451,6 +458,7 @@ function createParedePerto(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, 75);
+    paredeFundo.name = "paredeZ75";
     //scene.add(paredeFundo);
 
     // BoxHelper
@@ -461,7 +469,7 @@ function createParedePerto(helper) {
     }
 
     papi.add(paredeFundo);
-    arrayParedes.push(paredeFundo);
+    arrayColisoes.push(paredeFundo);
 }
 
 // Create Mesa
