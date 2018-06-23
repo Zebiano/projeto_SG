@@ -1,6 +1,6 @@
 // Variables
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv;
 var mesh;
 var selectedObject, ambientLight;
 // var porta2Mexer = false
@@ -11,10 +11,13 @@ var papi = new THREE.Object3D();
 
 // Arrays
 var arrayParedes = [];
+var arrayProjeteis = [];
+//var arrayColisoes = [];
 
-var sphereTest;
-var bolaDir;
-var moveBola = false;
+var projetilDir;
+var moveProjetil = false;
+var raySpeedoMeter = 5;
+var hasCollided = false;
 
 // PointerLock Variables
 var objects = [];
@@ -89,10 +92,11 @@ window.onload = function init() {
     createCadeiras(true);
     createQuadroLuz(true);
 
-    createSphere();
-
     // Planes to move things around
     createPathCadeiras();
+
+    // Creates the shooting range
+    createShootingRange();
 
     // Adicionar papi a cena
     papi.position.y = -20;
@@ -112,12 +116,6 @@ window.onload = function init() {
 
     // Animate
     animate()
-}
-
-function createSphere() {
-    var geometry = new THREE.SphereGeometry(5, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    sphereTest = new THREE.Mesh(geometry, material);
 }
 
 // Animate
@@ -200,13 +198,32 @@ function animate() {
     var position = controls.getObject().position;
     collisionDetection(position);
 
-    // Send bola
-    if (moveBola == true) {
-        sphereTest.position.x += bolaDir.x;
-        sphereTest.position.y += bolaDir.y;
-        sphereTest.position.z += bolaDir.z;
+    // Send projetil
+    if (moveProjetil == true) {
+        arrayProjeteis[0].position.x += projetilDir.x * raySpeedoMeter;
+        arrayProjeteis[0].position.y += projetilDir.y * raySpeedoMeter;
+        arrayProjeteis[0].position.z += projetilDir.z * raySpeedoMeter;
     }
 
+    // Self made colisoes que nao acabamos... 
+    /*if (arrayColisoes.length > 0) {
+        var BBox = new THREE.Box3().setFromObject(sphereTest);
+        //console.log(arrayColisoes[0]);
+        var BBox2 = new THREE.Box3().setFromObject(arrayColisoes[0]);
+        hasCollided = BBox.intersectsBox(BBox2);
+        if (hasCollided) {
+            console.log(hasCollided);
+        }
+
+        for (var i = 0; i < arrayColisoes.length; i++) {
+            hasCollided = BBox.intersectsBox(new THREE.Box3().setFromObject(arrayColisoes[i]));
+            if (hasCollided == true) {
+                console.log("It has collided with: " + arrayColisoes[i]);
+                hasCollided == false;
+                break;
+            }
+        }
+    }*/
 
     renderer.render(scene, camera);
     window.requestAnimationFrame(animate)
@@ -684,6 +701,16 @@ function createQuadroLuz(helper) {
     botao8.name = "botao8"
     quadroLuz.add(botao8);
 
+    //arrayColisoes.push(quadroLuz);
+    /*arrayColisoes.push(new THREE.Box3().setFromObject(botao1));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao2));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao3));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao4));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao5));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao6));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao7));
+    arrayColisoes.push(new THREE.Box3().setFromObject(botao8));*/
+
     // Adicionar quadroLuz a scene
     //quadroLuz.position.y = 30;
     //scene.add(quadroLuz);
@@ -891,19 +918,15 @@ function onClick(event) {
             // porta2Mexer = true
             movel.portaParada = false;
             //animate();
-            console.log("asoiudg")
-
+            console.log("asoiudg");
         }
     }
 
-    // Crosshair
-    //console.log(controls.getObject().position);
-    sphereTest.position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
-    papi.add(sphereTest);
-    console.log("Created!");
-    bolaDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
-    console.log(bolaDir);
-    moveBola = true;
+    // Shooting Range
+    arrayProjeteis[0].position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
+    papi.add(arrayProjeteis[0]);
+    projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
+    moveProjetil = true;
 }
 
 // Event: onKeyDown
@@ -999,3 +1022,15 @@ function animate() {
 
     window.requestAnimationFrame(animate)
 }*/
+
+function createShootingRange() {
+    var geometry = new THREE.SphereGeometry(1, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    projetil = new THREE.Mesh(geometry, material);
+
+    // BoxHelper
+    var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
+    projetil.add(boxHelper);
+
+    arrayProjeteis.push(projetil);
+}
