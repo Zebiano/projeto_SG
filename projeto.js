@@ -1,5 +1,5 @@
 // Variables
-var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset;
+var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener;
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz;
 var mesh;
 var selectedObject, ambientLight;
@@ -47,6 +47,10 @@ window.onload = function init() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.y = 20;
     scene.add(camera);
+
+    // create an AudioListener and add it to the camera
+    listener = new THREE.AudioListener();
+    camera.add(listener);
 
     // Create Crosshair
     createCrosshair();
@@ -125,6 +129,24 @@ function animate() {
         }
     }
 
+    if (ambientLight) {
+        if (ambientLight.raveMode) {
+            var color = parseInt(getRandomColor())
+            console.log(color)
+            ambientLight.color.set(color)
+
+            // // create a global audio source
+            // var sound = new THREE.Audio(listener);
+
+            // // load a sound and set it as the Audio object's buffer
+            // var audioLoader = new THREE.AudioLoader();
+            // audioLoader.load('audio/darude.ogg', function (buffer) {
+            //     sound.setBuffer(buffer);
+            //     sound.setLoop(true);
+            //     sound.play();
+            // });
+        }
+    }
     // PointerLockControls
     if (controlsEnabled === true) {
         raycaster.ray.origin.copy(controls.getObject().position);
@@ -207,6 +229,15 @@ function createCrosshair() {
     crosshair.position.z = -1;
 
     camera.add(crosshair);
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '0x';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
 // Add PointerLock Controls
@@ -406,7 +437,7 @@ function createTv(helper) {
         tv.scale.set(0.4, 0.4, 0.4);
         tv.position.set(48, 20, -55);
         scene.add(tv);
-
+        console.log(tv)
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
@@ -443,7 +474,7 @@ function createSofa(helper) {
 function createMovel(helper) {
     var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
     var materialMovel = new THREE.MeshPhongMaterial({ map: textureMovel });
-    objLoader.load('models/movel.obj', function (object) {
+    objLoader.load('models/armario.obj', function (object) {
         movel = object;
         movel.scale.set(0.02, 0.02, 0.02)
         for (var i = 0; i < movel.children.length; i++) {
@@ -454,6 +485,8 @@ function createMovel(helper) {
         movel.position.set(45, 7, -40);
         movel.rotation.y = - Math.PI / 2;
         movel.portaParada = true;
+        var axesHelper = new THREE.AxesHelper(10);
+        movel.add(axesHelper);
         scene.add(movel);
 
         // BoxHelper
@@ -679,6 +712,7 @@ function onMouseDown(event) {
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
     }
 
+
 }
 
 // Event: OnMouseMove
@@ -728,24 +762,27 @@ function onClick(event) {
 
         for (var i = 0; i < intersectsBtn.length; i++) {
             if (intersectsBtn[i].object.name == "botao1") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0xffffff)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao2") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0x4B0082)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao3") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0x0000FF)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao3") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0x4B0082)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao4") {
-                ambientLight.color.set(0x00FF00)
-                console.log(ambientLight.color)
+                ambientLight.raveMode = true
             }
             else if (intersectsBtn[i].object.name == "botao5") {
                 if (ambientLight.intensity == 0.7) {
@@ -756,14 +793,17 @@ function onClick(event) {
                 }
             }
             else if (intersectsBtn[i].object.name == "botao6") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0xFF0000)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao7") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0xFF7F00)
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao8") {
+                ambientLight.raveMode = false
                 ambientLight.color.set(0xFFFF00)
                 console.log(ambientLight.color)
             }
