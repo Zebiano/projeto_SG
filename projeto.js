@@ -6,6 +6,9 @@ var selectedObject, ambientLight;
 // var porta2Mexer = false
 var soma = 0.01
 
+// Objeto Pai com todos os objetos
+var papi = new THREE.Object3D();
+
 // Arrays
 var arrayParedes = [];
 
@@ -45,7 +48,7 @@ window.onload = function init() {
     // camera.position.set(50, 70, 200);
     //camera.position.set(40, 40, 75);
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.y = 20;
+    //camera.position.y = 20;
     scene.add(camera);
 
     // create an AudioListener and add it to the camera
@@ -84,6 +87,10 @@ window.onload = function init() {
 
     // Planes to move things around
     createPathCadeiras();
+
+    // Adicionar papi a cena
+    papi.position.y = -20;
+    scene.add(papi);
 
     // Event Listeners
     window.addEventListener("click", onClick);
@@ -291,7 +298,8 @@ function addPointerLockControls() {
 function createLights() {
     // AmbientLight
     ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+    //scene.add(ambientLight);
+    papi.add(ambientLight);
 
     // DirectionalLight
     var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -304,11 +312,14 @@ function createLights() {
     directionalLight.shadow.camera.top = 100;
 
     var helper2 = new THREE.CameraHelper(directionalLight.shadow.camera);
-    scene.add(helper2);
-
-    scene.add(directionalLight);
+    //scene.add(helper2);
+    papi.add(helper2);
     var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-    scene.add(helper);
+    //scene.add(helper);
+    papi.add(helper);
+
+    //scene.add(directionalLight);
+    papi.add(directionalLight);
 }
 
 // Create Chao
@@ -321,13 +332,16 @@ function createChao(helper) {
     texture.wrapT = THREE.RepeatWrapping;
     chao.receiveShadow = true;
     texture.repeat.set(10, 10);
-    scene.add(chao);
+    //scene.add(chao);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
+
+    papi.add(chao);
 }
 
 // Create Parede Esquerda
@@ -336,14 +350,16 @@ function createParedeEsquerda(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     paredeEsquerda.position.set(-50, 25, 0);
-    scene.add(paredeEsquerda);
+    //scene.add(paredeEsquerda);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
 
+    papi.add(paredeEsquerda);
     arrayParedes.push(paredeEsquerda);
 }
 
@@ -353,14 +369,16 @@ function createParedeDireita(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeDireita = new THREE.Mesh(geometry, material);
     paredeDireita.position.set(50, 25, 0);
-    scene.add(paredeDireita);
+    //scene.add(paredeDireita);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
 
+    papi.add(paredeDireita);
     arrayParedes.push(paredeDireita);
 }
 
@@ -370,14 +388,16 @@ function createParedeFundo(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, -75);
-    scene.add(paredeFundo);
+    //scene.add(paredeFundo);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
 
+    papi.add(paredeFundo);
     arrayParedes.push(paredeFundo);
 }
 
@@ -387,14 +407,16 @@ function createParedePerto(helper) {
     var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, 75);
-    scene.add(paredeFundo);
+    //scene.add(paredeFundo);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
 
+    papi.add(paredeFundo);
     arrayParedes.push(paredeFundo);
 }
 
@@ -413,13 +435,16 @@ function createMesa(helper) {
         // mesa.position.set(35, 0, 55);
         mesa.position.set(35 - 50, 0, 55 - 75);
 
-        scene.add(mesa);
+        //scene.add(mesa);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            scene.add(boxHelper);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
         }
+
+        papi.add(mesa);
     });
 }
 
@@ -436,13 +461,16 @@ function createTv(helper) {
         tv.rotation.y = - Math.PI / 2;
         tv.scale.set(0.4, 0.4, 0.4);
         tv.position.set(48, 20, -55);
-        scene.add(tv);
-        console.log(tv)
+        //scene.add(tv);
+
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            scene.add(boxHelper);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
         }
+
+        papi.add(tv);
     });
 }
 
@@ -458,15 +486,18 @@ function createSofa(helper) {
             sofa.children[i].receiveShadow = true;
             sofa.children[i].castShadow = true;
         }
-        scene.add(sofa);
+        //scene.add(sofa);
         sofa.position.set(-15, 0, -40);
         sofa.rotation.y = Math.PI / 2;
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            scene.add(boxHelper);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
         }
+
+        papi.add(sofa);
     });
 }
 
@@ -487,13 +518,16 @@ function createMovel(helper) {
         movel.portaParada = true;
         var axesHelper = new THREE.AxesHelper(10);
         movel.add(axesHelper);
-        scene.add(movel);
+        //scene.add(movel);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            scene.add(boxHelper);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
         }
+
+        papi.add(movel);
     });
 }
 
@@ -513,26 +547,26 @@ function createCadeiras(helper) {
             cadeira.children[i].receiveShadow = true;
             cadeira.children[i].castShadow = true;
         }
-        scene.add(cadeira);
+        //scene.add(cadeira);
 
         // Cadeira 2
         cadeira2 = cadeira.clone();
         // cadeira2.position.set(50, 0, 102);
         cadeira2.position.set(0, 0, 102 - 75);
-        scene.add(cadeira2);
+        //scene.add(cadeira2);
 
         // Cadeira 3
         cadeira3 = cadeira.clone();
         // cadeira3.position.set(40, 0, 95);
         cadeira3.position.set(-10, 0, 20);
         cadeira3.rotation.y = 3 * Math.PI / 2;
-        scene.add(cadeira3);
+        //scene.add(cadeira3);
 
         // Cadeira 4
         cadeira4 = cadeira3.clone();
         // cadeira4.position.set(40, 0, 110);
         cadeira4.position.set(-10, 0, 110 - 75);
-        scene.add(cadeira4);
+        //scene.add(cadeira4);
 
         // BoxHelper
         if (helper == true) {
@@ -541,11 +575,23 @@ function createCadeiras(helper) {
             var boxHelper3 = new THREE.BoxHelper(cadeira3, 0xffff00);
             var boxHelper4 = new THREE.BoxHelper(cadeira4, 0xffff00);
 
+            /*
             scene.add(boxHelper);
             scene.add(boxHelper2);
             scene.add(boxHelper3);
             scene.add(boxHelper4);
+            */
+
+            papi.add(boxHelper);
+            papi.add(boxHelper2);
+            papi.add(boxHelper3);
+            papi.add(boxHelper4);
         }
+
+        papi.add(cadeira);
+        papi.add(cadeira2);
+        papi.add(cadeira3);
+        papi.add(cadeira4);
     });
 }
 
@@ -616,12 +662,14 @@ function createQuadroLuz(helper) {
 
     // Adicionar quadroLuz a scene
     //quadroLuz.position.y = 30;
-    scene.add(quadroLuz);
+    //scene.add(quadroLuz);
+    papi.add(quadroLuz);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(quadroLuz, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
 }
 
@@ -634,12 +682,14 @@ function createPathCadeiras(helper) {
         }));
     plane.rotation.x = -Math.PI / 2;
     plane.name = "PathCadeiras";
-    scene.add(plane);
+    //scene.add(plane);
+    papi.add(plane);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(plane, 0xffff00);
-        scene.add(boxHelper);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
     }
 }
 
