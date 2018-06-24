@@ -1,5 +1,5 @@
 // Variables
-var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
+var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, sound, crosshair;
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala, alvo;
 var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
@@ -53,6 +53,8 @@ window.onload = function init() {
     objLoader = new THREE.OBJLoader();
     mouse = new THREE.Vector2();
     offset = new THREE.Vector3();
+    listener = new THREE.AudioListener();
+    sound = new THREE.Audio(listener);
 
     // Renderer
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -67,12 +69,9 @@ window.onload = function init() {
     // camera.position.set(50, 70, 200);
     //camera.position.set(40, 40, 75);
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.add(listener);
     //camera.position.y = 20;
     scene.add(camera);
-
-    // create an AudioListener and add it to the camera
-    listener = new THREE.AudioListener();
-    camera.add(listener);
 
     // Create Crosshair
     createCrosshair();
@@ -1183,7 +1182,8 @@ function onClick(event) {
                 console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao4") {
-                ambientLight.raveMode = true
+                ambientLight.raveMode = true;
+
             }
             else if (intersectsBtn[i].object.name == "botao5") {
                 if (ambientLight.intensity == 0.7) {
@@ -1221,6 +1221,12 @@ function onClick(event) {
                 shootingAllowed = false;
                 arrayProjeteis = [];
             }
+        }
+
+        if (ambientLight.raveMode == true) {
+            playSound("audio/darude.ogg");
+        } else {
+            sound.pause();
         }
     }
 
@@ -1451,14 +1457,24 @@ function createNotification(result) {
     }
 }
 
+function playSound(src) {
+    // load a sound and set it as the Audio object's buffer
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load(src, function (buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.play();
+    });
+}
+
 // Call debug function (basically a function to test things...)
 function debug() {
     // create a global audio source
-    var sound = new THREE.Audio(listener);
+    sound = new THREE.Audio(listener);
 
     // load a sound and set it as the Audio object's buffer
     var audioLoader = new THREE.AudioLoader();
-    audioLoader.load('audio/darude.ogg', function (buffer) {
+    audioLoader.load('audio/darude.mp3', function (buffer) {
         sound.setBuffer(buffer);
         sound.setLoop(true);
         sound.play();
