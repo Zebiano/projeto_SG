@@ -264,18 +264,7 @@ function animate() {
         if (ambientLight.raveMode) {
             var color = parseInt(getRandomColor())
             console.log(color)
-            ambientLight.color.set(color)
-
-            // // create a global audio source
-            // var sound = new THREE.Audio(listener);
-
-            // // load a sound and set it as the Audio object's buffer
-            // var audioLoader = new THREE.AudioLoader();
-            // audioLoader.load('audio/darude.ogg', function (buffer) {
-            //     sound.setBuffer(buffer);
-            //     sound.setLoop(true);
-            //     sound.play();
-            // });
+            ambientLight.color.set(color);
         }
     }
 
@@ -287,29 +276,6 @@ function animate() {
             arrayProjeteis[0].position.z += projetilDir.z * projetilSpeed;
         }
     }
-
-    // Atualizar quantidade de balas (graficamente)
-    // TODO
-
-    // Self made colisoes que nao acabamos... 
-    /*if (arrayColisoes.length > 0) {
-        var BBox = new THREE.Box3().setFromObject(sphereTest);
-        //console.log(arrayColisoes[0]);
-        var BBox2 = new THREE.Box3().setFromObject(arrayColisoes[0]);
-        hasCollided = BBox.intersectsBox(BBox2);
-        if (hasCollided) {
-            console.log(hasCollided);
-        }
-
-        for (var i = 0; i < arrayColisoes.length; i++) {
-            hasCollided = BBox.intersectsBox(new THREE.Box3().setFromObject(arrayColisoes[i]));
-            if (hasCollided == true) {
-                console.log("It has collided with: " + arrayColisoes[i]);
-                hasCollided == false;
-                break;
-            }
-        }
-    }*/
 
     // Colisoes com os alvos
     if (arrayProjeteis.length > 0) {
@@ -335,6 +301,7 @@ function teleport(x, y, z) {
     teleportZ = z;
 }
 
+// Da return a "direcao" que o utilizador esta a olhar
 function getPlayerDirection() {
     var dir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
     console.log(dir);
@@ -1379,7 +1346,7 @@ function onKeyDown(event) {
             break;
         case 81: // q
             console.log("Debugging key");
-            getPlayerDirection()
+            debug();
             break;
         case 72: // h
             $("#info").hide();
@@ -1482,4 +1449,18 @@ function createNotification(result) {
             }
         });
     }
+}
+
+// Call debug function (basically a function to test things...)
+function debug() {
+    // create a global audio source
+    var sound = new THREE.Audio(listener);
+
+    // load a sound and set it as the Audio object's buffer
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load('audio/darude.ogg', function (buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.play();
+    });
 }
