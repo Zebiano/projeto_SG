@@ -5,7 +5,8 @@ var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
 // var porta2Mexer = false
-var soma = 0.01
+var soma = 1.5
+
 
 // Objeto Pai com todos os objetos
 var papi = new THREE.Object3D();
@@ -122,7 +123,6 @@ window.onload = function init() {
 
     window.addEventListener('keydown', onKeyDown, false);
     window.addEventListener('keyup', onKeyUp, false);
-
     // Animate
     animate()
 }
@@ -197,14 +197,44 @@ function animate() {
     var position = controls.getObject().position;
     //collisionDetection(position);
 
+
     // Animacao do Movel
     if (movel) {
-        //console.log(movel.portaParada)
-        if (!movel.portaParada) {
-            movel.children[3].rotation.y -= soma
-            if (movel.children[3].rotation.y <= - Math.PI / 2) {
-                movel.portaParada = true; ///??????????????????????????????????????
-            }
+        console.log("animate porta parada = " + movel.porta1Parada)
+        if (!movel.porta1Parada && !movel.porta1Aberta) {
+            movel.children[0].position.x += soma
+            console.log(movel.porta1Parada)
+        }
+        else if (!movel.porta1Parada && movel.porta1Aberta) {
+            movel.children[0].position.x -= soma
+            console.log(movel.porta1Parada)
+        }
+
+        if (movel.children[0].position.x >= 450) {
+            movel.porta1Parada = true
+            movel.porta1Aberta = true
+        }
+        else if(movel.children[0].position.x <= 0) {
+            movel.porta1Parada = true
+            movel.porta1Aberta = false
+        }
+
+        if (!movel.porta2Parada && !movel.porta2Aberta) {
+            movel.children[1].position.x -= soma
+            console.log(movel.porta2Parada)
+        }
+        else if (!movel.porta2Parada && movel.porta2Aberta) {
+            movel.children[1].position.x += soma
+            console.log(movel.porta2Parada)
+        }
+
+        if (movel.children[1].position.x <= -300) {
+            movel.porta2Parada = true
+            movel.porta2Aberta = true
+        }
+        else if(movel.children[1].position.x >= 0) {
+            movel.porta2Parada = true
+            movel.porta2Aberta = false
         }
     }
 
@@ -714,7 +744,7 @@ function createSofa(helper) {
 function createMovel(helper) {
     var textureMovel = new THREE.TextureLoader().load('img/mesa.png');
     var materialMovel = new THREE.MeshPhongMaterial({ map: textureMovel });
-    objLoader.load('models/armario.obj', function (object) {
+    objLoader.load('models/movel.obj', function (object) {
         movel = object;
         movel.scale.set(0.02, 0.02, 0.02)
         for (var i = 0; i < movel.children.length; i++) {
@@ -722,19 +752,15 @@ function createMovel(helper) {
             movel.children[i].receiveShadow = true;
             movel.children[i].castShadow = true;
         }
-        movel.position.set(45, 7, -40);
+        movel.position.set(45, 0, -38);
         movel.rotation.y = - Math.PI / 2;
-        movel.portaParada = true;
+        movel.porta1Parada = true;
+        movel.porta1Aberta = false
+        movel.porta2Parada = true;
+        movel.porta2Aberta = false
         var axesHelper = new THREE.AxesHelper(10);
         movel.add(axesHelper);
-        //scene.add(movel);
-
-        // BoxHelper
-        if (helper == true) {
-            var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            //scene.add(boxHelper);
-            papi.add(boxHelper);
-        }
+        console.log(movel)
 
         papi.add(movel);
         arrayColisoes.push(movel);
@@ -1161,13 +1187,20 @@ function onClick(event) {
     // Intersects do movel
     var intersectsMovel = raycaster.intersectObjects(movel.children);
     if (intersectsMovel.length > 0) {
-        console.log(movel);
+        console.log(intersectsMovel[0].object.name);
+        if (intersectsMovel[0].object.name == "porta1") {
+            // porta2Mexer = true
+            movel.porta1Parada = false;
 
+            //animate();
+            console.log("porta parada: " + movel.porta1Parada);
+        }
         if (intersectsMovel[0].object.name == "porta2") {
             // porta2Mexer = true
-            movel.portaParada = false;
+            movel.porta2Parada = false;
+
             //animate();
-            console.log("asoiudg");
+            console.log("porta2 parada: " + movel.porta1Parada);
         }
     }
 
