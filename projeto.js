@@ -1,6 +1,6 @@
 // Variables
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala;
 var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
@@ -98,6 +98,7 @@ window.onload = function init() {
     createCadeiras(true);
     createQuadroLuz(true);
     createBotaoShootingRange(true);
+    createBotaoSala(true);
 
     // Planes to move things around
     createPathCadeiras();
@@ -233,7 +234,7 @@ function animate() {
         }
     }
 
-    // Atualizar quantidade de balas
+    // Atualizar quantidade de balas (graficamente)
     // TODO
 
     // Self made colisoes que nao acabamos... 
@@ -491,14 +492,19 @@ function createParedePerto(helper) {
 function createShootingRange() {
     var shootingRange = new THREE.Object3D();
 
+    // Teleport to shootingRange
+    //teleport(45, 0, -200);
+
     // Floor/Walls/Ceiling
     createChao(true);
     createParedeEsquerda(true);
     createParedeDireita(true);
     createParedeFundo(true);
     createParedePerto(true);
+    //createBotaoSala(true);
 
     shootingRange.position.set(0, 0, -200);
+    shootingRange.rotation.y = degreesToRadians(90);
     papi.add(shootingRange);
 
     // Create Chao
@@ -880,6 +886,25 @@ function createBotaoShootingRange(helper) {
     papi.add(botaoShootingRange);
 }
 
+function createBotaoSala(helper) {
+    // Botao Sala
+    var geometry = new THREE.BoxGeometry(1, 3, 3);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    botaoSala = new THREE.Mesh(geometry, material);
+    botaoSala.position.set(50, 30, -249);
+    botaoSala.rotation.y = degreesToRadians(90);
+    botaoSala.name = "botaoSala"
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(botaoSala, 0xffff00);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
+    }
+
+    papi.add(botaoSala);
+}
+
 // Creates all the projectiles
 function createProjetil(nProjeteis) {
     var geometry = new THREE.SphereGeometry(1, 32, 32);
@@ -1024,7 +1049,7 @@ function onClick(event) {
 
     // Intersects dos botoes
     // search for intersections
-    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, botaoShootingRange]);
+    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, botaoShootingRange, botaoSala]);
     if (intersectsBtn.length > 0) {
         //console.log(intersectsBtn)
 
@@ -1076,10 +1101,16 @@ function onClick(event) {
                 console.log(ambientLight.color)
             } else if (intersectsBtn[i].object.name == "botaoShootingRange") {
                 console.log("Teleporting to shooting range...");
-                teleport(0, 0, -150);
+                teleport(45, 0, -200);
                 shootingAllowed = true;
                 // Cria 6 projeteis
-                createProjetil(6);
+                arrayProjeteis = [];
+                createProjetil(7);
+            } else if (intersectsBtn[i].object.name == "botaoSala") {
+                console.log("Teleporting back");
+                teleport(0, 0, 0);
+                shootingAllowed = false;
+                arrayProjeteis = [];
             }
         }
     }
@@ -1106,7 +1137,9 @@ function onClick(event) {
     // ShootingRange
     if (shootingAllowed == true) {
         // Retirar uma bala
-        arrayProjeteis.splice(-1, 1);
+        //arrayProjeteis.splice(-1, 1);
+        arrayProjeteis.shift();
+        console.log(arrayProjeteis.length);
 
         // Fui eu que criei este codigo, mas ja nao me lembro o que e que faz... Tem a haver com as direcoes e posicoes das balas
         if (arrayProjeteis.length > 0) {
@@ -1146,7 +1179,8 @@ function onKeyDown(event) {
             break;
         case 82: // r
             // Cria 6 projeteis
-            createProjetil(6);
+            arrayProjeteis = [];
+            createProjetil(7);
             break;
     }
 }
