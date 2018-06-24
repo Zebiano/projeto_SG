@@ -1255,6 +1255,7 @@ function onClick(event) {
     var intersectsTv = raycaster.intersectObjects(tv.children);
     if (intersectsTv.length > 0) {
         console.log("Toquei na tv pa!");
+        playSound("audio/tv.mp3");
     }
 
     // ShootingRange
@@ -1365,7 +1366,7 @@ function onKeyDown(event) {
 
             $("#info").hide();
             $("#infoHelp").show();
-            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Projectile Speed</p><p>3. Enable/Disable Jump</p>");
+            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Projectile Speed</p><p>3. Enable/Disable Jump</p><p>4. Stop all sounds</p>");
             break;
         case 49: // 1
             configPlayerSpeed = prompt("New playerSpeed value:", configPlayerSpeed);
@@ -1384,6 +1385,12 @@ function onKeyDown(event) {
                 createNotification("Jumping is now disabled!");
             }
             break;
+        case 52: // 4
+            stopSound();
+            createNotification("Stopped all sounds!");
+            break;
+
+
     }
 }
 
@@ -1466,6 +1473,10 @@ function playSound(src) {
         sound.setLoop(true);
         sound.play();
     });
+}
+
+function stopSound() {
+    sound.stop();
 }
 
 // Call debug function (basically a function to test things...)
