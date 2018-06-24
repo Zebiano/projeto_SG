@@ -42,6 +42,7 @@ var configPlayerSpeed = 14; // Mais alto = Mais devagar!
 var projetilSpeed = 3;
 var enableJump = false;
 var teleportToShootingRange = false;
+var nProjeteis = 6;
 //teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
 
 // Onload
@@ -988,7 +989,7 @@ function createBotaoSala(helper) {
 }
 
 // Creates all the projectiles
-function createProjetil(nProjeteis) {
+function createProjetil() {
     var geometry = new THREE.SphereGeometry(1, 32, 32);
     var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     projetil = new THREE.Mesh(geometry, material);
@@ -1001,6 +1002,7 @@ function createProjetil(nProjeteis) {
     for (var i = 0; i < nProjeteis; i++) {
         arrayProjeteis.push(projetil);
     }
+    arrayProjeteis.push(projetil);
 }
 
 // Create Parede Perto
@@ -1030,7 +1032,7 @@ function createAlvo(helper) {
 
 // Creates Plano para mexer as cadeiras em cima dele
 function createPathCadeiras(helper) {
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 10, 10),
         new THREE.MeshBasicMaterial({
             opacity: 0.0,
             transparent: true,
@@ -1214,7 +1216,7 @@ function onClick(event) {
                 shootingAllowed = true;
                 // Cria 6 projeteis
                 arrayProjeteis = [];
-                createProjetil(7);
+                createProjetil();
                 //papi.remove(scene.getObjectByName("Projetil"));
             } else if (intersectsBtn[i].object.name == "botaoSala") {
                 console.log("Teleporting back");
@@ -1225,7 +1227,7 @@ function onClick(event) {
         }
 
         if (ambientLight.raveMode == true) {
-            playSound("audio/darude.ogg");
+            playSound("audio/darude.ogg", true);
         } else {
             sound.pause();
         }
@@ -1255,7 +1257,7 @@ function onClick(event) {
     var intersectsTv = raycaster.intersectObjects(tv.children);
     if (intersectsTv.length > 0) {
         //console.log("Toquei na tv pa!");
-        playSound("audio/tv.mp3");
+        playSound("audio/tv.mp3", false);
     }
 
     // ShootingRange
@@ -1264,10 +1266,11 @@ function onClick(event) {
         //arrayProjeteis.splice(-1, 1);
         //arrayProjeteis.shift();
         arrayProjeteis = arrayProjeteis.slice(1);
-        //console.log(arrayProjeteis.length);
+        console.log(arrayProjeteis.length);
 
         // Fui eu que criei este codigo, mas ja nao me lembro o que e que faz... Tem a haver com as direcoes e posicoes das balas
         if (arrayProjeteis.length > 0) {
+            playSound("audio/pew.mp3", false);
             arrayProjeteis[0].position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
             papi.add(arrayProjeteis[0]);
             projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
@@ -1306,9 +1309,10 @@ function onKeyDown(event) {
             }
             break;
         case 82: // r
+            playSound("audio/reload.mp3", false);
             // Cria 6 projeteis
             arrayProjeteis = [];
-            createProjetil(7);
+            createProjetil();
             //console.log(scene.getObjectByName("Projetil"));
             papi.remove(scene.getObjectByName("Projetil"));
             break;
@@ -1366,15 +1370,15 @@ function onKeyDown(event) {
 
             $("#info").hide();
             $("#infoHelp").show();
-            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Projectile Speed</p><p>3. Enable/Disable Jump</p><p>4. Stop all sounds</p>");
+            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Bullet Speed</p><p>3. Enable/Disable Jump</p><p>4. Stop all sounds</p><p>5. Number of bullets</p>");
             break;
         case 49: // 1
             configPlayerSpeed = prompt("New playerSpeed value:", configPlayerSpeed);
             createNotification("Updated playerSpeed to " + configPlayerSpeed + "!");
             break;
         case 50: // 2
-            projetilSpeed = prompt("New projetilSpeed value:", projetilSpeed);
-            createNotification("Updated projetilSpeed to " + projetilSpeed + "!");
+            projetilSpeed = prompt("New bulletSpeed value:", projetilSpeed);
+            createNotification("Updated bulletSpeed to " + projetilSpeed + "!");
             break;
         case 51: // 3
             if (enableJump == false) {
@@ -1388,6 +1392,10 @@ function onKeyDown(event) {
         case 52: // 4
             stopSound();
             createNotification("Stopped all sounds!");
+            break;
+        case 53: // 5
+            nProjeteis = prompt("New number of Bullets value:", nProjeteis);
+            createNotification("Updated number of Bullets to " + nProjeteis + "!");
             break;
 
 
@@ -1466,12 +1474,16 @@ function createNotification(result) {
 }
 
 // Play a sound
-function playSound(src) {
+function playSound(src, loop) {
+    if (sound.isPlaying == true) {
+        stopSound();
+    }
+    //console.log(loop);
     // load a sound and set it as the Audio object's buffer
     var audioLoader = new THREE.AudioLoader();
     audioLoader.load(src, function (buffer) {
         sound.setBuffer(buffer);
-        sound.setLoop(true);
+        sound.setLoop(loop);
         sound.play();
     });
     console.log("Started Sound: " + src);
