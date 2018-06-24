@@ -1212,6 +1212,7 @@ function onClick(event) {
                 //console.log(ambientLight.color)
             } else if (intersectsBtn[i].object.name == "botaoShootingRange") {
                 console.log("Teleporting to shooting range...");
+                playSound("audio/teleportSR.mp3", false)
                 teleport(45, 0, -200);
                 shootingAllowed = true;
                 // Cria 6 projeteis
@@ -1220,6 +1221,7 @@ function onClick(event) {
                 //papi.remove(scene.getObjectByName("Projetil"));
             } else if (intersectsBtn[i].object.name == "botaoSala") {
                 console.log("Teleporting back");
+                playSound("audio/teleportHome.mp3", false)
                 teleport(0, 0, 0);
                 shootingAllowed = false;
                 arrayProjeteis = [];
@@ -1266,7 +1268,7 @@ function onClick(event) {
         //arrayProjeteis.splice(-1, 1);
         //arrayProjeteis.shift();
         arrayProjeteis = arrayProjeteis.slice(1);
-        console.log(arrayProjeteis.length);
+        //console.log(arrayProjeteis.length);
 
         // Fui eu que criei este codigo, mas ja nao me lembro o que e que faz... Tem a haver com as direcoes e posicoes das balas
         if (arrayProjeteis.length > 0) {
