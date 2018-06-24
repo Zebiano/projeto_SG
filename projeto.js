@@ -910,6 +910,7 @@ function createProjetil(nProjeteis) {
     var geometry = new THREE.SphereGeometry(1, 32, 32);
     var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     projetil = new THREE.Mesh(geometry, material);
+    projetil.name = "Projetil";
 
     // BoxHelper
     var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
@@ -1138,7 +1139,8 @@ function onClick(event) {
     if (shootingAllowed == true) {
         // Retirar uma bala
         //arrayProjeteis.splice(-1, 1);
-        arrayProjeteis.shift();
+        //arrayProjeteis.shift();
+        arrayProjeteis = arrayProjeteis.slice(1);
         console.log(arrayProjeteis.length);
 
         // Fui eu que criei este codigo, mas ja nao me lembro o que e que faz... Tem a haver com as direcoes e posicoes das balas
@@ -1181,6 +1183,8 @@ function onKeyDown(event) {
             // Cria 6 projeteis
             arrayProjeteis = [];
             createProjetil(7);
+            console.log(scene.getObjectByName("Projetil"));
+            papi.remove(scene.getObjectByName("Projetil"));
             break;
     }
 }
