@@ -2,7 +2,7 @@
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange;
 var mesh;
-var teleportX, teleportY, teleportZ;
+var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
 // var porta2Mexer = false
 var soma = 0.01
@@ -19,8 +19,6 @@ var moveProjetil = false;
 var hasCollided = false;
 var teleportPlayer = false;
 var shootingAllowed = false;
-
-var projetilDir;
 
 // PointerLock Variables
 var objects = [];
@@ -226,12 +224,17 @@ function animate() {
         }
     }
 
-    // Send projetil
+    // Shoot projetil
     if (moveProjetil == true) {
-        arrayProjeteis[0].position.x += projetilDir.x * projetilSpeed;
-        arrayProjeteis[0].position.y += projetilDir.y * projetilSpeed;
-        arrayProjeteis[0].position.z += projetilDir.z * projetilSpeed;
+        if (arrayProjeteis.length > 0) {
+            arrayProjeteis[0].position.x += projetilDir.x * projetilSpeed;
+            arrayProjeteis[0].position.y += projetilDir.y * projetilSpeed;
+            arrayProjeteis[0].position.z += projetilDir.z * projetilSpeed;
+        }
     }
+
+    // Atualizar quantidade de balas
+    // TODO
 
     // Self made colisoes que nao acabamos... 
     /*if (arrayColisoes.length > 0) {
@@ -488,9 +491,6 @@ function createParedePerto(helper) {
 function createShootingRange() {
     var shootingRange = new THREE.Object3D();
 
-    // Cria 5 projeteis
-    createProjetil(5);
-
     // Floor/Walls/Ceiling
     createChao(true);
     createParedeEsquerda(true);
@@ -500,21 +500,6 @@ function createShootingRange() {
 
     shootingRange.position.set(0, 0, -200);
     papi.add(shootingRange);
-
-    // Creates all the projectiles
-    function createProjetil(nProjeteis) {
-        var geometry = new THREE.SphereGeometry(1, 32, 32);
-        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-        projetil = new THREE.Mesh(geometry, material);
-
-        // BoxHelper
-        var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
-        projetil.add(boxHelper);
-
-        for (var i = 0; i < nProjeteis; i++) {
-            arrayProjeteis.push(projetil);
-        }
-    }
 
     // Create Chao
     function createChao(helper) {
@@ -863,16 +848,6 @@ function createQuadroLuz(helper) {
     botao8.name = "botao8"
     quadroLuz.add(botao8);
 
-    //arrayColisoes.push(quadroLuz);
-    /*arrayColisoes.push(new THREE.Box3().setFromObject(botao1));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao2));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao3));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao4));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao5));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao6));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao7));
-    arrayColisoes.push(new THREE.Box3().setFromObject(botao8));*/
-
     // Adicionar quadroLuz a scene
     //quadroLuz.position.y = 30;
     //scene.add(quadroLuz);
@@ -903,6 +878,21 @@ function createBotaoShootingRange(helper) {
     }
 
     papi.add(botaoShootingRange);
+}
+
+// Creates all the projectiles
+function createProjetil(nProjeteis) {
+    var geometry = new THREE.SphereGeometry(1, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    projetil = new THREE.Mesh(geometry, material);
+
+    // BoxHelper
+    var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
+    projetil.add(boxHelper);
+
+    for (var i = 0; i < nProjeteis; i++) {
+        arrayProjeteis.push(projetil);
+    }
 }
 
 // Creates Plano para mexer as cadeiras em cima dele
@@ -1088,6 +1078,8 @@ function onClick(event) {
                 console.log("Teleporting to shooting range...");
                 teleport(0, 0, -150);
                 shootingAllowed = true;
+                // Cria 6 projeteis
+                createProjetil(6);
             }
         }
     }
@@ -1113,10 +1105,16 @@ function onClick(event) {
 
     // ShootingRange
     if (shootingAllowed == true) {
-        arrayProjeteis[0].position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
-        papi.add(arrayProjeteis[0]);
-        projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
-        moveProjetil = true;
+        // Retirar uma bala
+        arrayProjeteis.splice(-1, 1);
+
+        // Fui eu que criei este codigo, mas ja nao me lembro o que e que faz... Tem a haver com as direcoes e posicoes das balas
+        if (arrayProjeteis.length > 0) {
+            arrayProjeteis[0].position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
+            papi.add(arrayProjeteis[0]);
+            projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
+            moveProjetil = true;
+        }
     }
 }
 
@@ -1145,6 +1143,10 @@ function onKeyDown(event) {
         case 32: // space
             if (canJump === true) velocity.y += 350;
             canJump = false;
+            break;
+        case 82: // r
+            // Cria 6 projeteis
+            createProjetil(6);
             break;
     }
 }
