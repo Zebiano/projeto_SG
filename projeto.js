@@ -1311,12 +1311,14 @@ function onKeyDown(event) {
             }
             break;
         case 82: // r
-            playSound("audio/reload.mp3", false);
-            // Cria 6 projeteis
-            arrayProjeteis = [];
-            createProjetil();
-            //console.log(scene.getObjectByName("Projetil"));
-            papi.remove(scene.getObjectByName("Projetil"));
+            if (shootingAllowed == true) {
+                playSound("audio/reload.mp3", false);
+                // Cria 6 projeteis
+                arrayProjeteis = [];
+                createProjetil();
+                //console.log(scene.getObjectByName("Projetil"));
+                papi.remove(scene.getObjectByName("Projetil"));
+            }
             break;
         case 67: // c
             if (isCrouched == false) {
