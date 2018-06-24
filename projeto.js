@@ -5,7 +5,8 @@ var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
 // var porta2Mexer = false
-var soma = 1.5
+var soma = 1.5;
+var playerSpeed = 14; // Mais alto = Mais devagar!
 
 // Objeto Pai com todos os objetos
 var papi = new THREE.Object3D();
@@ -21,6 +22,7 @@ var teleportPlayer = false;
 var shootingAllowed = false;
 var isCrouched = false;
 var isSitting = false;
+var showConfig = false;
 
 // PointerLock Variables
 var objects = [];
@@ -36,7 +38,7 @@ var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 
 // CONFIG
-var playerSpeed = 14; // Mais alto = Mais devagar!
+var configPlayerSpeed = 14; // Mais alto = Mais devagar!
 var projetilSpeed = 3;
 var enableJump = true;
 var teleportToShootingRange = false;
@@ -1304,7 +1306,7 @@ function onKeyDown(event) {
     //console.log(event.keyCode);
     // When holding shift, player runs
     if (event.keyCode == 16) {
-        playerSpeed = 5;
+        playerSpeed = 5; // Mais alto = Mais devagar!
     }
     switch (event.keyCode) {
         case 38: // up
@@ -1382,7 +1384,32 @@ function onKeyDown(event) {
         case 72: // h
             $("#info").hide();
             $("#infoHelp").show();
-            $("#infoHelp").html("<p>Use WASD to move, SHIFT to run, C to crouch, SPACE to jump (if enabled)</p><p>Also, there's buttons around that you can click with your mouse. Try them out!</p>");
+            $("#infoHelp").html("<p>Use WASD to move, SHIFT to run, C to crouch, SPACE to jump (if enabled) and F to change the config.</p><p>Also, there's buttons around that you can click with your mouse. Try them out!</p>");
+            break;
+        case 70: // f
+            showConfig = true;
+
+            $("#info").hide();
+            $("#infoHelp").show();
+            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Projectile Speed</p><p>3. Enable/Disable Jump</p>");
+            break;
+        case 49: // 1
+            configPlayerSpeed = prompt("New playerSpeed value:", configPlayerSpeed);
+            createNotification("Updated playerSpeed to " + configPlayerSpeed + "!");
+            break;
+        case 50: // 2
+            projetilSpeed = prompt("New projetilSpeed value:", projetilSpeed);
+            createNotification("Updated projetilSpeed to " + projetilSpeed + "!");
+            break;
+        case 51: // 3
+            console.log("Ola");
+            if (enableJump == false) {
+                enableJump = true;
+                createNotification("Jumping is now enabled!");
+            } else {
+                enableJump = false;
+                createNotification("Jumping is now disabled!");
+            }
             break;
     }
 }
@@ -1390,7 +1417,7 @@ function onKeyDown(event) {
 // Event: onKeyUp
 function onKeyUp(event) {
     if (event.keyCode == 16) {
-        playerSpeed = 14;
+        playerSpeed = configPlayerSpeed;
     }
     switch (event.keyCode) {
         case 38: // up
@@ -1410,8 +1437,14 @@ function onKeyUp(event) {
             moveRight = false;
             break;
         case 72: // h
-            $("#info").show();
             $("#infoHelp").hide();
+            $("#info").show();
+            break;
+        case 70: // f
+            showConfig = false;
+
+            $("#infoHelp").hide();
+            $("#info").show();
             break;
     }
 }
@@ -1422,47 +1455,32 @@ function degreesToRadians(degrees) {
     return radians;
 }
 
-/*
-document.onkeypress = function handleKeyPress(event) {
-    //Get unshifted key character
-    var key = event.keyCode;
+// creates a notification
+function createNotification(result) {
+    // Let's check if the browser supports notifications
+    if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+    }
 
-    console.log(key)
+    // Let's check whether notification permissions have already been granted
+    else if (Notification.permission === "granted") {
+        // If it's okay let's create a notification
+        var notification = new Notification(result);
+        setTimeout(function () {
+            notification.close();
+        }, 3000);
+    }
 
-    switch (key) {
-        case 38:
-            direcao = "cima"
-            rotX += 0.05
-            break;
-        case 39:
-            direcao = "direita"
-            rotY += 0.05
-            break;
-        case 37:
-            direcao = "esquerda"
-            rotY -= 0.05
-            break;
-        case 40:
-            direcao = "baixo"
-            rotX -= 0.05
-            break;
+    // Otherwise, we need to ask the user for permission
+    else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
+            // If the user accepts, let's create a notification
+            if (permission === "granted") {
+                var notification = new Notification(result);
+                setTimeout(function () {
+                    notification.close();
+                }, 3000);
+            }
+        });
     }
 }
-
-function animate() {
-    if (direcao == "cima") {
-        mesh.rotation.x += rotX
-    }
-    else if (direcao == "direita") {
-        mesh.rotation.y += rotY
-    }
-    else if (direcao == "esquerda") {
-        mesh.rotation.y += rotY
-    }
-    else if (direcao == "baixo") {
-        mesh.rotation.x += rotX
-    }
-    renderer.render(scene, camera);
-
-    window.requestAnimationFrame(animate)
-}*/
