@@ -5,6 +5,7 @@ var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
 var plane, meshPropeller;
+var meshEarth, meshClouds;
 // var porta2Mexer = false
 var soma = 1.5;
 var playerSpeed = 14; // Mais alto = Mais devagar!
@@ -117,6 +118,8 @@ window.onload = function init() {
 
     // Hmmmmm
     createPlane();
+    createEarth();
+    createClouds();
 
     // Adicionar papi a cena
     papi.position.y = -20;
@@ -218,6 +221,10 @@ function animate() {
 
     // Plane proppeller
     meshPropeller.rotation.x += 0.5;
+
+    // Earth and clouds
+    meshEarth.rotation.y += 0.001;
+    meshClouds.rotation.y += 0.0012;
 
     // Bullets
     if (shootingAllowed == true) {
@@ -1242,6 +1249,46 @@ function createPlane() {
     //directionalLight.target = plane;
 }
 
+function createEarth() {
+    // 1. Geometria
+    var geoEarth = new THREE.SphereGeometry(1, 32, 32);
+    // 2. Texture
+    var textEarth = new THREE.TextureLoader().load('img/no_clouds_4k.jpg');
+    var bumpEarth = new THREE.TextureLoader().load('img/elev_bump_4k.jpg');
+    // 3. Material
+    var matEarth = new THREE.MeshPhongMaterial({
+        map: textEarth,
+        bumpMap: bumpEarth
+    });
+    // 4. Mesh
+    meshEarth = new THREE.Mesh(geoEarth, matEarth);
+    // 5. Adicionar mesh a cena
+    papi.add(meshEarth);
+    // 6. Mudar atributos
+    matEarth.bumpScale = 0.01;
+    //meshEarth.position.y = 20;
+    meshEarth.position.set(44, 8, -45);
+}
+
+function createClouds() {
+    // 1. Geometria
+    var geoClouds = new THREE.SphereGeometry(1.01, 32, 32);
+    // 2. Texture
+    var textClouds = new THREE.TextureLoader().load('img/fair_clouds_4k.png');
+    // 3. Material
+    var matClouds = new THREE.MeshPhongMaterial({
+        map: textClouds,
+        transparent: true
+    })
+    // 4. Mesh
+    meshClouds = new THREE.Mesh(geoClouds, matClouds);
+    // 5. Add mesh to scene
+    papi.add(meshClouds);
+    // 6. Edit atributes
+    //meshClouds.position.y = 20;
+    meshClouds.position.set(44, 8, -45);
+}
+
 // Event: OnMouseUp
 function onMouseUp(event) {
     selectedObject = null;
@@ -1613,5 +1660,5 @@ function stopSound() {
 
 // Debug function (basically a function to test things...)
 function debug() {
-    createPlane();
+    // Nothing to test, yay :D
 }
