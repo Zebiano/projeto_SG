@@ -316,6 +316,61 @@ function teleport(x, y, z) {
     teleportZ = z;
 }
 
+function getPlayerDirection() {
+    var dir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
+    console.log(dir);
+
+    /*
+    temos 8 quadrados a nossa volta:
+    1. frente cima esquerda
+    2. frente cima direita
+    3. frente baixo esquerda
+    4. frente baixo direita
+    5. tras cima esquerda
+    6. tras cima direita
+    7. tras baixo esquerda
+    8. tras baixo direita
+
+    1. Y positivo, resto negativo
+    2. X e Y positivo, resto negativo
+    3. Tudo negativo!
+    4. X positivo, resto negativo
+    5. Y e Z positivo, resto negativo
+    6. Tudo positivo
+    7. Z positivo, resto negativo
+    8. X e Z positivo, resto negativo
+    */
+
+    if (dir.x > 0 && dir.y > 0 && dir.z > 0) {
+        console.log("Tudo positivo!");
+        return "ppp";
+    } else if (dir.x < 0 && dir.y < 0 && dir.z < 0) {
+        console.log("Tudo negativo!");
+        return "nnn";
+    } else if (dir.x > 0 && dir.y < 0 && dir.z < 0) {
+        console.log("X positivo, resto negativo");
+        return "pnn";
+    } else if (dir.x > 0 && dir.y > 0 && dir.z < 0) {
+        console.log("X e Y positivo, resto negativo");
+        return "ppn";
+    } else if (dir.x < 0 && dir.y > 0 && dir.z < 0) {
+        console.log("Y positivo, resto negativo");
+        return "npn";
+    } else if (dir.x < 0 && dir.y > 0 && dir.z > 0) {
+        console.log("Y e Z positivo, resto negativo");
+        return "npp";
+    } else if (dir.x < 0 && dir.y < 0 && dir.z > 0) {
+        console.log("Z positivo, resto negativo");
+        return "nnp";
+    } else if (dir.x > 0 && dir.y < 0 && dir.z > 0) {
+        console.log("X e Z positivo, resto negativo");
+        return "pnp";
+    } else {
+        console.log("Tas a olhar pra onde paaa?! Deves acharte espertinho/a em por valores certinhos para me enganares...");
+        return "nope";
+    }
+}
+
 // Create Crosshair
 function createCrosshair() {
     // crosshair size
@@ -1285,13 +1340,18 @@ function onKeyDown(event) {
                 //Intersects das cadeiras
                 var intersects = raycaster.intersectObjects(cadeira.children);
                 if (intersects.length > 0) {
-                    isSitting = true;
-                    console.log("Sat down!");
+                    var dir = getPlayerDirection();
+                    if (dir == "nnp" || dir == "nnn") {
+                        isSitting = true;
+                        console.log("Sat down!");
 
-                    // Change scene so it looks like were sitting
-                    console.log(cadeira.position);
-                    //teleport(cadeira.position.x, cadeira.position.y, cadeira.position.z);
-                    //papi.position.set(-cadeira.position.x, -15, 0);
+                        // Change scene so it looks like were sitting
+                        //console.log(cadeira.position);
+                        //teleport(cadeira.position.x, 0, cadeira.position.z);
+                        //papi.position.set(-controls.getObject().position.x, -15, -controls.getObject().position.z);
+                    } else {
+                        console.log("No sitting today! You have to face the chair please.");
+                    }
                 }
             } else {
                 console.log("Stood Up!");
@@ -1299,8 +1359,8 @@ function onKeyDown(event) {
             }
             break;
         case 81: // q
-            console.log(controls.getObject().position);
-            console.log(controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)));
+            console.log("Debugging key");
+            getPlayerDirection()
             break;
     }
 }
