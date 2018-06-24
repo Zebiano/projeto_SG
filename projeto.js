@@ -1465,6 +1465,7 @@ function createNotification(result) {
     }
 }
 
+// Play a sound
 function playSound(src) {
     // load a sound and set it as the Audio object's buffer
     var audioLoader = new THREE.AudioLoader();
@@ -1475,20 +1476,12 @@ function playSound(src) {
     });
 }
 
+// Stop all sounds playing
 function stopSound() {
     sound.stop();
 }
 
-// Call debug function (basically a function to test things...)
+// Debug function (basically a function to test things...)
 function debug() {
-    // create a global audio source
-    sound = new THREE.Audio(listener);
-
-    // load a sound and set it as the Audio object's buffer
-    var audioLoader = new THREE.AudioLoader();
-    audioLoader.load('audio/darude.mp3', function (buffer) {
-        sound.setBuffer(buffer);
-        sound.setLoop(true);
-        sound.play();
-    });
+    //location.replace(window.location.href + "?xyz");
 }
