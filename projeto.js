@@ -900,8 +900,9 @@ function createQuadroLuz(helper) {
     quadroLuz.add(botao3);
 
     // Botao 1
-    var botao4Material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
-    botao4 = new THREE.Mesh(geometry, botao4Material);
+    var botaoRave = new THREE.TextureLoader().load('img/ravemode.jpg');
+    var ravemode = new THREE.MeshBasicMaterial({ map: botaoRave });
+    botao4 = new THREE.Mesh(geometry, ravemode);
     botao4.position.set(0, -2.5, 7.5)
     botao4.name = "botao4"
     quadroLuz.add(botao4);
