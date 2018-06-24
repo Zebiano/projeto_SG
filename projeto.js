@@ -20,7 +20,8 @@ var moveProjetil = false;
 var hasCollided = false;
 var teleportPlayer = false;
 var shootingAllowed = false;
-var crouchEnabled = false;
+var isCrouched = false;
+var isSitting = false;
 
 // PointerLock Variables
 var objects = [];
@@ -88,22 +89,22 @@ window.onload = function init() {
     createLights();
 
     // Floor/Walls/Ceiling
-    createChao(true);
-    createParedeEsquerda(true);
-    createParedeDireita(true);
-    createParedeFundo(true);
-    createParedePerto(true);
+    createChao(false);
+    createParedeEsquerda(false);
+    createParedeDireita(false);
+    createParedeFundo(false);
+    createParedePerto(false);
 
     // Objects
-    createMesa(true);
-    createTv(true);
-    createSofa(true);
-    createMovel(true);
-    createCadeiras(true);
-    createQuadroLuz(true);
-    createBotaoShootingRange(true);
-    createBotaoSala(true);
-    createAlvo(true);
+    createMesa(false);
+    createTv(false);
+    createSofa(false);
+    createMovel(false);
+    createCadeiras(false);
+    createQuadroLuz(false);
+    createBotaoShootingRange(false);
+    createBotaoSala(false);
+    createAlvo(false);
 
     // Planes to move things around
     createPathCadeiras();
@@ -1030,7 +1031,7 @@ function onMouseDown(event) {
         var intersectsPlane = raycaster.intersectObject(plane);
         // calculates the offset (global variable)
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
-        console.log(offset)
+        console.log(offset);
     }
 
     // search for intersections
@@ -1263,13 +1264,43 @@ function onKeyDown(event) {
             papi.remove(scene.getObjectByName("Projetil"));
             break;
         case 67: // c
-            if (crouchEnabled == false) {
+            if (isCrouched == false) {
                 papi.position.y = -5;
-                crouchEnabled = true;
+                isCrouched = true;
             } else {
                 papi.position.y = -20;
-                crouchEnabled = false;
+                isCrouched = false;
             }
+            break;
+        case 69: // e
+            if (isSitting == false) {
+                var mouse = new THREE.Vector2(
+                    (event.clientX / window.innerWidth) * 2 - 1, //x
+                    - (event.clientY / window.innerHeight) * 2 + 1); //y
+
+                var raycaster = new THREE.Raycaster();
+                // update the picking ray with the camera and mouse position
+                raycaster.setFromCamera(mouse, camera);
+
+                //Intersects das cadeiras
+                var intersects = raycaster.intersectObjects(cadeira.children);
+                if (intersects.length > 0) {
+                    isSitting = true;
+                    console.log("Sat down!");
+
+                    // Change scene so it looks like were sitting
+                    console.log(cadeira.position);
+                    //teleport(cadeira.position.x, cadeira.position.y, cadeira.position.z);
+                    //papi.position.set(-cadeira.position.x, -15, 0);
+                }
+            } else {
+                console.log("Stood Up!");
+                isSitting = false;
+            }
+            break;
+        case 81: // q
+            console.log(controls.getObject().position);
+            console.log(controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)));
             break;
     }
 }
