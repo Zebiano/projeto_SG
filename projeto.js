@@ -1,6 +1,6 @@
 // Variables
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala, alvo;
 var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
@@ -35,8 +35,10 @@ var vertex = new THREE.Vector3();
 
 // CONFIG
 var playerSpeed = 14; // Mais alto = Mais devagar!
-var projetilSpeed = 5;
+var projetilSpeed = 3;
 //teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
+var enableJump = true;
+var teleportToShootingRange = false;
 
 // Onload
 window.onload = function init() {
@@ -99,6 +101,7 @@ window.onload = function init() {
     createQuadroLuz(true);
     createBotaoShootingRange(true);
     createBotaoSala(true);
+    createAlvo(true);
 
     // Planes to move things around
     createPathCadeiras();
@@ -256,6 +259,18 @@ function animate() {
             }
         }
     }*/
+
+    // Colisoes com os alvos
+    if (arrayProjeteis.length > 0) {
+        var BBox = new THREE.Box3().setFromObject(alvo);
+        var BBox2 = new THREE.Box3().setFromObject(arrayProjeteis[0]);
+        hasCollided = BBox.intersectsBox(BBox2);
+        if (hasCollided) {
+            console.log(hasCollided);
+            papi.remove(scene.getObjectByName("alvo"));
+            createAlvo();
+        }
+    }
 
     renderer.render(scene, camera);
     window.requestAnimationFrame(animate)
@@ -493,7 +508,9 @@ function createShootingRange() {
     var shootingRange = new THREE.Object3D();
 
     // Teleport to shootingRange
-    //teleport(45, 0, -200);
+    if (teleportToShootingRange == true) {
+        teleport(45, 0, -200);
+    }
 
     // Floor/Walls/Ceiling
     createChao(true);
@@ -501,7 +518,6 @@ function createShootingRange() {
     createParedeDireita(true);
     createParedeFundo(true);
     createParedePerto(true);
-    //createBotaoSala(true);
 
     shootingRange.position.set(0, 0, -200);
     shootingRange.rotation.y = degreesToRadians(90);
@@ -921,6 +937,31 @@ function createProjetil(nProjeteis) {
     }
 }
 
+// Create Parede Perto
+function createAlvo(helper) {
+    var geometry = new THREE.BoxGeometry(5, 5, 1);
+    var material = new THREE.MeshPhongMaterial({ color: 0x000000 });
+    alvo = new THREE.Mesh(geometry, material);
+    alvo.rotation.y = degreesToRadians(90);
+    var x = Math.floor(Math.random() * ((-30) - (-60) + 1) + (-60));
+    var y = Math.floor(Math.random() * (40 - 10 + 1) + 10);
+    var z = Math.floor(Math.random() * ((-230) - (-170) + 1) + (-170));
+    alvo.position.set(x, y, z);
+    alvo.name = "alvo";
+    //scene.add(paredeFundo);
+
+    //Math.floor(Math.random() * (max - min + 1) + min);
+
+    // BoxHelper
+    if (helper == true) {
+        /*var boxHelper = new THREE.BoxHelper(alvo, 0xffff00);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);*/
+    }
+
+    papi.add(alvo);
+}
+
 // Creates Plano para mexer as cadeiras em cima dele
 function createPathCadeiras(helper) {
     plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
@@ -1107,6 +1148,7 @@ function onClick(event) {
                 // Cria 6 projeteis
                 arrayProjeteis = [];
                 createProjetil(7);
+                //papi.remove(scene.getObjectByName("Projetil"));
             } else if (intersectsBtn[i].object.name == "botaoSala") {
                 console.log("Teleporting back");
                 teleport(0, 0, 0);
@@ -1176,8 +1218,10 @@ function onKeyDown(event) {
             moveRight = true;
             break;
         case 32: // space
-            if (canJump === true) velocity.y += 350;
-            canJump = false;
+            if (enableJump) {
+                if (canJump === true) velocity.y += 350;
+                canJump = false;
+            }
             break;
         case 82: // r
             // Cria 6 projeteis
