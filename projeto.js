@@ -40,7 +40,7 @@ var vertex = new THREE.Vector3();
 // CONFIG
 var configPlayerSpeed = 14; // Mais alto = Mais devagar!
 var projetilSpeed = 3;
-var enableJump = true;
+var enableJump = false;
 var teleportToShootingRange = false;
 //teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
 
@@ -317,7 +317,7 @@ function animate() {
         var BBox2 = new THREE.Box3().setFromObject(arrayProjeteis[0]);
         hasCollided = BBox.intersectsBox(BBox2);
         if (hasCollided) {
-            console.log(hasCollided);
+            //console.log(hasCollided);
             papi.remove(scene.getObjectByName("alvo"));
             createAlvo();
         }
@@ -1289,7 +1289,7 @@ function onClick(event) {
         //arrayProjeteis.splice(-1, 1);
         //arrayProjeteis.shift();
         arrayProjeteis = arrayProjeteis.slice(1);
-        console.log(arrayProjeteis.length);
+        //console.log(arrayProjeteis.length);
 
         // Fui eu que criei este codigo, mas ja nao me lembro o que e que faz... Tem a haver com as direcoes e posicoes das balas
         if (arrayProjeteis.length > 0) {
@@ -1334,7 +1334,7 @@ function onKeyDown(event) {
             // Cria 6 projeteis
             arrayProjeteis = [];
             createProjetil(7);
-            console.log(scene.getObjectByName("Projetil"));
+            //console.log(scene.getObjectByName("Projetil"));
             papi.remove(scene.getObjectByName("Projetil"));
             break;
         case 67: // c
@@ -1402,7 +1402,6 @@ function onKeyDown(event) {
             createNotification("Updated projetilSpeed to " + projetilSpeed + "!");
             break;
         case 51: // 3
-            console.log("Ola");
             if (enableJump == false) {
                 enableJump = true;
                 createNotification("Jumping is now enabled!");
