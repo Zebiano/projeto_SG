@@ -4,6 +4,7 @@ var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao
 var mesh;
 var teleportX, teleportY, teleportZ, projetilDir;
 var selectedObject, ambientLight;
+var plane, meshPropeller;
 // var porta2Mexer = false
 var soma = 1.5;
 var playerSpeed = 14; // Mais alto = Mais devagar!
@@ -43,6 +44,7 @@ var projetilSpeed = 3;
 var enableJump = false;
 var teleportToShootingRange = false;
 var nProjeteis = 6;
+var muteAll = false;
 //teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
 
 // Onload
@@ -112,6 +114,9 @@ window.onload = function init() {
 
     // Creates the shooting range
     createShootingRange();
+
+    // Hmmmmm
+    createPlane();
 
     // Adicionar papi a cena
     papi.position.y = -20;
@@ -204,7 +209,17 @@ function animate() {
     } else {
         $("#infoCrouch").html("Standing");
     }
+    // Sound icon
+    if (muteAll == true) {
+        $("#soundConfig").html('<a onclick="hm"><i class="fas fa-volume-off"></i></a>');
+    } else {
+        $("#soundConfig").html('<a onclick="hm"><i class="fas fa-volume-up"></i></a>');
+    }
 
+    // Plane proppeller
+    meshPropeller.rotation.x += 0.5;
+
+    // Bullets
     if (shootingAllowed == true) {
         if (arrayProjeteis.length - 1 >= 0) {
             $("#infoBullets").html(arrayProjeteis.length - 1);
@@ -800,7 +815,7 @@ function createMovel(helper) {
         movel.porta2Aberta = false
         var axesHelper = new THREE.AxesHelper(10);
         movel.add(axesHelper);
-        console.log(movel)
+        //console.log(movel)
 
         papi.add(movel);
         arrayColisoes.push(movel);
@@ -1142,6 +1157,91 @@ function onMouseMove(event) {
     }
 }
 
+function createPlane() {
+    // create an empty container
+    plane = new THREE.Object3D();
+
+    // scale it down
+    plane.scale.set(0.02, 0.02, 0.02);
+    // push it up
+    //plane.position.y = 10;
+    plane.position.set(44, 8, -30);
+    plane.rotation.y = degreesToRadians(90);
+
+    // 1. Geometria
+    var geoCockpit = new THREE.BoxGeometry(60, 50, 50);
+    var geoEngine = new THREE.BoxGeometry(20, 50, 50);
+    var geoTail = new THREE.BoxGeometry(15, 20, 5);
+    var geoWing = new THREE.BoxGeometry(40, 8, 150);
+    var geoPropeller = new THREE.BoxGeometry(20, 10, 10);
+    var geoBlade = new THREE.BoxGeometry(1, 100, 20);
+    // 2. Material
+    var materialPlaneCockpit = new THREE.MeshPhongMaterial({
+        color: 0xf25346,
+        wireframe: false
+    });
+    var materialPlaneEngine = new THREE.MeshPhongMaterial({
+        color: 0xd8d0d1,
+        wireframe: false
+    });
+    var materialPlaneTail = new THREE.MeshPhongMaterial({
+        color: 0xf25346,
+        wireframe: false
+    });
+    var materialPlaneWing = new THREE.MeshPhongMaterial({
+        color: 0xf25346,
+        wireframe: false
+    });
+    var materialPlanePropeller = new THREE.MeshPhongMaterial({
+        color: 0x59332e,
+        wireframe: false
+    });
+    var materialPlaneBlade = new THREE.MeshPhongMaterial({
+        color: 0x23190f,
+        wireframe: false
+    });
+    // 3. Malha
+    meshCockpit = new THREE.Mesh(geoCockpit, materialPlaneCockpit);
+    var meshEngine = new THREE.Mesh(geoEngine, materialPlaneEngine);
+    var meshTail = new THREE.Mesh(geoTail, materialPlaneTail);
+    var meshWing = new THREE.Mesh(geoWing, materialPlaneWing);
+    meshPropeller = new THREE.Mesh(geoPropeller, materialPlanePropeller);
+    var meshBlade = new THREE.Mesh(geoBlade, materialPlaneBlade);
+    // 4. Adicionar malha ao aviao
+    plane.add(meshCockpit);
+    plane.add(meshEngine);
+    plane.add(meshTail);
+    plane.add(meshWing);
+    plane.add(meshPropeller);
+    meshPropeller.add(meshBlade);
+    // 5. Mudar posicoes
+    meshCockpit.geometry.vertices[5].y -= 5;
+    meshCockpit.geometry.vertices[5].y += 5;
+    meshEngine.position.x = 40;
+    meshTail.position.x = -30; meshTail.position.y = 25;
+    meshPropeller.position.x = 50;
+    meshBlade.position.x = 10;
+    // Adicionar Shadows
+    meshCockpit.receiveShadow = true;
+    meshEngine.receiveShadow = true;
+    meshTail.receiveShadow = true;
+    meshWing.receiveShadow = true;
+    meshPropeller.receiveShadow = true;
+    meshBlade.receiveShadow = true;
+
+    meshCockpit.castShadow = true;
+    meshEngine.castShadow = true;
+    meshTail.castShadow = true;
+    meshWing.castShadow = true;
+    meshPropeller.castShadow = true;
+    meshBlade.castShadow = true;
+
+    //console.log("Plane created")
+    papi.add(plane);
+
+    //directionalLight.target = plane;
+}
+
 // Event: OnMouseUp
 function onMouseUp(event) {
     selectedObject = null;
@@ -1277,6 +1377,8 @@ function onClick(event) {
             papi.add(arrayProjeteis[0]);
             projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
             moveProjetil = true;
+        } else {
+            playSound("audio/outOfAmmo.mp3", false);
         }
     }
 }
@@ -1367,14 +1469,23 @@ function onKeyDown(event) {
         case 72: // h
             $("#info").hide();
             $("#infoHelp").show();
-            $("#infoHelp").html("<p>Use WASD to move, SHIFT to run, C to crouch, SPACE to jump (if enabled) and F to change the config.</p><p>Also, there's buttons around that you can click with your mouse. Try them out!</p>");
+            $("#infoHelp").html("<p>Use WASD to move, SHIFT to run, C to crouch, SPACE to jump (if enabled), M to mute sounds and F to change the config.</p><p>Also, there's buttons around that you can click with your mouse. Try them out!</p>");
             break;
         case 70: // f
             showConfig = true;
 
             $("#info").hide();
             $("#infoHelp").show();
-            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Bullet Speed</p><p>3. Enable/Disable Jump</p><p>4. Stop all sounds</p><p>5. Number of bullets</p>");
+            $("#infoHelp").html("<p>Press the equivalent number on your keyboard to change config values</p><p>1. Player Speed</p><p>2. Bullet Speed</p><p>3. Enable/Disable Jump</p><p>4. Stop all sounds (NOT mute. To mute press M)</p><p>5. Number of bullets</p>");
+            break;
+        case 77: // m
+            if (muteAll == true) {
+                sound.play();
+                muteAll = false;
+            } else {
+                sound.pause();
+                muteAll = true;
+            }
             break;
         case 49: // 1
             configPlayerSpeed = prompt("New playerSpeed value:", configPlayerSpeed);
@@ -1401,8 +1512,6 @@ function onKeyDown(event) {
             nProjeteis = prompt("New number of Bullets value:", nProjeteis);
             createNotification("Updated number of Bullets to " + nProjeteis + "!");
             break;
-
-
     }
 }
 
@@ -1482,15 +1591,19 @@ function playSound(src, loop) {
     if (sound.isPlaying == true) {
         stopSound();
     }
-    //console.log(loop);
-    // load a sound and set it as the Audio object's buffer
-    var audioLoader = new THREE.AudioLoader();
-    audioLoader.load(src, function (buffer) {
-        sound.setBuffer(buffer);
-        sound.setLoop(loop);
-        sound.play();
-    });
-    console.log("Started Sound: " + src);
+    if (muteAll == false) {
+        //console.log(loop);
+        // load a sound and set it as the Audio object's buffer
+        var audioLoader = new THREE.AudioLoader();
+        audioLoader.load(src, function (buffer) {
+            sound.setBuffer(buffer);
+            sound.setLoop(loop);
+            sound.play();
+        });
+        console.log("Started Sound: " + src);
+    } else {
+        console.log("Can't start sound because muteAll is set to true");
+    }
 }
 
 // Stop all sounds playing
@@ -1500,5 +1613,5 @@ function stopSound() {
 
 // Debug function (basically a function to test things...)
 function debug() {
-    //location.replace(window.location.href + "?xyz");
+    createPlane();
 }
