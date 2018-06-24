@@ -20,6 +20,7 @@ var moveProjetil = false;
 var hasCollided = false;
 var teleportPlayer = false;
 var shootingAllowed = false;
+var crouchEnabled = false;
 
 // PointerLock Variables
 var objects = [];
@@ -200,7 +201,7 @@ function animate() {
 
     // Animacao do Movel
     if (movel) {
-        console.log("animate porta parada = " + movel.porta1Parada)
+        //console.log("animate porta parada = " + movel.porta1Parada)
         if (!movel.porta1Parada && !movel.porta1Aberta) {
             movel.children[0].position.x += soma
             console.log(movel.porta1Parada)
@@ -214,7 +215,7 @@ function animate() {
             movel.porta1Parada = true
             movel.porta1Aberta = true
         }
-        else if(movel.children[0].position.x <= 0) {
+        else if (movel.children[0].position.x <= 0) {
             movel.porta1Parada = true
             movel.porta1Aberta = false
         }
@@ -232,7 +233,7 @@ function animate() {
             movel.porta2Parada = true
             movel.porta2Aberta = true
         }
-        else if(movel.children[1].position.x >= 0) {
+        else if (movel.children[1].position.x >= 0) {
             movel.porta2Parada = true
             movel.porta2Aberta = false
         }
@@ -316,27 +317,24 @@ function teleport(x, y, z) {
 
 // Create Crosshair
 function createCrosshair() {
-    var material = new THREE.LineBasicMaterial({ color: 0xAAFFAA });
-
     // crosshair size
     var x = 0.015, y = 0.015;
 
+    // Crosshair
     var geometry = new THREE.Geometry();
-
-    // crosshair
     geometry.vertices.push(new THREE.Vector3(0, y, 0));
     geometry.vertices.push(new THREE.Vector3(0, -y, 0));
     geometry.vertices.push(new THREE.Vector3(0, 0, 0));
     geometry.vertices.push(new THREE.Vector3(x, 0, 0));
     geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
-
+    var material = new THREE.LineBasicMaterial({ color: 0xAAFFAA });
     crosshair = new THREE.Line(geometry, material);
 
     // place it in the center
     var crosshairPercentX = 50;
     var crosshairPercentY = 50;
-    var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
-    var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+    var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1; // Min é 0.23 e max 1.77
+    var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1; // Min é 0.23 e max 1.77
 
     crosshair.position.x = crosshairPositionX * camera.aspect;
     crosshair.position.y = crosshairPositionY;
@@ -1230,6 +1228,7 @@ function onClick(event) {
 
 // Event: onKeyDown
 function onKeyDown(event) {
+    //console.log(event.keyCode);
     // When holding shift, player runs
     if (event.keyCode == 16) {
         playerSpeed = 5;
@@ -1262,6 +1261,15 @@ function onKeyDown(event) {
             createProjetil(7);
             console.log(scene.getObjectByName("Projetil"));
             papi.remove(scene.getObjectByName("Projetil"));
+            break;
+        case 67: // c
+            if (crouchEnabled == false) {
+                papi.position.y = -5;
+                crouchEnabled = true;
+            } else {
+                papi.position.y = -20;
+                crouchEnabled = false;
+            }
             break;
     }
 }
