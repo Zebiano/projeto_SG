@@ -223,11 +223,11 @@ function animate() {
         //console.log("animate porta parada = " + movel.porta1Parada)
         if (!movel.porta1Parada && !movel.porta1Aberta) {
             movel.children[0].position.x += soma
-            console.log(movel.porta1Parada)
+            //console.log(movel.porta1Parada)
         }
         else if (!movel.porta1Parada && movel.porta1Aberta) {
             movel.children[0].position.x -= soma
-            console.log(movel.porta1Parada)
+            //console.log(movel.porta1Parada)
         }
 
         if (movel.children[0].position.x >= 450) {
@@ -241,11 +241,11 @@ function animate() {
 
         if (!movel.porta2Parada && !movel.porta2Aberta) {
             movel.children[1].position.x -= soma
-            console.log(movel.porta2Parada)
+            //console.log(movel.porta2Parada)
         }
         else if (!movel.porta2Parada && movel.porta2Aberta) {
             movel.children[1].position.x += soma
-            console.log(movel.porta2Parada)
+            //console.log(movel.porta2Parada)
         }
 
         if (movel.children[1].position.x <= -300) {
@@ -262,7 +262,7 @@ function animate() {
     if (ambientLight) {
         if (ambientLight.raveMode) {
             var color = parseInt(getRandomColor())
-            console.log(color)
+            //console.log(color)
             ambientLight.color.set(color);
         }
     }
@@ -1072,7 +1072,7 @@ function onMouseDown(event) {
         var intersectsPlane = raycaster.intersectObject(plane);
         // calculates the offset (global variable)
         offset.copy(intersectsPlane[0].point).sub(selectedObject.position);
-        console.log(offset);
+        //console.log(offset);
     }
 
     // search for intersections
@@ -1134,7 +1134,7 @@ function onMouseMove(event) {
         // selectedObject.position.copy(intersects[0].point.sub(offset));
         selectedObject.position.x = intersects[0].point.sub(offset).x;
 
-        console.log(selectedObject.position)
+        //console.log(selectedObject.position)
 
         renderer.render(scene, camera);
     }
@@ -1165,22 +1165,22 @@ function onClick(event) {
             if (intersectsBtn[i].object.name == "botao1") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0xffffff)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao2") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0x4B0082)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao3") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0x0000FF)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao3") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0x4B0082)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao4") {
                 ambientLight.raveMode = true;
@@ -1197,17 +1197,17 @@ function onClick(event) {
             else if (intersectsBtn[i].object.name == "botao6") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0xFF0000)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao7") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0xFF7F00)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             }
             else if (intersectsBtn[i].object.name == "botao8") {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0xFFFF00)
-                console.log(ambientLight.color)
+                //console.log(ambientLight.color)
             } else if (intersectsBtn[i].object.name == "botaoShootingRange") {
                 console.log("Teleporting to shooting range...");
                 teleport(45, 0, -200);
@@ -1254,7 +1254,7 @@ function onClick(event) {
     // Intersects da tv
     var intersectsTv = raycaster.intersectObjects(tv.children);
     if (intersectsTv.length > 0) {
-        console.log("Toquei na tv pa!");
+        //console.log("Toquei na tv pa!");
         playSound("audio/tv.mp3");
     }
 
@@ -1474,6 +1474,7 @@ function playSound(src) {
         sound.setLoop(true);
         sound.play();
     });
+    console.log("Started Sound: " + src);
 }
 
 // Stop all sounds playing
