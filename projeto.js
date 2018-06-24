@@ -7,7 +7,6 @@ var selectedObject, ambientLight;
 // var porta2Mexer = false
 var soma = 1.5
 
-
 // Objeto Pai com todos os objetos
 var papi = new THREE.Object3D();
 
@@ -195,10 +194,28 @@ function animate() {
         prevTime = time;
     }
 
+    // Jquery to handle Text
+    if (playerSpeed == 5) {
+        $("#infoCrouch").html("Running");
+    } else if (isCrouched == true) {
+        $("#infoCrouch").html("Crouching");
+    } else {
+        $("#infoCrouch").html("Standing");
+    }
+
+    if (shootingAllowed == true) {
+        if (arrayProjeteis.length -1 >= 0) {
+            $("#infoBullets").html(arrayProjeteis.length - 1);
+        } else {
+            $("#infoBullets").html("Reload to fire more! Hit key 'R'");
+        }
+    } else {
+        $("#infoBullets").html("");
+    }
+
     // Colisoes
     var position = controls.getObject().position;
     //collisionDetection(position);
-
 
     // Animacao do Movel
     if (movel) {
