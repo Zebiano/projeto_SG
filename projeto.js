@@ -38,9 +38,9 @@ var vertex = new THREE.Vector3();
 // CONFIG
 var playerSpeed = 14; // Mais alto = Mais devagar!
 var projetilSpeed = 3;
-//teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
 var enableJump = true;
 var teleportToShootingRange = false;
+//teleport(0, 0, 0); // If needed to spawn player somewhere else, uncomment and change values (x, y, z)
 
 // Onload
 window.onload = function init() {
@@ -204,7 +204,7 @@ function animate() {
     }
 
     if (shootingAllowed == true) {
-        if (arrayProjeteis.length -1 >= 0) {
+        if (arrayProjeteis.length - 1 >= 0) {
             $("#infoBullets").html(arrayProjeteis.length - 1);
         } else {
             $("#infoBullets").html("Reload to fire more! Hit key 'R'");
@@ -1379,6 +1379,11 @@ function onKeyDown(event) {
             console.log("Debugging key");
             getPlayerDirection()
             break;
+        case 72: // h
+            $("#info").hide();
+            $("#infoHelp").show();
+            $("#infoHelp").html("<p>Use WASD to move, SHIFT to run, C to crouch, SPACE to jump (if enabled)</p><p>Also, there's buttons around that you can click with your mouse. Try them out!</p>");
+            break;
     }
 }
 
@@ -1403,6 +1408,10 @@ function onKeyUp(event) {
         case 39: // right
         case 68: // d
             moveRight = false;
+            break;
+        case 72: // h
+            $("#info").show();
+            $("#infoHelp").hide();
             break;
     }
 }
