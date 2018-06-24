@@ -1,6 +1,6 @@
 // Variables
 var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, crosshair;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv;
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange;
 var mesh;
 var teleportX, teleportY, teleportZ;
 var selectedObject, ambientLight;
@@ -18,6 +18,7 @@ var arrayProjeteis = [];
 var moveProjetil = false;
 var hasCollided = false;
 var teleportPlayer = false;
+var shootingAllowed = false;
 
 var projetilDir;
 
@@ -98,6 +99,7 @@ window.onload = function init() {
     createMovel(true);
     createCadeiras(true);
     createQuadroLuz(true);
+    createBotaoShootingRange(true);
 
     // Planes to move things around
     createPathCadeiras();
@@ -166,9 +168,16 @@ function animate() {
 
         // Teleport player to desired location
         if (teleportPlayer == true) {
+            // First go to (0, 0, 0). Tho it depends on which direction the player is facing, so be careful...!
+            controls.getObject().translateX(- controls.getObject().position.x);
+            controls.getObject().translateY(- controls.getObject().position.y);
+            controls.getObject().translateZ(- controls.getObject().position.z);
+
+            // Then move in direction of desired values
             controls.getObject().translateX(teleportX);
             controls.getObject().translateY(teleportY);
             controls.getObject().translateZ(teleportZ);
+
             teleportPlayer = false;
         }
 
@@ -248,7 +257,7 @@ function animate() {
     window.requestAnimationFrame(animate)
 }
 
-// Teleport function
+// Teleport function (which is not really teleport, cuz it just moves the player in the desired direction for the chosen amount...)
 function teleport(x, y, z) {
     teleportPlayer = true;
     teleportX = x;
@@ -473,6 +482,141 @@ function createParedePerto(helper) {
 
     papi.add(paredeFundo);
     arrayColisoes.push(paredeFundo);
+}
+
+// Create ShootingRange
+function createShootingRange() {
+    var shootingRange = new THREE.Object3D();
+
+    // Cria 5 projeteis
+    createProjetil(5);
+
+    // Floor/Walls/Ceiling
+    createChao(true);
+    createParedeEsquerda(true);
+    createParedeDireita(true);
+    createParedeFundo(true);
+    createParedePerto(true);
+
+    shootingRange.position.set(0, 0, -200);
+    papi.add(shootingRange);
+
+    // Creates all the projectiles
+    function createProjetil(nProjeteis) {
+        var geometry = new THREE.SphereGeometry(1, 32, 32);
+        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        projetil = new THREE.Mesh(geometry, material);
+
+        // BoxHelper
+        var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
+        projetil.add(boxHelper);
+
+        for (var i = 0; i < nProjeteis; i++) {
+            arrayProjeteis.push(projetil);
+        }
+    }
+
+    // Create Chao
+    function createChao(helper) {
+        var chaoGEO = new THREE.BoxGeometry(100, 1, 150);
+        var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
+        var material = new THREE.MeshPhongMaterial({ map: texture });
+        var chao = new THREE.Mesh(chaoGEO, material);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        chao.receiveShadow = true;
+        texture.repeat.set(10, 10);
+        //scene.add(chao);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(chao);
+    }
+
+    // Create Parede Esquerda
+    function createParedeEsquerda(helper) {
+        var geometry = new THREE.BoxGeometry(1, 50, 150);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeEsquerda = new THREE.Mesh(geometry, material);
+        paredeEsquerda.position.set(-50, 25, 0);
+        paredeEsquerda.name = "paredeX-50";
+        //scene.add(paredeEsquerda);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeEsquerda);
+        arrayColisoes.push(paredeEsquerda);
+    }
+
+    // Create Parede Direita
+    function createParedeDireita(helper) {
+        var geometry = new THREE.BoxGeometry(1, 50, 150);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeDireita = new THREE.Mesh(geometry, material);
+        paredeDireita.position.set(50, 25, 0);
+        paredeDireita.name = "paredeX50";
+        //scene.add(paredeDireita);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeDireita);
+        arrayColisoes.push(paredeDireita);
+    }
+
+    // Create Parede Fundo
+    function createParedeFundo(helper) {
+        var geometry = new THREE.BoxGeometry(100, 50, 1);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeFundo = new THREE.Mesh(geometry, material);
+        paredeFundo.position.set(0, 25, -75);
+        paredeFundo.name = "paredeZ-75";
+        //scene.add(paredeFundo);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeFundo);
+        arrayColisoes.push(paredeFundo);
+    }
+
+    // Create Parede Perto
+    function createParedePerto(helper) {
+        var geometry = new THREE.BoxGeometry(100, 50, 1);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeFundo = new THREE.Mesh(geometry, material);
+        paredeFundo.position.set(0, 25, 75);
+        paredeFundo.name = "paredeZ75";
+        //scene.add(paredeFundo);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeFundo);
+        arrayColisoes.push(paredeFundo);
+    }
 }
 
 // Create Mesa
@@ -742,6 +886,25 @@ function createQuadroLuz(helper) {
     }
 }
 
+function createBotaoShootingRange(helper) {
+    // Botao ShootingRange
+    var geometry = new THREE.BoxGeometry(1, 3, 3);
+    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    botaoShootingRange = new THREE.Mesh(geometry, material);
+    botaoShootingRange.position.set(20, 30, -74);
+    botaoShootingRange.rotation.y = degreesToRadians(90);
+    botaoShootingRange.name = "botaoShootingRange"
+
+    // BoxHelper
+    if (helper == true) {
+        var boxHelper = new THREE.BoxHelper(botaoShootingRange, 0xffff00);
+        //scene.add(boxHelper);
+        papi.add(boxHelper);
+    }
+
+    papi.add(botaoShootingRange);
+}
+
 // Creates Plano para mexer as cadeiras em cima dele
 function createPathCadeiras(helper) {
     plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
@@ -871,7 +1034,7 @@ function onClick(event) {
 
     // Intersects dos botoes
     // search for intersections
-    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8]);
+    var intersectsBtn = raycaster.intersectObjects([botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, botaoShootingRange]);
     if (intersectsBtn.length > 0) {
         //console.log(intersectsBtn)
 
@@ -921,6 +1084,10 @@ function onClick(event) {
                 ambientLight.raveMode = false
                 ambientLight.color.set(0xFFFF00)
                 console.log(ambientLight.color)
+            } else if (intersectsBtn[i].object.name == "botaoShootingRange") {
+                console.log("Teleporting to shooting range...");
+                teleport(0, 0, -150);
+                shootingAllowed = true;
             }
         }
     }
@@ -942,15 +1109,15 @@ function onClick(event) {
     var intersectsTv = raycaster.intersectObjects(tv.children);
     if (intersectsTv.length > 0) {
         console.log("Toquei na tv pa!");
-
-        teleport(20, 0, 20);
     }
 
-    // Shooting Range
-    arrayProjeteis[0].position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
-    papi.add(arrayProjeteis[0]);
-    projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
-    moveProjetil = true;
+    // ShootingRange
+    if (shootingAllowed == true) {
+        arrayProjeteis[0].position.set(controls.getObject().position.x, controls.getObject().position.y + 20, controls.getObject().position.z);
+        papi.add(arrayProjeteis[0]);
+        projetilDir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z));
+        moveProjetil = true;
+    }
 }
 
 // Event: onKeyDown
@@ -974,6 +1141,10 @@ function onKeyDown(event) {
         case 39: // right
         case 68: // d
             moveRight = true;
+            break;
+        case 32: // space
+            if (canJump === true) velocity.y += 350;
+            canJump = false;
             break;
     }
 }
@@ -1001,6 +1172,12 @@ function onKeyUp(event) {
             moveRight = false;
             break;
     }
+}
+
+// Function that returns the given degrees in radians
+function degreesToRadians(degrees) {
+    var radians = degrees * Math.PI / 180;
+    return radians;
 }
 
 /*
@@ -1047,15 +1224,3 @@ function animate() {
 
     window.requestAnimationFrame(animate)
 }*/
-
-function createShootingRange() {
-    var geometry = new THREE.SphereGeometry(1, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    projetil = new THREE.Mesh(geometry, material);
-
-    // BoxHelper
-    var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
-    projetil.add(boxHelper);
-
-    arrayProjeteis.push(projetil);
-}
