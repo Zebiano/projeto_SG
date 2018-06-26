@@ -27,7 +27,7 @@ The following next steps will explain one-by-one how to implement PLC onto your 
 
 But if you aren't that sure about yourself, I got you covered! Just follow the following steps carefully and you should be good to go:
 
-1. The first thing to do is to edit your .html file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your .html file:
+The first thing to do is to edit your .html file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your .html file:
 ```
 <div id="blocker">
     <div id="instructions">
@@ -76,4 +76,5 @@ But it's not the only thing, because you'll have to add some CSS to it as well:
     }
 </style>
 ```
-2. Next up are all teh variables and animate() function and such. Still gotta write the rest... Be Patient.
+
+Next up are all the variables and animate() function and such. Still gotta write the rest... Be Patient.
