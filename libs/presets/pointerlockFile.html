@@ -210,6 +210,8 @@
 			// Raycaster
 			raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
 
+			/* --- START FLOOR --- */
+
 			// Floor
 			var floorGeometry = new THREE.PlaneBufferGeometry(2000, 2000, 100, 100);
 			floorGeometry.rotateX(- Math.PI / 2);
@@ -240,6 +242,8 @@
 			var floorMaterial = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors });
 			var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 			scene.add(floor);
+
+			/* --- END FLOOR --- */
 
 			// Renderer
 			renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -294,7 +298,6 @@
 			}
 			renderer.render(scene, camera);
 		}
-
 	</script>
 </body>
 
