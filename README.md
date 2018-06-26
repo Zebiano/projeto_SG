@@ -15,6 +15,8 @@ And our little project contains all this. Just it's not working 100% correctly a
 
 - Im trying out githubs own "not working"-type of project page... Let's see how that goes.
 
-# Important info:
+# Important info: (Sort of a PointerLock Controls tutorial)
 
-So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js since there's not that much info on how to use PLC on the internet.
+So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js since there's not that much info on how to use PLC on the internet. In case you are trying to create a project that has one of the above mentioned features, feel free to take a look at our code and to read through this "article"!
+
+## Set up PointerLock Controls
