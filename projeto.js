@@ -1081,7 +1081,8 @@ function onMouseDown(event) {
 
     var raycaster = new THREE.Raycaster();
     // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
+    //raycaster.setFromCamera(mouse, camera);
+    raycaster.set(controls.getObject().position, controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)));
 
     //Intersects das cadeiras
     // search for intersections
@@ -1150,7 +1151,8 @@ function onMouseMove(event) {
 
     var raycaster = new THREE.Raycaster();
     // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
+    //raycaster.setFromCamera(mouse, camera);
+    raycaster.set(controls.getObject().position, controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)));
 
     if (selectedObject) {
         //drag an object around if we've already clicked on one
@@ -1302,7 +1304,8 @@ function onClick(event) {
 
     var raycaster = new THREE.Raycaster();
     // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
+    //raycaster.setFromCamera(mouse, camera);
+    raycaster.set(controls.getObject().position, controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)));
 
     // Intersects dos botoes
     // search for intersections
@@ -1486,7 +1489,8 @@ function onKeyDown(event) {
 
                 var raycaster = new THREE.Raycaster();
                 // update the picking ray with the camera and mouse position
-                raycaster.setFromCamera(mouse, camera);
+                //raycaster.setFromCamera(mouse, camera);
+                raycaster.set(controls.getObject().position, controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)));
 
                 //Intersects das cadeiras
                 var intersects = raycaster.intersectObjects(cadeira.children);
