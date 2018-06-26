@@ -1,15 +1,10 @@
-// Variables
-var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, sound, crosshair;
-var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala, alvo;
-var teleportX, teleportY, teleportZ, projetilDir;
-var selectedObject, ambientLight;
-var plane, meshPropeller;
-var meshEarth, meshClouds;
-// var porta2Mexer = false
-var soma = 1.5;
-var playerSpeed = 14; // Mais alto = Mais devagar!
+// THREE.js variables
+var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, listener, sound;
 
-// Objeto Pai com todos os objetos
+// Object Variables
+var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala, alvo, crosshair, selectedObject, ambientLight, plane, meshPropeller, meshEarth, meshClouds, teleportX, teleportY, teleportZ, projetilDir;
+
+// Object that has all the objects in the escene in it
 var papi = new THREE.Object3D();
 
 // Arrays
@@ -38,9 +33,13 @@ var velocity = new THREE.Vector3();
 var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 
-// CONFIG
-var configPlayerSpeed = 14; // Mais alto = Mais devagar!
+// Default Values - Don't mess around with these please...
+var soma = 1.5;
+var playerSpeed = 14; // Higher value = Slower speed!
+
+// CONFIG - Change if needed, tho recommened is to use the built-in config. Press F while inside the scene.
 var projetilSpeed = 3;
+var configPlayerSpeed = 14; // Higher value = Slower speed!
 var enableJump = false;
 var teleportToShootingRange = false;
 var nProjeteis = 6;
@@ -68,20 +67,12 @@ window.onload = function init() {
     document.body.appendChild(renderer.domElement);
 
     // Camera
-    //camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-    // camera.position.set(50, 70, 200);
-    //camera.position.set(40, 40, 75);
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     camera.add(listener);
-    //camera.position.y = 20;
     scene.add(camera);
 
     // Create Crosshair
     createCrosshair();
-
-    // Orbit Controls
-    // controls = new THREE.OrbitControls(camera);
-    // controls.addEventListener('change', function () { renderer.render(scene, camera); });
 
     // PointerLockControls
     addPointerLockControls();
@@ -91,14 +82,14 @@ window.onload = function init() {
     // Lights
     createLights();
 
-    // Floor/Walls/Ceiling
+    // Floor/Walls/Ceiling - Set to true if you want to see BoxHelpers
     createChao(false);
     createParedeEsquerda(false);
     createParedeDireita(false);
     createParedeFundo(false);
     createParedePerto(false);
 
-    // Objects
+    // Objects - Set to true if you want to see BoxHelpers
     createMesa(false);
     createTv(false);
     createSofa(false);
@@ -108,19 +99,15 @@ window.onload = function init() {
     createBotaoShootingRange(false);
     createBotaoSala(false);
     createAlvo(false);
-
-    // Planes to move things around
-    createPathCadeiras();
-
-    // Creates the shooting range
     createShootingRange();
-
-    // Hmmmmm
     createPlane();
     createEarth();
     createClouds();
 
-    // Adicionar papi a cena
+    // Planes to move things around
+    createPathCadeiras();
+
+    // Add papi to the scene
     papi.position.y = -20;
     papi.name = "papi";
     scene.add(papi);
@@ -130,9 +117,9 @@ window.onload = function init() {
     window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mousemove", onMouseMove);
-
     window.addEventListener('keydown', onKeyDown, false);
     window.addEventListener('keyup', onKeyUp, false);
+
     // Animate
     animate()
 }
@@ -211,6 +198,7 @@ function animate() {
     } else {
         $("#infoCrouch").html("Standing");
     }
+
     // Sound icon
     if (muteAll == true) {
         $("#soundConfig").html('<a onclick="hm"><i class="fas fa-volume-off"></i></a>');
@@ -224,21 +212,6 @@ function animate() {
     // Earth and clouds
     meshEarth.rotation.y += 0.001;
     meshClouds.rotation.y += 0.0012;
-
-    // Bullets
-    if (shootingAllowed == true) {
-        if (arrayProjeteis.length - 1 >= 0) {
-            $("#infoBullets").html(arrayProjeteis.length - 1);
-        } else {
-            $("#infoBullets").html("Reload to fire more! Hit key 'R'");
-        }
-    } else {
-        $("#infoBullets").html("");
-    }
-
-    // Colisoes
-    var position = controls.getObject().position;
-    //collisionDetection(position);
 
     // Animacao do Movel
     if (movel) {
@@ -288,6 +261,20 @@ function animate() {
             ambientLight.color.set(color);
         }
     }
+
+    // Bullets
+    if (shootingAllowed == true) {
+        if (arrayProjeteis.length - 1 >= 0) {
+            $("#infoBullets").html(arrayProjeteis.length - 1);
+        } else {
+            $("#infoBullets").html("Reload to fire more! Hit key 'R'");
+        }
+    } else {
+        $("#infoBullets").html("");
+    }
+
+    // Colisoes
+    var position = controls.getObject().position;
 
     // Shoot projetil
     if (moveProjetil == true) {
@@ -378,45 +365,6 @@ function getPlayerDirection() {
     }
 }
 
-// Create Crosshair
-function createCrosshair() {
-    // crosshair size
-    var x = 0.015, y = 0.015;
-
-    // Crosshair
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push(new THREE.Vector3(0, y, 0));
-    geometry.vertices.push(new THREE.Vector3(0, -y, 0));
-    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(x, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
-    var material = new THREE.LineBasicMaterial({ color: 0xAAFFAA });
-    crosshair = new THREE.Line(geometry, material);
-
-    // place it in the center
-    var crosshairPercentX = 50;
-    var crosshairPercentY = 50;
-    var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1; // Min é 0.23 e max 1.77
-    var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1; // Min é 0.23 e max 1.77
-
-    crosshair.position.x = crosshairPositionX * camera.aspect;
-    crosshair.position.y = crosshairPositionY;
-    crosshair.position.z = -1;
-    crosshair.name = "Crosshair";
-
-    camera.add(crosshair);
-}
-
-// Gets random color
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '0x';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
 // Add PointerLock Controls
 function addPointerLockControls() {
     var blocker = document.getElementById('blocker');
@@ -462,6 +410,45 @@ function addPointerLockControls() {
     } else {
         instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
     }
+}
+
+// Create Crosshair
+function createCrosshair() {
+    // crosshair size
+    var x = 0.015, y = 0.015;
+
+    // Crosshair
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3(0, y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(x, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+    var material = new THREE.LineBasicMaterial({ color: 0xAAFFAA });
+    crosshair = new THREE.Line(geometry, material);
+
+    // place it in the center
+    var crosshairPercentX = 50;
+    var crosshairPercentY = 50;
+    var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1; // Min é 0.23 e max 1.77
+    var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1; // Min é 0.23 e max 1.77
+
+    crosshair.position.x = crosshairPositionX * camera.aspect;
+    crosshair.position.y = crosshairPositionY;
+    crosshair.position.z = -1;
+    crosshair.name = "Crosshair";
+
+    camera.add(crosshair);
+}
+
+// Gets random color
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '0x';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
 // Create Lights
@@ -592,129 +579,6 @@ function createParedePerto(helper) {
 
     papi.add(paredeFundo);
     arrayColisoes.push(paredeFundo);
-}
-
-// Create ShootingRange
-function createShootingRange() {
-    var shootingRange = new THREE.Object3D();
-
-    // Teleport to shootingRange
-    if (teleportToShootingRange == true) {
-        teleport(45, 0, -200);
-    }
-
-    // Floor/Walls/Ceiling
-    createChao(true);
-    createParedeEsquerda(true);
-    createParedeDireita(true);
-    createParedeFundo(true);
-    createParedePerto(true);
-
-    shootingRange.position.set(0, 0, -200);
-    shootingRange.rotation.y = degreesToRadians(90);
-    papi.add(shootingRange);
-
-    // Create Chao
-    function createChao(helper) {
-        var chaoGEO = new THREE.BoxGeometry(100, 1, 150);
-        var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
-        var material = new THREE.MeshPhongMaterial({ map: texture });
-        var chao = new THREE.Mesh(chaoGEO, material);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        chao.receiveShadow = true;
-        texture.repeat.set(10, 10);
-        //scene.add(chao);
-
-        // BoxHelper
-        if (helper == true) {
-            var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
-            //scene.add(boxHelper);
-            papi.add(boxHelper);
-        }
-
-        shootingRange.add(chao);
-    }
-
-    // Create Parede Esquerda
-    function createParedeEsquerda(helper) {
-        var geometry = new THREE.BoxGeometry(1, 50, 150);
-        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
-        var paredeEsquerda = new THREE.Mesh(geometry, material);
-        paredeEsquerda.position.set(-50, 25, 0);
-        paredeEsquerda.name = "paredeX-50";
-        //scene.add(paredeEsquerda);
-
-        // BoxHelper
-        if (helper == true) {
-            var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
-            //scene.add(boxHelper);
-            papi.add(boxHelper);
-        }
-
-        shootingRange.add(paredeEsquerda);
-        arrayColisoes.push(paredeEsquerda);
-    }
-
-    // Create Parede Direita
-    function createParedeDireita(helper) {
-        var geometry = new THREE.BoxGeometry(1, 50, 150);
-        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
-        var paredeDireita = new THREE.Mesh(geometry, material);
-        paredeDireita.position.set(50, 25, 0);
-        paredeDireita.name = "paredeX50";
-        //scene.add(paredeDireita);
-
-        // BoxHelper
-        if (helper == true) {
-            var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
-            //scene.add(boxHelper);
-            papi.add(boxHelper);
-        }
-
-        shootingRange.add(paredeDireita);
-        arrayColisoes.push(paredeDireita);
-    }
-
-    // Create Parede Fundo
-    function createParedeFundo(helper) {
-        var geometry = new THREE.BoxGeometry(100, 50, 1);
-        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
-        var paredeFundo = new THREE.Mesh(geometry, material);
-        paredeFundo.position.set(0, 25, -75);
-        paredeFundo.name = "paredeZ-75";
-        //scene.add(paredeFundo);
-
-        // BoxHelper
-        if (helper == true) {
-            var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-            //scene.add(boxHelper);
-            papi.add(boxHelper);
-        }
-
-        shootingRange.add(paredeFundo);
-        arrayColisoes.push(paredeFundo);
-    }
-
-    // Create Parede Perto
-    function createParedePerto(helper) {
-        var geometry = new THREE.BoxGeometry(100, 50, 1);
-        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
-        var paredeFundo = new THREE.Mesh(geometry, material);
-        paredeFundo.position.set(0, 25, 75);
-        paredeFundo.name = "paredeZ75";
-        //scene.add(paredeFundo);
-
-        // BoxHelper
-        if (helper == true) {
-            var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-            //scene.add(boxHelper);
-            papi.add(boxHelper);
-        }
-
-        shootingRange.add(paredeFundo);
-        arrayColisoes.push(paredeFundo);
-    }
 }
 
 // Create Mesa
@@ -971,6 +835,135 @@ function createQuadroLuz(helper) {
     }
 }
 
+// Creates a Plane inside the movel
+function createPlane() {
+    // create an empty container
+    plane = new THREE.Object3D();
+
+    // scale it down
+    plane.scale.set(0.02, 0.02, 0.02);
+    // push it up
+    //plane.position.y = 10;
+    plane.position.set(44, 8, -30);
+    plane.rotation.y = degreesToRadians(90);
+
+    // 1. Geometria
+    var geoCockpit = new THREE.BoxGeometry(60, 50, 50);
+    var geoEngine = new THREE.BoxGeometry(20, 50, 50);
+    var geoTail = new THREE.BoxGeometry(15, 20, 5);
+    var geoWing = new THREE.BoxGeometry(40, 8, 150);
+    var geoPropeller = new THREE.BoxGeometry(20, 10, 10);
+    var geoBlade = new THREE.BoxGeometry(1, 100, 20);
+    // 2. Material
+    var materialPlaneCockpit = new THREE.MeshPhongMaterial({
+        color: 0xf25346,
+        wireframe: false
+    });
+    var materialPlaneEngine = new THREE.MeshPhongMaterial({
+        color: 0xd8d0d1,
+        wireframe: false
+    });
+    var materialPlaneTail = new THREE.MeshPhongMaterial({
+        color: 0xf25346,
+        wireframe: false
+    });
+    var materialPlaneWing = new THREE.MeshPhongMaterial({
+        color: 0xf25346,
+        wireframe: false
+    });
+    var materialPlanePropeller = new THREE.MeshPhongMaterial({
+        color: 0x59332e,
+        wireframe: false
+    });
+    var materialPlaneBlade = new THREE.MeshPhongMaterial({
+        color: 0x23190f,
+        wireframe: false
+    });
+    // 3. Malha
+    meshCockpit = new THREE.Mesh(geoCockpit, materialPlaneCockpit);
+    var meshEngine = new THREE.Mesh(geoEngine, materialPlaneEngine);
+    var meshTail = new THREE.Mesh(geoTail, materialPlaneTail);
+    var meshWing = new THREE.Mesh(geoWing, materialPlaneWing);
+    meshPropeller = new THREE.Mesh(geoPropeller, materialPlanePropeller);
+    var meshBlade = new THREE.Mesh(geoBlade, materialPlaneBlade);
+    // 4. Adicionar malha ao aviao
+    plane.add(meshCockpit);
+    plane.add(meshEngine);
+    plane.add(meshTail);
+    plane.add(meshWing);
+    plane.add(meshPropeller);
+    meshPropeller.add(meshBlade);
+    // 5. Mudar posicoes
+    meshCockpit.geometry.vertices[5].y -= 5;
+    meshCockpit.geometry.vertices[5].y += 5;
+    meshEngine.position.x = 40;
+    meshTail.position.x = -30; meshTail.position.y = 25;
+    meshPropeller.position.x = 50;
+    meshBlade.position.x = 10;
+    // Adicionar Shadows
+    meshCockpit.receiveShadow = true;
+    meshEngine.receiveShadow = true;
+    meshTail.receiveShadow = true;
+    meshWing.receiveShadow = true;
+    meshPropeller.receiveShadow = true;
+    meshBlade.receiveShadow = true;
+
+    meshCockpit.castShadow = true;
+    meshEngine.castShadow = true;
+    meshTail.castShadow = true;
+    meshWing.castShadow = true;
+    meshPropeller.castShadow = true;
+    meshBlade.castShadow = true;
+
+    //console.log("Plane created")
+    papi.add(plane);
+
+    //directionalLight.target = plane;
+}
+
+// Creates Earth inside the movel
+function createEarth() {
+    // 1. Geometria
+    var geoEarth = new THREE.SphereGeometry(1, 32, 32);
+    // 2. Texture
+    var textEarth = new THREE.TextureLoader().load('img/no_clouds_4k.jpg');
+    var bumpEarth = new THREE.TextureLoader().load('img/elev_bump_4k.jpg');
+    // 3. Material
+    var matEarth = new THREE.MeshPhongMaterial({
+        map: textEarth,
+        bumpMap: bumpEarth
+    });
+    // 4. Mesh
+    meshEarth = new THREE.Mesh(geoEarth, matEarth);
+    // 5. Adicionar mesh a cena
+    papi.add(meshEarth);
+    // 6. Mudar atributos
+    matEarth.bumpScale = 0.01;
+    //meshEarth.position.y = 20;
+    meshEarth.position.set(44, 8, -45);
+}
+
+// Creates Earths clouds inside the movel
+function createClouds() {
+    // 1. Geometria
+    var geoClouds = new THREE.SphereGeometry(1.01, 32, 32);
+    // 2. Texture
+    var textClouds = new THREE.TextureLoader().load('img/fair_clouds_4k.png');
+    // 3. Material
+    var matClouds = new THREE.MeshPhongMaterial({
+        map: textClouds,
+        transparent: true
+    })
+    // 4. Mesh
+    meshClouds = new THREE.Mesh(geoClouds, matClouds);
+    // 5. Add mesh to scene
+    papi.add(meshClouds);
+    // 6. Edit atributes
+    //meshClouds.position.y = 20;
+    meshClouds.position.set(44, 8, -45);
+}
+
+// Creates the button to teleport to the Shooting Range
 function createBotaoShootingRange(helper) {
     // Botao ShootingRange
     var geometry = new THREE.BoxGeometry(1, 3, 3);
@@ -990,6 +983,130 @@ function createBotaoShootingRange(helper) {
     papi.add(botaoShootingRange);
 }
 
+// Create ShootingRange
+function createShootingRange() {
+    var shootingRange = new THREE.Object3D();
+
+    // Teleport to shootingRange
+    if (teleportToShootingRange == true) {
+        teleport(45, 0, -200);
+    }
+
+    // Floor/Walls/Ceiling
+    createChao(true);
+    createParedeEsquerda(true);
+    createParedeDireita(true);
+    createParedeFundo(true);
+    createParedePerto(true);
+
+    shootingRange.position.set(0, 0, -200);
+    shootingRange.rotation.y = degreesToRadians(90);
+    papi.add(shootingRange);
+
+    // Create Chao
+    function createChao(helper) {
+        var chaoGEO = new THREE.BoxGeometry(100, 1, 150);
+        var texture = new THREE.TextureLoader().load('img/chaosala.jpg');
+        var material = new THREE.MeshPhongMaterial({ map: texture });
+        var chao = new THREE.Mesh(chaoGEO, material);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        chao.receiveShadow = true;
+        texture.repeat.set(10, 10);
+        //scene.add(chao);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(chao);
+    }
+
+    // Create Parede Esquerda
+    function createParedeEsquerda(helper) {
+        var geometry = new THREE.BoxGeometry(1, 50, 150);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeEsquerda = new THREE.Mesh(geometry, material);
+        paredeEsquerda.position.set(-50, 25, 0);
+        paredeEsquerda.name = "paredeX-50";
+        //scene.add(paredeEsquerda);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeEsquerda);
+        arrayColisoes.push(paredeEsquerda);
+    }
+
+    // Create Parede Direita
+    function createParedeDireita(helper) {
+        var geometry = new THREE.BoxGeometry(1, 50, 150);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeDireita = new THREE.Mesh(geometry, material);
+        paredeDireita.position.set(50, 25, 0);
+        paredeDireita.name = "paredeX50";
+        //scene.add(paredeDireita);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeDireita);
+        arrayColisoes.push(paredeDireita);
+    }
+
+    // Create Parede Fundo
+    function createParedeFundo(helper) {
+        var geometry = new THREE.BoxGeometry(100, 50, 1);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeFundo = new THREE.Mesh(geometry, material);
+        paredeFundo.position.set(0, 25, -75);
+        paredeFundo.name = "paredeZ-75";
+        //scene.add(paredeFundo);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeFundo);
+        arrayColisoes.push(paredeFundo);
+    }
+
+    // Create Parede Perto
+    function createParedePerto(helper) {
+        var geometry = new THREE.BoxGeometry(100, 50, 1);
+        var material = new THREE.MeshPhongMaterial({ color: 0xfffdf4 });
+        var paredeFundo = new THREE.Mesh(geometry, material);
+        paredeFundo.position.set(0, 25, 75);
+        paredeFundo.name = "paredeZ75";
+        //scene.add(paredeFundo);
+
+        // BoxHelper
+        if (helper == true) {
+            var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
+            //scene.add(boxHelper);
+            papi.add(boxHelper);
+        }
+
+        shootingRange.add(paredeFundo);
+        arrayColisoes.push(paredeFundo);
+    }
+}
+
+// Creates the button to return to the main room
 function createBotaoSala(helper) {
     // Botao Sala
     var geometry = new THREE.BoxGeometry(1, 3, 3);
@@ -1009,24 +1126,7 @@ function createBotaoSala(helper) {
     papi.add(botaoSala);
 }
 
-// Creates all the projectiles
-function createProjetil() {
-    var geometry = new THREE.SphereGeometry(1, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    projetil = new THREE.Mesh(geometry, material);
-    projetil.name = "Projetil";
-
-    // BoxHelper
-    var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
-    projetil.add(boxHelper);
-
-    for (var i = 0; i < nProjeteis; i++) {
-        arrayProjeteis.push(projetil);
-    }
-    arrayProjeteis.push(projetil);
-}
-
-// Create Parede Perto
+// Creates a traget
 function createAlvo(helper) {
     var geometry = new THREE.BoxGeometry(5, 5, 1);
     var material = new THREE.MeshPhongMaterial({ color: 0x000000 });
@@ -1070,6 +1170,23 @@ function createPathCadeiras(helper) {
         //scene.add(boxHelper);
         papi.add(boxHelper);
     }
+}
+
+// Creates all the projectiles
+function createProjetil() {
+    var geometry = new THREE.SphereGeometry(1, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    projetil = new THREE.Mesh(geometry, material);
+    projetil.name = "Projetil";
+
+    // BoxHelper
+    var boxHelper = new THREE.BoxHelper(projetil, 0xffff00);
+    projetil.add(boxHelper);
+
+    for (var i = 0; i < nProjeteis; i++) {
+        arrayProjeteis.push(projetil);
+    }
+    arrayProjeteis.push(projetil);
 }
 
 // Event: OnMouseDown
@@ -1163,131 +1280,6 @@ function onMouseMove(event) {
 
         renderer.render(scene, camera);
     }
-}
-
-function createPlane() {
-    // create an empty container
-    plane = new THREE.Object3D();
-
-    // scale it down
-    plane.scale.set(0.02, 0.02, 0.02);
-    // push it up
-    //plane.position.y = 10;
-    plane.position.set(44, 8, -30);
-    plane.rotation.y = degreesToRadians(90);
-
-    // 1. Geometria
-    var geoCockpit = new THREE.BoxGeometry(60, 50, 50);
-    var geoEngine = new THREE.BoxGeometry(20, 50, 50);
-    var geoTail = new THREE.BoxGeometry(15, 20, 5);
-    var geoWing = new THREE.BoxGeometry(40, 8, 150);
-    var geoPropeller = new THREE.BoxGeometry(20, 10, 10);
-    var geoBlade = new THREE.BoxGeometry(1, 100, 20);
-    // 2. Material
-    var materialPlaneCockpit = new THREE.MeshPhongMaterial({
-        color: 0xf25346,
-        wireframe: false
-    });
-    var materialPlaneEngine = new THREE.MeshPhongMaterial({
-        color: 0xd8d0d1,
-        wireframe: false
-    });
-    var materialPlaneTail = new THREE.MeshPhongMaterial({
-        color: 0xf25346,
-        wireframe: false
-    });
-    var materialPlaneWing = new THREE.MeshPhongMaterial({
-        color: 0xf25346,
-        wireframe: false
-    });
-    var materialPlanePropeller = new THREE.MeshPhongMaterial({
-        color: 0x59332e,
-        wireframe: false
-    });
-    var materialPlaneBlade = new THREE.MeshPhongMaterial({
-        color: 0x23190f,
-        wireframe: false
-    });
-    // 3. Malha
-    meshCockpit = new THREE.Mesh(geoCockpit, materialPlaneCockpit);
-    var meshEngine = new THREE.Mesh(geoEngine, materialPlaneEngine);
-    var meshTail = new THREE.Mesh(geoTail, materialPlaneTail);
-    var meshWing = new THREE.Mesh(geoWing, materialPlaneWing);
-    meshPropeller = new THREE.Mesh(geoPropeller, materialPlanePropeller);
-    var meshBlade = new THREE.Mesh(geoBlade, materialPlaneBlade);
-    // 4. Adicionar malha ao aviao
-    plane.add(meshCockpit);
-    plane.add(meshEngine);
-    plane.add(meshTail);
-    plane.add(meshWing);
-    plane.add(meshPropeller);
-    meshPropeller.add(meshBlade);
-    // 5. Mudar posicoes
-    meshCockpit.geometry.vertices[5].y -= 5;
-    meshCockpit.geometry.vertices[5].y += 5;
-    meshEngine.position.x = 40;
-    meshTail.position.x = -30; meshTail.position.y = 25;
-    meshPropeller.position.x = 50;
-    meshBlade.position.x = 10;
-    // Adicionar Shadows
-    meshCockpit.receiveShadow = true;
-    meshEngine.receiveShadow = true;
-    meshTail.receiveShadow = true;
-    meshWing.receiveShadow = true;
-    meshPropeller.receiveShadow = true;
-    meshBlade.receiveShadow = true;
-
-    meshCockpit.castShadow = true;
-    meshEngine.castShadow = true;
-    meshTail.castShadow = true;
-    meshWing.castShadow = true;
-    meshPropeller.castShadow = true;
-    meshBlade.castShadow = true;
-
-    //console.log("Plane created")
-    papi.add(plane);
-
-    //directionalLight.target = plane;
-}
-
-function createEarth() {
-    // 1. Geometria
-    var geoEarth = new THREE.SphereGeometry(1, 32, 32);
-    // 2. Texture
-    var textEarth = new THREE.TextureLoader().load('img/no_clouds_4k.jpg');
-    var bumpEarth = new THREE.TextureLoader().load('img/elev_bump_4k.jpg');
-    // 3. Material
-    var matEarth = new THREE.MeshPhongMaterial({
-        map: textEarth,
-        bumpMap: bumpEarth
-    });
-    // 4. Mesh
-    meshEarth = new THREE.Mesh(geoEarth, matEarth);
-    // 5. Adicionar mesh a cena
-    papi.add(meshEarth);
-    // 6. Mudar atributos
-    matEarth.bumpScale = 0.01;
-    //meshEarth.position.y = 20;
-    meshEarth.position.set(44, 8, -45);
-}
-
-function createClouds() {
-    // 1. Geometria
-    var geoClouds = new THREE.SphereGeometry(1.01, 32, 32);
-    // 2. Texture
-    var textClouds = new THREE.TextureLoader().load('img/fair_clouds_4k.png');
-    // 3. Material
-    var matClouds = new THREE.MeshPhongMaterial({
-        map: textClouds,
-        transparent: true
-    })
-    // 4. Mesh
-    meshClouds = new THREE.Mesh(geoClouds, matClouds);
-    // 5. Add mesh to scene
-    papi.add(meshClouds);
-    // 6. Edit atributes
-    //meshClouds.position.y = 20;
-    meshClouds.position.set(44, 8, -45);
 }
 
 // Event: OnMouseUp
