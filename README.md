@@ -4,7 +4,7 @@
 We ([HugoBar](https://github.com/HugoBar) and [me](https://github.com/Zebiano)) had to create a project for academic purposes that uses THREE.js. So we came up with this idea of having a little room with most of the things we've been taught:
 
 - PointerLock Controls
-- Simple object creating and animation
+- Simple object creation and animation
 - Collisions
 - Drag and drop
 - Projectiles and trajectories (aka bullets)
