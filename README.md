@@ -138,14 +138,72 @@ if (havePointerLock) {
 }
 ```
 
-**Fourth:** Define controls:
+**Fourth:** Define controls and raycaster:
 ```
 // Controls
 controls = new THREE.PointerLockControls(camera);
 scene.add(controls.getObject());
+
+// Raycaster
+raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
 ```
 
-**Fifth:** You're almost done implementing PLC. Just a last step inside the `animate()` function:
+**Fifth:** You'll need eventListeners to be able to walk:
+```
+// OnKeyDown
+var onKeyDown = function (event) {
+    switch (event.keyCode) {
+        case 38: // up
+        case 87: // w
+            moveForward = true;
+            break;
+        case 37: // left
+        case 65: // a
+            moveLeft = true; break;
+        case 40: // down
+        case 83: // s
+            moveBackward = true;
+            break;
+        case 39: // right
+        case 68: // d
+            moveRight = true;
+            break;
+        case 32: // space
+            if (canJump === true) velocity.y += 350;
+            canJump = false;
+            break;
+    }
+};
+
+// OnKeyUp
+var onKeyUp = function (event) {
+    switch (event.keyCode) {
+        case 38: // up
+        case 87: // w
+            moveForward = false;
+            break;
+        case 37: // left
+        case 65: // a
+            moveLeft = false;
+            break;
+
+        case 40: // down
+        case 83: // s
+            moveBackward = false;
+            break;
+
+        case 39: // right
+        case 68: // d
+            moveRight = false;
+            break;
+    }
+};
+
+document.addEventListener('keydown', onKeyDown, false);
+document.addEventListener('keyup', onKeyUp, false);
+```
+
+**Sixth:** You're almost done implementing PLC. Just a last step inside the `animate()` function:
 ```
 if (controlsEnabled === true) {
     raycaster.ray.origin.copy(controls.getObject().position);
@@ -190,6 +248,6 @@ if (controlsEnabled === true) {
 }
 ```
 
-#### Alright, cool! If you did everything correctly and I haven't done any mistake you should now be able to load your project and walk and look around using PLC! Great progress don't you think...?
+**Alright, cool!*** If you did everything correctly and I haven't done any mistake you should now be able to load your project and walk and look around using PLC! Great progress don't you think...?
 
-Still gotta write the rest... Please be Patient.
+Still gotta write the rest... Please be patient.
