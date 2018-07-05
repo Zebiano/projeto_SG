@@ -8,14 +8,20 @@ We ([HugoBar](https://github.com/HugoBar) and [me](https://github.com/Zebiano)) 
 - Collisions
 - Drag and drop
 - Projectiles and trajectories (aka bullets)
+- Sounds
 
 And our little project contains all this. Just it's not working 100% correctly all the time and we don't really have clue to why this is like that. Either way, we'll keep on trying to fix stuff until we're sick of it!
 
 ### Things that aren't working:
 
-- Im trying out githubs own "not working"-type of project page... Let's see how that goes.
+- Somehow drag and drop is completely broken on our project. I'm pretty sure we're missign a common/stupid mistake or so, but fact is you can't move the chairs around just yet!
+- ~~Raycaster isn't accurate everytime~~
+- Teleporting the player around is another issue. It's not as easy as it sounds.
 
-# Important info: (Sort of a PointerLock Controls tutorial)
+# Table of Contents:
+[Teste](#teste2)
+
+# PointerLock Controls Tutorial
 
 So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js since there's not that much info on how to use PLC on the internet. In case you are trying to create a project that has one of the above mentioned features, feel free to take a look at our code and to read through this "article"!
 
@@ -248,6 +254,21 @@ if (controlsEnabled === true) {
 }
 ```
 
-**Alright, cool!*** If you did everything correctly and I haven't done any mistake you should now be able to load your project and walk and look around using PLC! Great progress don't you think...?
+**Alright, cool!** If you did everything correctly and I haven't done any mistake you should now be able to load your project and walk/look around using PLC! Great progress don't you think...?
+
+# Teste2
+
+## General tips and tricks for PLC
+
+Please read through these tips, it might save you a lot of trouble regarding PLC!
+
+1. awdawd
+2. awdawd
+
+These next sections will try to teach you how to implement the following:
+- Projectiles
+- Collisions
+- Teleportations
+- Drag and Drop
 
 Still gotta write the rest... Please be patient.
