@@ -12,11 +12,14 @@ We ([HugoBar](https://github.com/HugoBar) and [me](https://github.com/Zebiano)) 
 
 And our little project contains all this. Just it's not working 100% correctly all the time and we don't really have clue to why this is like that. Either way, we'll keep on trying to fix stuff until we're sick of it!
 
+PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. We're both quite happy with the result and hope you won't be too critical with it!
+
 ### Things that aren't working:
 
-- Somehow drag and drop is completely broken on our project. I'm pretty sure we're missign a common/stupid mistake or so, but fact is you can't move the chairs around just yet!
+- Somehow drag and drop is completely broken on our project. Sometimes it works, and sometimes it doesn't. We really dont understand why. And we'll gladly blame it on THREE.js!
 - ~~Raycaster isn't accurate everytime~~
 - Teleporting the player around is another issue. It's not as easy as it sounds and it sort of works.
+- Collisions are quite messy. There's ways to pass through walls.
 
 # Table of Contents:
 1. [PointerLock Controls Tutorial](#pointerlock-controls-tutorial)
