@@ -16,10 +16,16 @@ And our little project contains all this. Just it's not working 100% correctly a
 
 - Somehow drag and drop is completely broken on our project. I'm pretty sure we're missign a common/stupid mistake or so, but fact is you can't move the chairs around just yet!
 - ~~Raycaster isn't accurate everytime~~
-- Teleporting the player around is another issue. It's not as easy as it sounds.
+- Teleporting the player around is another issue. It's not as easy as it sounds and it sort of works.
 
 # Table of Contents:
-[Teste](#teste2)
+1. [PointerLock Controls Tutorial](#pointerlock-controls-tutorial)
+2. [General tips and tricks for PLC](#general-tips-and-tricks-for-plc)
+3. Specific topics:
+    - [Projectiles](#projectiles)
+    - [Collisions](#collisions)
+    - [Teleportations](#teleportations)
+    - [Drag and Drop](#drag-and-drop)
 
 # PointerLock Controls Tutorial
 
@@ -256,19 +262,24 @@ if (controlsEnabled === true) {
 
 **Alright, cool!** If you did everything correctly and I haven't done any mistake you should now be able to load your project and walk/look around using PLC! Great progress don't you think...?
 
-# Teste2
-
 ## General tips and tricks for PLC
-
 Please read through these tips, it might save you a lot of trouble regarding PLC!
+1. Still gotta write them...
+2. Still gotta write them...
 
-1. awdawd
-2. awdawd
-
+## Specific Topics
 These next sections will try to teach you how to implement the following:
-- Projectiles
-- Collisions
-- Teleportations
-- Drag and Drop
+- [Projectiles](#projectiles)
+- [Collisions](#collisions)
+- [Teleportations](#teleportations)
+- [Drag and Drop](#drag-and-drop)
+
+### Projectiles
+
+### Collisions
+
+### Teleportations
+
+### Drag and Drop
 
 Still gotta write the rest... Please be patient.
