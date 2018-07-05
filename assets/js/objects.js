@@ -31,7 +31,6 @@ function createCrosshair() {
 function createLights() {
     // AmbientLight
     ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    //scene.add(ambientLight);
     papi.add(ambientLight);
 
     // DirectionalLight
@@ -45,13 +44,10 @@ function createLights() {
     directionalLight.shadow.camera.top = 100;
 
     var helper2 = new THREE.CameraHelper(directionalLight.shadow.camera);
-    //scene.add(helper2);
-    papi.add(helper2);
+    //papi.add(helper2);
     var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-    //scene.add(helper);
-    papi.add(helper);
+    //papi.add(helper);
 
-    //scene.add(directionalLight);
     papi.add(directionalLight);
 }
 
@@ -65,12 +61,10 @@ function createChao(helper) {
     texture.wrapT = THREE.RepeatWrapping;
     chao.receiveShadow = true;
     texture.repeat.set(10, 10);
-    //scene.add(chao);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -84,12 +78,10 @@ function createParedeEsquerda(helper) {
     var paredeEsquerda = new THREE.Mesh(geometry, material);
     paredeEsquerda.position.set(-50, 25, 0);
     paredeEsquerda.name = "paredeX-50";
-    //scene.add(paredeEsquerda);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -104,12 +96,10 @@ function createParedeDireita(helper) {
     var paredeDireita = new THREE.Mesh(geometry, material);
     paredeDireita.position.set(50, 25, 0);
     paredeDireita.name = "paredeX50";
-    //scene.add(paredeDireita);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -124,12 +114,10 @@ function createParedeFundo(helper) {
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, -75);
     paredeFundo.name = "paredeZ-75";
-    //scene.add(paredeFundo);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -144,12 +132,10 @@ function createParedePerto(helper) {
     var paredeFundo = new THREE.Mesh(geometry, material);
     paredeFundo.position.set(0, 25, 75);
     paredeFundo.name = "paredeZ75";
-    //scene.add(paredeFundo);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -172,12 +158,10 @@ function createMesa(helper) {
         // mesa.position.set(35, 0, 55);
         mesa.position.set(35 - 50, 0, 55 - 75);
 
-        //scene.add(mesa);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -199,12 +183,10 @@ function createTv(helper) {
         tv.rotation.y = - Math.PI / 2;
         tv.scale.set(0.4, 0.4, 0.4);
         tv.position.set(48, 20, -55);
-        //scene.add(tv);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -225,14 +207,12 @@ function createSofa(helper) {
             sofa.children[i].receiveShadow = true;
             sofa.children[i].castShadow = true;
         }
-        //scene.add(sofa);
         sofa.position.set(-15, 0, -40);
         sofa.rotation.y = Math.PI / 2;
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(object, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -276,7 +256,6 @@ function createCadeiras(helper) {
         cadeira = object;
         // Cadeira 1
         cadeira.scale.set(0.02, 0.02, 0.02);
-        // cadeira.position.set(50, 0, 87);
         cadeira.position.set(0, 0, 87 - 75);
         cadeira.rotation.y = Math.PI / 2;
         for (var i = 0; i < cadeira.children.length; i++) {
@@ -284,26 +263,19 @@ function createCadeiras(helper) {
             cadeira.children[i].receiveShadow = true;
             cadeira.children[i].castShadow = true;
         }
-        //scene.add(cadeira);
 
         // Cadeira 2
         cadeira2 = cadeira.clone();
-        // cadeira2.position.set(50, 0, 102);
         cadeira2.position.set(0, 0, 102 - 75);
-        //scene.add(cadeira2);
 
         // Cadeira 3
         cadeira3 = cadeira.clone();
-        // cadeira3.position.set(40, 0, 95);
         cadeira3.position.set(-10, 0, 20);
         cadeira3.rotation.y = 3 * Math.PI / 2;
-        //scene.add(cadeira3);
 
         // Cadeira 4
         cadeira4 = cadeira3.clone();
-        // cadeira4.position.set(40, 0, 110);
         cadeira4.position.set(-10, 0, 110 - 75);
-        //scene.add(cadeira4);
 
         // BoxHelper
         if (helper == true) {
@@ -312,12 +284,6 @@ function createCadeiras(helper) {
             var boxHelper3 = new THREE.BoxHelper(cadeira3, 0xffff00);
             var boxHelper4 = new THREE.BoxHelper(cadeira4, 0xffff00);
 
-            /*
-            scene.add(boxHelper);
-            scene.add(boxHelper2);
-            scene.add(boxHelper3);
-            scene.add(boxHelper4);
-            */
 
             papi.add(boxHelper);
             papi.add(boxHelper2);
@@ -399,14 +365,11 @@ function createQuadroLuz(helper) {
     quadroLuz.add(botao8);
 
     // Adicionar quadroLuz a scene
-    //quadroLuz.position.y = 30;
-    //scene.add(quadroLuz);
     papi.add(quadroLuz);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(quadroLuz, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 }
@@ -419,7 +382,6 @@ function createPlane() {
     // scale it down
     plane.scale.set(0.02, 0.02, 0.02);
     // push it up
-    //plane.position.y = 10;
     plane.position.set(44, 8, -30);
     plane.rotation.y = degreesToRadians(90);
 
@@ -493,8 +455,6 @@ function createPlane() {
 
     //console.log("Plane created")
     papi.add(plane);
-
-    //directionalLight.target = plane;
 }
 
 // Creates Earth inside the movel
@@ -552,7 +512,6 @@ function createBotaoShootingRange(helper) {
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(botaoShootingRange, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -589,12 +548,10 @@ function createShootingRange() {
         texture.wrapT = THREE.RepeatWrapping;
         chao.receiveShadow = true;
         texture.repeat.set(10, 10);
-        //scene.add(chao);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(chao, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -608,12 +565,10 @@ function createShootingRange() {
         var paredeEsquerda = new THREE.Mesh(geometry, material);
         paredeEsquerda.position.set(-50, 25, 0);
         paredeEsquerda.name = "paredeX-50";
-        //scene.add(paredeEsquerda);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(paredeEsquerda, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -628,12 +583,10 @@ function createShootingRange() {
         var paredeDireita = new THREE.Mesh(geometry, material);
         paredeDireita.position.set(50, 25, 0);
         paredeDireita.name = "paredeX50";
-        //scene.add(paredeDireita);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(paredeDireita, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -648,12 +601,10 @@ function createShootingRange() {
         var paredeFundo = new THREE.Mesh(geometry, material);
         paredeFundo.position.set(0, 25, -75);
         paredeFundo.name = "paredeZ-75";
-        //scene.add(paredeFundo);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -668,12 +619,10 @@ function createShootingRange() {
         var paredeFundo = new THREE.Mesh(geometry, material);
         paredeFundo.position.set(0, 25, 75);
         paredeFundo.name = "paredeZ75";
-        //scene.add(paredeFundo);
 
         // BoxHelper
         if (helper == true) {
             var boxHelper = new THREE.BoxHelper(paredeFundo, 0xffff00);
-            //scene.add(boxHelper);
             papi.add(boxHelper);
         }
 
@@ -695,7 +644,6 @@ function createBotaoSala(helper) {
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(botaoSala, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 
@@ -713,14 +661,12 @@ function createAlvo(helper) {
     var z = Math.floor(Math.random() * ((-230) - (-170) + 1) + (-170));
     alvo.position.set(x, y, z);
     alvo.name = "alvo";
-    //scene.add(paredeFundo);
 
     //Math.floor(Math.random() * (max - min + 1) + min);
 
     // BoxHelper
     if (helper == true) {
         /*var boxHelper = new THREE.BoxHelper(alvo, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);*/
     }
 
@@ -737,13 +683,11 @@ function createPathCadeiras(helper) {
         }));
     plane.rotation.x = -Math.PI / 2;
     plane.name = "PathCadeiras";
-    //scene.add(plane);
     papi.add(plane);
 
     // BoxHelper
     if (helper == true) {
         var boxHelper = new THREE.BoxHelper(plane, 0xffff00);
-        //scene.add(boxHelper);
         papi.add(boxHelper);
     }
 }
