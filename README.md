@@ -12,6 +12,8 @@ We ([HugoBar](https://github.com/HugoBar) and [me](https://github.com/Zebiano)) 
 
 And our little project contains all this. Just it's not working 100% correctly all the time and we don't really have clue to why this is like that. Either way, we'll keep on trying to fix stuff until we're sick of it!
 
+**Keep in mind this doesn't work on Google Chrome because of some safety concerns they have. Please use Firefox if you want to give this a try!**
+
 PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. We're both quite happy with the result and hope you won't be too critical with it!
 
 ### Things that aren't working:
@@ -38,9 +40,9 @@ So, I'm currently in the process of writing every little thing that comes to my 
 
 Ok, the first thing you'll want to do is download or copy the [PointerLock File](https://threejs.org/examples/misc_controls_pointerlock.html) from THREE.js (`Cntrl + U` and then click on "js/controls/PointerLockControls.js") or from this repo under the libs folder, though keep in mind it might be outdated. 
 
-#### The following next steps will explain one-by-one how to implement PLC onto your project. If you think you're good enough to do it yourself go check the `/libs/presets/pointerlockFile.html` file. It's a trimmed version of the example in the THREE.js docs which contains only the essentails of PLC and a floor. But if you aren't that sure about yourself, I got you covered! Just follow the following steps carefully and you should be good to go:
+#### The following next steps will explain one-by-one how to implement PLC onto your project. If you think you're good enough to do it yourself go check the `/libs/presets/pointerlockFile.html` file. It's a trimmed version of the example in the THREE.js docs which contains only the essentails of PLC and a floor. But if you aren't that sure about yourself, we got you covered! Just follow the following steps carefully and you should be good to go:
 
-**The first thing** to do is to edit your .html file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your .html file:
+**The first thing** to do is edit your .html file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your .html file:
 ```
 <div id="blocker">
     <div id="instructions">
