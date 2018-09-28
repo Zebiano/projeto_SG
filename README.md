@@ -27,6 +27,7 @@ PS: This was done in basically two days only... Two days of hard work to get aro
 1. [PointerLock Controls Tutorial](#pointerlock-controls-tutorial)
 2. [General tips and tricks for PLC](#general-tips-and-tricks-for-plc)
 3. Specific topics:
+    - [Camera Positions](#camera-positions)
     - [Projectiles](#projectiles)
     - [Collisions](#collisions)
     - [Teleportations](#teleportations)
@@ -269,15 +270,23 @@ if (controlsEnabled === true) {
 
 ## General tips and tricks for PLC
 Please read through these tips, it might save you a lot of trouble regarding PLC!
-1. Still gotta write them...
-2. Still gotta write them...
+1. Don't play around too much with PLC, don't try to change values of it or such things, it will most likely break. This is honestly, the best tip I can give you! Though at the same it's necessary to understand how PLC works... So I'd say try to change code, but never fully delete/forget it so you can get it back to a state where it's working!
+2. Most likely the camera position will be too low, so instead of moving it up, you have to move the whole scene down. I reccomend creating one parent object of the whole scene and moving that down in the Y axis. If you try to move the camera up in Y axis, you'll get this weird "bending over" animation when looking down.
+3. I don't recommend using drag and drop at all with PLC. It's very buggy and inconsistant. You will most likely be scratching your head to why there's an error, rather than cheerfully screaming "It works!"...
 
 ## Specific Topics
 These next sections will try to teach you how to implement the following:
+- [Camera Positions](#camera-positions)
 - [Projectiles](#projectiles)
 - [Collisions](#collisions)
 - [Teleportations](#teleportations)
 - [Drag and Drop](#drag-and-drop)
+
+### Camera Positions
+The Camera position in PLC is something kind of annoying because it's not that as easy as changing the coodinates and hope that everything still works as intended. Say you want to put the camera a bit higher up which means changing the Y axis. If you go and change the Y axis of the camera, you will be higher up yes, but you will also end up with this weird "bending over" animation while looking down or up...
+"How can I solve this then?" I hear you ask. The answer is simple and effecient: If you can't make your camera get higher up in your scene, make the scene go lower from your camera! In other words, create an object that has all the other objects in your scene and bring that down as much as you want. In our project we called that object "papi" (makes sense right?). **Just keep in mind you have to start adding objects to papi now and not the scene!**
+"Couldn't I push the whole scene down instead?" I hear you ask. The answer is simple and efficient: No. Because the camera object is a child of the scene. It would bring it down as well.
+So let me guide you. **This is how you can lower you camera wih PLC:**
 
 ### Projectiles
 

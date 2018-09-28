@@ -4,7 +4,7 @@ var renderer, scene, raycaster, objLoader, camera, controls, mouse, offset, list
 // Object Variables
 var cadeira, cadeira2, cadeira3, cadeira4, botao1, botao2, botao3, botao4, botao5, botao6, botao7, botao8, movel, quadroLuz, tv, botaoShootingRange, botaoSala, alvo, crosshair, selectedObject, ambientLight, plane, meshPropeller, meshEarth, meshClouds, teleportX, teleportY, teleportZ, projetilDir;
 
-// Object that has all the objects in the escene in it
+// Object that has all the objects of the scene in it
 var papi = new THREE.Object3D();
 
 // Arrays
@@ -131,7 +131,7 @@ function animate() {
         raycaster.ray.origin.copy(controls.getObject().position);
         raycaster.ray.origin.y -= 10;
 
-        // Colisoes
+        // Collisions
         var dir = controls.getDirection(new THREE.Vector3(controls.getObject().position.x, controls.getObject().position.y, controls.getObject().position.z)).clone();
         raycaster.ray.direction.copy(dir);
 
