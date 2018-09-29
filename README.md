@@ -304,11 +304,15 @@ Don't forget that lights should also be added to `papi`!
 ```
 papi.position.y = -20;
 ```
+
 As I said before, this doesn't move the camera up but moves the whole scene down, so it gives the ilusion the camera is higher up!
-**Fourth:** Lastly, you just need to add `papi` tp the scene itself:
+
+**Fourth:** Lastly, you just need to add `papi` to the scene itself:
 ```
 scene.add(papi);
 ```
+
+You should now have a higher up camera!
 
 ### Projectiles
 
