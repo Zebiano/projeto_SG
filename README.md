@@ -291,21 +291,21 @@ The Camera position in PLC is something kind of annoying because it's not that a
 
 So let me guide you. **This is how you can lower you camera wih PLC:**
 
-1. Create a new Object3D():
+**First:** Create a new Object3D():
 ```
 var papi = new THREE.Object3D();
 ```
-2. Start adding objects to `papi` (and not to the scene):
+**Second:** Start adding objects to `papi` (and not to the scene):
 ```
 papi.add(OBJECT);
 ```
 Don't forget that lights should also be added to `papi`!
-3. After adding all objects to `papi`, we can finally get to the part where we move the "camera":
+**Third:** After adding all objects to `papi`, we can finally get to the part where we move the "camera":
 ```
 papi.position.y = -20;
 ```
 As I said before, this doesn't move the camera up but moves the whole scene down, so it gives the ilusion the camera is higher up!
-4. Lastly, you just need to add `papi` tp the scene itself:
+**Fourth:** Lastly, you just need to add `papi` tp the scene itself:
 ```
 scene.add(papi);
 ```
