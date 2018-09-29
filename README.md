@@ -14,7 +14,7 @@ And our little project contains all this. Just it's not working 100% correctly a
 
 **Keep in mind this doesn't work on Google Chrome because of some safety concerns they have. Please use Firefox if you want to give this a try!**
 
-PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. We're both quite happy with the result and hope you won't be too critical with it!
+PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. That's why there are some portuguese comments mixed with english ones, sorry for that. Though we're both quite happy with the result and hope you won't be too critical with it!
 
 ### Things that aren't working:
 
@@ -273,6 +273,9 @@ Please read through these tips, it might save you a lot of trouble regarding PLC
 1. Don't play around too much with PLC, don't try to change values of it or such things, it will most likely break. This is honestly, the best tip I can give you! Though at the same it's necessary to understand how PLC works... So I'd say try to change code, but never fully delete/forget it so you can get it back to a state where it's working!
 2. Most likely the camera position will be too low, so instead of moving it up, you have to move the whole scene down. I reccomend creating one parent object of the whole scene and moving that down in the Y axis. If you try to move the camera up in Y axis, you'll get this weird "bending over" animation when looking down.
 3. I don't recommend using drag and drop at all with PLC. It's very buggy and inconsistant. You will most likely be scratching your head to why there's an error, rather than cheerfully screaming "It works!"...
+4. There are two important functions of PLC that you will probably end up using:
+    1. **`controls.getObject().position;`** This one gives a position (x, y, z) of where the camera is at in the scene.
+    2. **`controls.getDirection(THREE.Vector3);`** This one gives you the direction the camera is looking at from a given position.
 
 ## Specific Topics
 These next sections will try to teach you how to implement the following:
@@ -300,19 +303,17 @@ var papi = new THREE.Object3D();
 papi.add(OBJECT);
 ```
 Don't forget that lights should also be added to `papi`!
+
 **Third:** After adding all objects to `papi`, we can finally get to the part where we move the "camera":
 ```
 papi.position.y = -20;
 ```
-
 As I said before, this doesn't move the camera up but moves the whole scene down, so it gives the ilusion the camera is higher up!
 
 **Fourth:** Lastly, you just need to add `papi` to the scene itself:
 ```
 scene.add(papi);
 ```
-
-You should now have a higher up camera!
 
 ### Projectiles
 
