@@ -288,7 +288,7 @@ These next sections will try to teach you how to implement the following:
 ### Camera Positions
 The Camera position in PLC is something kind of annoying because it's not as easy as changing the coodinates and hope that everything still works as intended. Say you want to put the camera a bit higher up which means changing the Y axis. If you go and change the Y axis of the camera, you will be higher up yes, but you will also end up with this weird "bending over" animation while looking down or up...
 
-"How can I solve this then?" I hear you ask. The answer is simple and effecient: If you can't make your camera get higher up in your scene, make the scene go lower from your camera! In other words, create an object that has all the other objects in your scene and bring that down as much as you want. In our project we called that object "papi" (makes sense right?). **Just keep in mind you have to start adding objects to papi now and not the scene!**
+"How can I solve this then?" I hear you ask. The answer is simple and efficient: If you can't make your camera get higher up in your scene, make the scene go lower from your camera! In other words, create an object that has all the other objects in your scene and bring that down as much as you want. In our project we called that object "papi" (makes sense right?). **Just keep in mind you have to start adding objects to papi now and not the scene!**
 
 "Couldn't I push the whole scene down instead?" I hear you ask. The answer is simple and efficient: No. Because the camera object is a child of the scene. It would bring it down as well.
 
