@@ -272,7 +272,7 @@ if (controlsEnabled === true) {
 Please read through these tips, it might save you a lot of trouble regarding PLC!
 1. Don't play around too much with PLC, don't try to change values of it or such things, it will most likely break. This is honestly, the best tip I can give you! Though at the same it's necessary to understand how PLC works... So I'd say try to change code, but never fully delete/forget it so you can get it back to a state where it's working!
 2. Most likely the camera position will be too low, so instead of moving it up, you have to move the whole scene down. I recommend creating one parent object of the whole scene and moving that down in the Y axis. If you try to move the camera up in Y axis, you'll get this weird "bending over" animation when looking down.
-3. I don't recommend using drag and drop at all with PLC. It's very buggy and inconsistant. You will most likely be scratching your head to why there's an error, rather than cheerfully screaming "It works!"...
+3. I don't recommend using drag and drop at all with PLC. It's very buggy and inconsistent. You will most likely be scratching your head to why there's an error, rather than cheerfully screaming "It works!"...
 4. There are two important functions of PLC that you will probably end up using:
     1. **`controls.getObject().position;`** This one gives a position (x, y, z) of where the camera is at in the scene.
     2. **`controls.getDirection(THREE.Vector3);`** This one gives you the direction the camera is looking at from a given position.
