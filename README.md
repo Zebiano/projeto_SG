@@ -44,7 +44,7 @@ Ok, the first thing you'll want to do is download or copy the [PointerLock File]
 #### The following next steps will explain one-by-one how to implement PLC onto your project. If you think you're good enough to do it yourself go check the `/libs/presets/pointerlockFile.html` file. It's a trimmed version of the example in the THREE.js docs which contains only the essentials of PLC and a floor. But if you aren't that sure about yourself, we got you covered! Just follow the following steps carefully and you should be good to go:
 
 **The first thing** to do is edit your .html file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your .html file:
-```
+```html
 <div id="blocker">
     <div id="instructions">
         <span style="font-size:40px">Click to play</span>
@@ -53,7 +53,7 @@ Ok, the first thing you'll want to do is download or copy the [PointerLock File]
 </div>
 ```
 But it's not the only thing, because you'll have to add some CSS to it as well:
-```
+```html
 <style>
     body {
     	width: 100%;
@@ -95,7 +95,7 @@ But it's not the only thing, because you'll have to add some CSS to it as well:
 
 **Secondly** come all the variables that PLC uses. Besides the typical `var scene, camera, renderer` variables for a THREE.js scene to work, you'll also need the following variables:
 
-```
+```js
 /* -- PointerLock Varibles -- */
 var blocker = document.getElementById('blocker');
 var instructions = document.getElementById('instructions');
@@ -114,7 +114,7 @@ var vertex = new THREE.Vector3();
 var color = new THREE.Color();
 ```
 In **third** place, you have to check that your browser actually supports PLC. I recommend creating a function containing the following code snippet and calling it at `window.onload = function init()` in order to keep your code organized!
-```
+```js
 var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 if (havePointerLock) {
     var element = document.body;
@@ -157,7 +157,7 @@ if (havePointerLock) {
 ```
 
 **Fourth:** Define controls and raycaster:
-```
+```js
 // Controls
 controls = new THREE.PointerLockControls(camera);
 scene.add(controls.getObject());
@@ -167,7 +167,7 @@ raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0
 ```
 
 **Fifth:** You'll need eventListeners to be able to walk:
-```
+```js
 // OnKeyDown
 var onKeyDown = function (event) {
     switch (event.keyCode) {
@@ -222,7 +222,7 @@ document.addEventListener('keyup', onKeyUp, false);
 ```
 
 **Sixth:** You're almost done implementing PLC. Just a last step inside the `animate()` function:
-```
+```js
 if (controlsEnabled === true) {
     raycaster.ray.origin.copy(controls.getObject().position);
     raycaster.ray.origin.y -= 10;
@@ -295,23 +295,23 @@ The Camera position in PLC is something kind of annoying because it's not as eas
 So let me guide you. **This is how you can lower you camera wih PLC:**
 
 **First:** Create a new Object3D():
-```
+```js
 var papi = new THREE.Object3D();
 ```
 **Second:** Start adding objects to `papi` (and not to the scene):
-```
+```js
 papi.add(OBJECT);
 ```
 Don't forget that lights should also be added to `papi`!
 
 **Third:** After adding all objects to `papi`, we can finally get to the part where we move the "camera":
-```
+```js
 papi.position.y = -20;
 ```
 As I said before, this doesn't move the camera up but moves the whole scene down, so it gives the ilusion the camera is higher up!
 
 **Fourth:** Lastly, you just need to add `papi` to the scene itself:
-```
+```js
 scene.add(papi);
 ```
 
