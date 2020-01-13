@@ -17,28 +17,29 @@ And our little project contains all this. Just it's not working 100% correctly a
 PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. That's why there are some portuguese comments mixed with english ones, sorry for that. Though we're both quite happy with the result and hope you won't be too critical with it!
 
 ### Things that aren't working:
-
 - Somehow drag and drop is completely broken on our project. Sometimes it works, and sometimes it doesn't. We really dont understand why. And we'll gladly blame it on THREE.js!
 - ~~Raycaster isn't accurate everytime~~
 - Teleporting the player around is another issue. It's not as easy as it sounds and it sort of works.
 - Collisions are quite messy. There's ways to pass through walls.
 
 # Table of Contents:
-1. [PointerLock Controls Tutorial](#pointerlock-controls-tutorial)
-2. [General tips and tricks for PLC](#general-tips-and-tricks-for-plc)
-3. Specific topics:
+1. [Installation](#installation)
+2. [PointerLock Controls Tutorial](#pointerlock-controls-tutorial)
+3. [General tips and tricks for PLC](#general-tips-and-tricks-for-plc)
+4. Specific topics:
     - [Camera Positions](#camera-positions)
     - [Projectiles](#projectiles)
     - [Collisions](#collisions)
     - [Teleportations](#teleportations)
     - [Drag and Drop](#drag-and-drop)
 
-# PointerLock Controls Tutorial
+# Installation
+In order to run our little project, clone this repository to your machine and run `npm run server`. Make sure to allow notifications when prompted!
 
+# PointerLock Controls Tutorial
 So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js since there's not that much info on how to use PLC on the internet. In case you are trying to create a project that has one of the above mentioned features, feel free to take a look at our code and to read through this "article"!
 
 ## Set up PointerLock Controls
-
 Ok, the first thing you'll want to do is download or copy the [PointerLock File](https://threejs.org/examples/misc_controls_pointerlock.html) from THREE.js (`Cntrl + U` and then click on "js/controls/PointerLockControls.js") or from this repo under the libs folder, though keep in mind it might be outdated. 
 
 #### The following next steps will explain one-by-one how to implement PLC onto your project. If you think you're good enough to do it yourself go check the `/libs/presets/pointerlockFile.html` file. It's a trimmed version of the example in the THREE.js docs which contains only the essentials of PLC and a floor. But if you aren't that sure about yourself, we got you covered! Just follow the following steps carefully and you should be good to go:

@@ -1,0 +1,19 @@
+{
+  "name": "projeto_sg",
+  "version": "1.0.0",
+  "description": "Salinha Interativa",
+  "main": "main.js",
+  "scripts": {
+    "server": "npx http-server -o main.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zebiano/projeto_SG.git"
+  },
+  "author": "Sebastião Barros - @Zebiano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zebiano/projeto_SG/issues"
+  },
+  "homepage": "https://github.com/Zebiano/projeto_SG#readme"
+}
