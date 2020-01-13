@@ -1,7 +1,7 @@
 # Salinha Interativa
 ## A project made with [THREE.js](https://threejs.org/) and [Pointerlock Controls](https://threejs.org/examples/misc_controls_pointerlock.html)
 
-We ([HugoBar](https://github.com/HugoBar) and [me](https://github.com/Zebiano)) had to create a project for academic purposes that uses THREE.js. So we came up with this idea of having a little room with most of the things we've been taught:
+We ([HugoBar](https://github.com/HugoBar) and [I](https://github.com/Zebiano)) had to create a project for academic purposes that uses THREE.js. So we came up with this idea of having a little room with most of the things we've been taught:
 
 - PointerLock Controls
 - Simple object creation and animation
@@ -10,11 +10,9 @@ We ([HugoBar](https://github.com/HugoBar) and [me](https://github.com/Zebiano)) 
 - Projectiles and trajectories (aka bullets)
 - Sounds
 
-And our little project contains all this. Just it's not working 100% correctly all the time and we don't really have clue to why this is like that. Either way, we'll keep on trying to fix stuff until we're sick of it!
+And our little project contains all this. Just it's not working 100% correctly all the time and we don't really have a clue to why it is like that. Either way, we'll keep on trying to fix stuff until we're sick of it!
 
-**Keep in mind this doesn't work on Google Chrome because of some safety concerns they have. Please use Firefox if you want to give this a try!**
-
-PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. That's why there are some portuguese comments mixed with english ones, sorry for that. Though we're both quite happy with the result and hope you won't be too critical with it!
+PS: This was done in basically two days only... Two days of hard work to get around all the problems PointerLock Controls gave us. That's why there are some portuguese comments mixed with english ones, sorry for that. Though we're both quite happy with the result and hope you won't be too critical about it!
 
 ### Things that aren't working:
 - Somehow drag and drop is completely broken on our project. Sometimes it works, and sometimes it doesn't. We really dont understand why. And we'll gladly blame it on THREE.js!
@@ -37,14 +35,14 @@ PS: This was done in basically two days only... Two days of hard work to get aro
 In order to run our little project, clone this repository to your machine and run `npm run server`. Make sure to allow notifications when prompted!
 
 # PointerLock Controls Tutorial
-So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js since there's not that much info on how to use PLC on the internet. In case you are trying to create a project that has one of the above mentioned features, feel free to take a look at our code and to read through this "article"!
+So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js, since there's not that much info on how to use PLC on the internet. In case you are trying to create a project that has one of the above mentioned features, feel free to take a look at our code and to read through this "article"!
 
 ## Set up PointerLock Controls
-Ok, the first thing you'll want to do is download or copy the [PointerLock File](https://threejs.org/examples/misc_controls_pointerlock.html) from THREE.js (`Cntrl + U` and then click on "js/controls/PointerLockControls.js") or from this repo under the libs folder, though keep in mind it might be outdated. 
+Ok, the first thing you'll want to do is download or copy the [PointerLock File](https://threejs.org/examples/misc_controls_pointerlock.html) from THREE.js (`Cntrl + U` and then click on "js/controls/PointerLockControls.js"). You can also get it from this repo under the libs folder, though keep in mind it might be outdated. 
 
 #### The following next steps will explain one-by-one how to implement PLC onto your project. If you think you're good enough to do it yourself go check the `/libs/presets/pointerlockFile.html` file. It's a trimmed version of the example in the THREE.js docs which contains only the essentials of PLC and a floor. But if you aren't that sure about yourself, we got you covered! Just follow the following steps carefully and you should be good to go:
 
-**The first thing** to do is edit your .html file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your .html file:
+**The first thing** to do, is edit your `.html` file. PLC needs a blocker div in order to get access to your mouse only after you've clicked on the screen. Add this to your `.html` file:
 ```html
 <div id="blocker">
     <div id="instructions">
@@ -53,7 +51,7 @@ Ok, the first thing you'll want to do is download or copy the [PointerLock File]
     </div>
 </div>
 ```
-But it's not the only thing, because you'll have to add some CSS to it as well:
+But that's not the only thing, because you'll have to add some CSS to it as well:
 ```html
 <style>
     body {
@@ -222,7 +220,7 @@ document.addEventListener('keydown', onKeyDown, false);
 document.addEventListener('keyup', onKeyUp, false);
 ```
 
-**Sixth:** You're almost done implementing PLC. Just a last step inside the `animate()` function:
+**Sixth:** You're almost done implementing PLC! Just a last step inside the `animate()` function:
 ```js
 if (controlsEnabled === true) {
     raycaster.ray.origin.copy(controls.getObject().position);
@@ -267,11 +265,11 @@ if (controlsEnabled === true) {
 }
 ```
 
-**Alright, cool!** If you did everything correctly and I haven't done any mistake you should now be able to load your project and walk/look around using PLC! Great progress don't you think...?
+**Alright, cool!** If you did everything correctly and I haven't done any mistakes, you should now be able to load your project and walk/look around using PLC! Great progress don't you think...?
 
 ## General tips and tricks for PLC
 Please read through these tips, it might save you a lot of trouble regarding PLC!
-1. Don't play around too much with PLC, don't try to change values of it or such things, it will most likely break. This is honestly, the best tip I can give you! Though at the same it's necessary to understand how PLC works... So I'd say try to change code, but never fully delete/forget it so you can get it back to a state where it's working!
+1. Don't play around too much with PLC. Don't try to change values of it or such things, it will most likely break. This is honestly the best tip I can give you! Though at the same it's necessary to understand how PLC works... So I'd say try to change code, but never fully delete/forget it so you can get it back to a state where it's working!
 2. Most likely the camera position will be too low, so instead of moving it up, you have to move the whole scene down. I recommend creating one parent object of the whole scene and moving that down in the Y axis. If you try to move the camera up in Y axis, you'll get this weird "bending over" animation when looking down.
 3. I don't recommend using drag and drop at all with PLC. It's very buggy and inconsistent. You will most likely be scratching your head to why there's an error, rather than cheerfully screaming "It works!"...
 4. There are two important functions of PLC that you will probably end up using:
@@ -287,11 +285,11 @@ These next sections will try to teach you how to implement the following:
 - [Drag and Drop](#drag-and-drop)
 
 ### Camera Positions
-The Camera position in PLC is something kind of annoying because it's not as easy as changing the coodinates and hope that everything still works as intended. Say you want to put the camera a bit higher up which means changing the Y axis. If you go and change the Y axis of the camera, you will be higher up yes, but you will also end up with this weird "bending over" animation while looking down or up...
+The Camera position in PLC is something kind of annoying because it's not as easy as changing the coordinates and hoping that everything still works as intended. Say, you want to put the camera a bit higher up, which means changing the Y axis. If you go and change the Y axis of the camera, you will be higher up yes, but you will also end up with this weird "bending over" animation while looking down or up...
 
-"How can I solve this then?" I hear you ask. The answer is simple and efficient: If you can't make your camera get higher up in your scene, make the scene go lower from your camera! In other words, create an object that has all the other objects in your scene and bring that down as much as you want. In our project we called that object "papi" (makes sense right?). **Just keep in mind you have to start adding objects to papi now and not the scene!**
+"How can I solve this then?" I hear you ask. The answer is simple and efficient: If you can't make your camera higher in the scene, put the scene lower! In other words, create an object that has all the other objects in your scene and bring that down as much as you want. In our project we called that object "papi" (makes sense right?). **Just keep in mind you have to start adding objects to papi now and not the scene!**
 
-"Couldn't I push the whole scene down instead?" I hear you ask. The answer is simple and efficient: No. Because the camera object is a child of the scene. It would bring it down as well.
+"Couldn't I push the whole scene down instead?" I hear you ask. The answer is simple: No. Because the camera object is a child of the scene. It would bring it down as well.
 
 So let me guide you. **This is how you can lower you camera wih PLC:**
 
@@ -309,7 +307,7 @@ Don't forget that lights should also be added to `papi`!
 ```js
 papi.position.y = -20;
 ```
-As I said before, this doesn't move the camera up but moves the whole scene down, so it gives the ilusion the camera is higher up!
+As I said before, this doesn't move the camera up, but moves the whole scene down, so it gives the ilusion the camera is higher!
 
 **Fourth:** Lastly, you just need to add `papi` to the scene itself:
 ```js
