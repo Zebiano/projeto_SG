@@ -4,7 +4,7 @@
   "description": "Salinha Interativa",
   "main": "main.js",
   "scripts": {
-    "server": "npx http-server -o main.html"
+    "start": "npx http-server -o main.html"
   },
   "repository": {
     "type": "git",

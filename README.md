@@ -32,7 +32,7 @@ PS: This was done in basically two days only... Two days of hard work to get aro
     - [Drag and Drop](#drag-and-drop)
 
 # Installation
-In order to run our little project, clone this repository to your machine and run `npm run server`. Make sure to allow notifications when prompted!
+In order to run our little project, clone this repository to your machine and run `npm run start`. Make sure to allow notifications when prompted!
 
 # PointerLock Controls Tutorial
 So, I'm currently in the process of writing every little thing that comes to my mind that might help others use PointerLock Controls in THREE.js, since there's not that much info on how to use PLC on the internet. In case you are trying to create a project that has one of the above mentioned features, feel free to take a look at our code and to read through this "article"!
